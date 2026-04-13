@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 4 計畫書｜東釜山奢華一日</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --ink: #1A1917;
+  --ink-soft: #55524A;
+  --ink-muted: #96948E;
+  --paper: #F9F7F3;
+  --paper-warm: #F1EDE5;
+  --paper-border: #E3DDD4;
+  --teal: #1A6A5A;   --teal-pale: #DFF0EB;
+  --plum: #6A2A5A;   --plum-pale: #F0DFF0;
+  --gold: #B07A10;   --gold-pale: #FAF0D0;
+  --blue: #1A5A8A;   --blue-pale: #DCE9F5;
+  --red: #C04A28;    --red-pale: #F5E5DF;
+  --orange: #C05A10; --orange-pale: #FAE8D8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Serif TC', serif; background: var(--paper); color: var(--ink); line-height: 1.7; padding: 32px 20px 64px; }
+.page { max-width: 660px; margin: 0 auto; }
+
+/* cover */
+.cover { text-align: center; padding: 40px 0 36px; border-bottom: 2px solid var(--ink); margin-bottom: 36px; }
+.cover-eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.18em; color: var(--ink-muted); text-transform: uppercase; margin-bottom: 10px; }
+.cover-title { font-size: 30px; font-weight: 900; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 8px; }
+.cover-title em { font-style: normal; color: var(--orange); }
+.cover-sub { font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; max-width: 500px; margin: 0 auto; }
+.cover-tags { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; margin-top: 16px; }
+.ctag { font-family: 'DM Mono', monospace; font-size: 10px; padding: 3px 10px; border: 1px solid var(--paper-border); border-radius: 20px; color: var(--ink-soft); }
+
+/* route bar */
+.route-bar { display: flex; align-items: center; overflow-x: auto; background: var(--ink); border-radius: 8px; padding: 12px 16px; margin-bottom: 32px; scrollbar-width: none; gap: 0; }
+.route-bar::-webkit-scrollbar { display: none; }
+.rb-stop { text-align: center; flex-shrink: 0; }
+.rb-dot { width: 8px; height: 8px; border-radius: 50%; margin: 0 auto 4px; }
+.rb-label { font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.7); white-space: nowrap; }
+.rb-time { font-size: 9px; color: rgba(255,255,255,0.45); }
+.rb-arrow { color: rgba(255,255,255,0.25); font-size: 12px; padding: 0 8px; flex-shrink: 0; padding-bottom: 14px; }
+
+/* section */
+.section { margin-bottom: 36px; }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 7px; border-bottom: 1px solid var(--paper-border); }
+.section-num { font-family: 'DM Mono', monospace; font-size: 11px; background: var(--ink); color: var(--paper); padding: 2px 8px; border-radius: 3px; }
+.section-title { font-size: 15px; font-weight: 600; }
+.section-time { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-left: auto; }
+
+/* pass badge */
+.pass-badge { display: inline-flex; align-items: center; gap: 4px; font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 600; background: var(--ink); color: var(--paper); padding: 2px 8px; border-radius: 3px; letter-spacing: 0.06em; vertical-align: middle; margin-left: 5px; }
+.pass-badge.purple { background: #5A2A7A; }
+.pass-badge.blue   { background: #1A5A8A; }
+.pass-badge.paid   { background: var(--orange); }
+
+/* info card */
+.info-card { border: 1px solid var(--paper-border); border-radius: 10px; padding: 13px 15px; margin-bottom: 10px; background: white; }
+.info-card.teal   { border-left: 3px solid var(--teal);   }
+.info-card.plum   { border-left: 3px solid var(--plum);   }
+.info-card.gold   { border-left: 3px solid var(--gold);   }
+.info-card.blue   { border-left: 3px solid var(--blue);   }
+.info-card.red    { border-left: 3px solid var(--red);    }
+.info-card.orange { border-left: 3px solid var(--orange); }
+.info-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 5px; font-size: 13px; }
+.info-row:last-child { margin-bottom: 0; }
+.info-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-muted); min-width: 52px; padding-top: 2px; flex-shrink: 0; }
+.info-val { color: var(--ink); line-height: 1.6; }
+.info-val strong { font-weight: 600; }
+.ko { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-soft); background: var(--paper-warm); padding: 1px 5px; border-radius: 3px; margin-left: 3px; }
+
+/* landmark */
+.landmark { display: grid; grid-template-columns: 80px 1fr; border: 1px solid var(--paper-border); border-radius: 10px; overflow: hidden; background: white; margin-bottom: 10px; }
+.landmark-side { background: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; gap: 5px; }
+.landmark-icon { font-size: 24px; }
+.landmark-badge { font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.6); text-align: center; }
+.landmark-body { padding: 12px 14px; }
+.landmark-name { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+.landmark-rows { font-size: 12px; color: var(--ink-soft); }
+.landmark-row { display: flex; gap: 8px; margin-bottom: 3px; }
+.landmark-row:last-child { margin-bottom: 0; }
+.lm-key { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--ink-muted); min-width: 40px; padding-top: 2px; flex-shrink: 0; }
+
+/* steps */
+.steps { position: relative; padding-left: 42px; }
+.steps::before { content: ''; position: absolute; left: 12px; top: 14px; bottom: 14px; width: 1.5px; background: var(--paper-border); }
+.step { position: relative; margin-bottom: 20px; }
+.step:last-child { margin-bottom: 0; }
+.step-dot { position: absolute; left: -36px; top: 2px; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; color: white; border: 2px solid var(--paper); }
+.dot-orange { background: var(--orange); }
+.dot-teal   { background: var(--teal);   }
+.dot-plum   { background: var(--plum);   }
+.dot-gold   { background: var(--gold);   }
+.dot-blue   { background: var(--blue);   }
+.dot-red    { background: var(--red);    }
+.dot-gray   { background: var(--ink-muted); }
+.step-title { font-size: 13.5px; font-weight: 600; margin-bottom: 3px; line-height: 1.4; }
+.step-body { font-size: 12.5px; color: var(--ink-soft); line-height: 1.65; }
+.step-body p { margin-bottom: 3px; }
+.step-body p:last-child { margin-bottom: 0; }
+.step-body strong { color: var(--ink); }
+
+/* ticket */
+.ticket { background: var(--paper-warm); border: 1px dashed var(--paper-border); border-radius: 8px; padding: 7px 11px; margin-top: 7px; font-family: 'DM Mono', monospace; font-size: 10.5px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 10px; }
+.ticket span { color: var(--ink); font-weight: 500; }
+
+/* alert */
+.alert { border-radius: 8px; padding: 8px 12px; font-size: 12px; line-height: 1.6; margin-top: 7px; display: flex; gap: 7px; align-items: flex-start; }
+.alert-icon { flex-shrink: 0; font-size: 13px; }
+.alert.warn   { background: var(--gold-pale);   color: #6B4E10; }
+.alert.tip    { background: var(--teal-pale);   color: #0D4A34; }
+.alert.note   { background: var(--blue-pale);   color: #1A3A5A; }
+.alert.red    { background: var(--red-pale);    color: #6B2A0A; }
+.alert.plum   { background: var(--plum-pale);   color: #4A1A4A; }
+.alert.orange { background: var(--orange-pale); color: #6B2A0A; }
+
+/* highlight */
+.highlight { background: var(--teal-pale); border: 1px solid #A8D8C8; border-radius: 10px; padding: 11px 15px; margin-bottom: 11px; }
+.highlight-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #0A4A34; font-weight: 600; margin-bottom: 5px; }
+.highlight-body { font-size: 13px; color: var(--ink-soft); line-height: 1.65; }
+
+/* flow box */
+.flow-box { background: white; border: 1px solid var(--paper-border); border-radius: 10px; padding: 13px 15px; margin-bottom: 10px; }
+.flow-title { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.flow-steps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.flow-step { background: var(--paper-warm); border: 1px solid var(--paper-border); border-radius: 6px; padding: 4px 10px; font-size: 12px; white-space: nowrap; }
+.flow-arrow { color: var(--ink-muted); font-size: 11px; }
+
+/* photo ref */
+.photo-ref { background: #EEF3EE; border: 1px solid #BDDACC; border-radius: 8px; padding: 9px 13px; margin: 8px 0; display: flex; gap: 9px; align-items: flex-start; }
+.photo-ref-icon { font-size: 17px; flex-shrink: 0; }
+.photo-ref-body { flex: 1; }
+.photo-ref-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--ink-muted); text-transform: uppercase; margin-bottom: 3px; }
+.photo-ref-desc { font-size: 12px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 5px; }
+.photo-ref-links { display: flex; flex-wrap: wrap; gap: 5px; }
+.photo-link { display: inline-block; font-size: 10.5px; font-weight: 500; color: var(--teal); background: var(--teal-pale); padding: 2px 9px; border-radius: 20px; text-decoration: none; }
+.photo-link.plum   { color: var(--plum);   background: var(--plum-pale);   }
+.photo-link.gold   { color: var(--gold);   background: var(--gold-pale);   }
+.photo-link.blue   { color: var(--blue);   background: var(--blue-pale);   }
+.photo-link.orange { color: var(--orange); background: var(--orange-pale); }
+
+/* compare table */
+.compare { width: 100%; border-collapse: collapse; font-size: 12.5px; background: white; border-radius: 10px; overflow: hidden; border: 1px solid var(--paper-border); margin-bottom: 10px; }
+.compare th { background: var(--ink); color: var(--paper); padding: 7px 11px; font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.06em; text-align: left; }
+.compare td { padding: 7px 11px; border-bottom: 1px solid var(--paper-border); }
+.compare tr:last-child td { border-bottom: none; }
+.compare tr.rec td { background: var(--teal-pale); }
+.tag-rec { font-family: 'DM Mono', monospace; font-size: 9px; background: var(--teal); color: white; padding: 1px 6px; border-radius: 3px; margin-left: 4px; }
+
+/* cost table */
+.cost-table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; border-radius: 10px; overflow: hidden; border: 1px solid var(--paper-border); }
+.cost-table th { background: var(--ink); color: var(--paper); padding: 7px 11px; text-align: left; font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.06em; }
+.cost-table td { padding: 7px 11px; border-bottom: 1px solid var(--paper-border); }
+.cost-table tr:last-child td { border-bottom: none; }
+.cost-table tr.total td { font-weight: 600; background: var(--paper-warm); }
+.cost-r { text-align: right; font-family: 'DM Mono', monospace; }
+
+/* checklist */
+.checklist { list-style: none; }
+.checklist li { display: flex; gap: 9px; align-items: flex-start; padding: 6px 0; font-size: 12.5px; border-bottom: 1px dotted var(--paper-border); line-height: 1.55; }
+.checklist li:last-child { border-bottom: none; }
+.check-icon { flex-shrink: 0; font-size: 14px; }
+
+/* prereq box */
+.prereq { background: var(--orange-pale); border: 1.5px solid var(--orange); border-radius: 10px; padding: 13px 15px; margin-bottom: 20px; }
+.prereq-title { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); margin-bottom: 7px; }
+.prereq-list { font-size: 12.5px; color: var(--ink-soft); }
+.prereq-list li { margin-bottom: 4px; display: flex; gap: 7px; }
+.prereq-list li:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- 封面 -->
+<div class="cover">
+  <div class="cover-eyebrow">釜山自由行 5天4夜 · 行程計畫書</div>
+  <div class="cover-title">Day <em>4</em><br>東釜山奢華一日</div>
+  <div class="cover-sub">OPS早餐 → Skyline Luge 斜坡滑車 → 尾浦站搭天空膠囊列車 → 青沙浦午餐烤扇貝 → Spa Land 汗蒸幕 → 廣安里晚餐</div>
+  <div class="cover-tags">
+    <span class="ctag">Pass 紫色 ×2（Luge + Spa Land）</span>
+    <span class="ctag">膠囊列車需提前預約</span>
+    <span class="ctag">海岸列車 Pass 免費</span>
+    <span class="ctag">東釜山精華串聯</span>
+  </div>
+</div>
+
+<!-- Route Bar -->
+<div class="route-bar">
+  <div class="rb-stop"><div class="rb-dot" style="background:#C8A840"></div><div class="rb-label">OPS 早餐</div><div class="rb-time">08:00</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#C05A10"></div><div class="rb-label">Skyline Luge</div><div class="rb-time">09:30</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#1A5A8A"></div><div class="rb-label">膠囊列車</div><div class="rb-time">11:30</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#3A8A5A"></div><div class="rb-label">青沙浦午餐</div><div class="rb-time">12:30</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#6A2A5A"></div><div class="rb-label">Spa Land</div><div class="rb-time">14:30</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#C04A28"></div><div class="rb-label">廣安里晚餐</div><div class="rb-time">18:30</div></div>
+</div>
+
+<!-- ⚡ 出發前必做事項 -->
+<div class="prereq">
+  <div class="prereq-title">⚡ 出發前必做（行前重要預約）</div>
+  <ul class="prereq-list">
+    <li><span>①</span><span><strong>天空膠囊列車提前預約</strong>：膠囊列車非常熱門，旺季提前 1–2 週、平日也建議 3–5 天前在官網或 Trip.com 訂票。選 <strong>尾浦 → 青沙浦</strong>，靠海外側視野最佳。Day 4 目標時段 <strong>11:30–12:00</strong>。</span></li>
+    <li><span>②</span><span><strong>OPS 烘焙坊確認是否有排隊</strong>：海雲台人氣早餐店，08:00 開門。平日通常不用太久，早點到就好。</span></li>
+    <li><span>③</span><span><strong>Visit Busan Pass 剩餘確認</strong>：Day 4 使用紫色景點 2 個：Skyline Luge（₩28,000）+ Spa Land（₩23,000），合計省 ₩51,000。</span></li>
+  </ul>
+</div>
+
+<!-- 01 早餐 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">早餐：OPS 烘焙坊</span>
+    <span class="section-time">08:00–09:00</span>
+  </div>
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">🥐</div><div class="landmark-badge">OPS<br>BAKERY</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">OPS 烘焙坊 <span class="ko">OPS 베이커리</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">地點</span>海雲台（步行或短程計程車）</div>
+        <div class="landmark-row"><span class="lm-key">時間</span>08:00 開門，早到最好</div>
+        <div class="landmark-row"><span class="lm-key">推薦</span>招牌生乳包、可頌、三明治；2人點 2–3 樣輕食即可</div>
+        <div class="landmark-row"><span class="lm-key">注意</span>食量小，今天還有烤扇貝大餐，早餐吃輕一點</div>
+      </div>
+    </div>
+  </div>
+  <div class="alert tip"><span class="alert-icon">💡</span>早餐後帶著飽足感出發，今天路程遠（機張），要早點去才能避開人潮。</div>
+</div>
+
+<!-- 02 前往 Skyline Luge -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">前往東釜山 Skyline Luge</span>
+    <span class="section-time">09:00 出發，09:30 抵達</span>
+  </div>
+  <div class="info-card orange">
+    <div class="info-row"><span class="info-label">地點</span><span class="info-val">東釜山 Osiria 觀光園區，靠近釜山樂天世界</span></div>
+    <div class="info-row"><span class="info-label">交通</span><span class="info-val">海雲台飯店 → Skyline Luge，計程車約 <strong>30–40 分鐘、₩20,000–25,000</strong>。是全天唯一一段較遠的計程車程，必搭。</span></div>
+    <div class="info-row"><span class="info-label">韓文地址</span><span class="info-val"><span class="ko">부산 기장군 기장읍 기장해안로 205</span>（Naver Map / Uber 皆可輸入）</span></div>
+    <div class="info-row"><span class="info-label">另一選項</span><span class="info-val">從釜山站搭 1001 號公車到「龍宮寺/國立水產科學研究所」站下車步行 5 分鐘，但來回超過 3 小時，不建議。</span></div>
+  </div>
+  <div class="ticket">海雲台飯店 → Skyline Luge ｜ 計程車 <span>≈ ₩23,000</span> ｜ 約 <span>35 分</span></div>
+</div>
+
+<!-- 03 Skyline Luge 體驗 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">Skyline Luge 斜坡滑車（2 次）</span>
+    <span class="section-time">09:30–11:00｜停留約 90 分鐘</span>
+  </div>
+
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">🛷</div><div class="landmark-badge">SKYLINE<br>LUGE</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">Skyline Luge 釜山 <span class="pass-badge purple">Pass 紫色 #1</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">地點</span>東釜山 Osiria 觀光園區（釜山樂天世界旁）</div>
+        <div class="landmark-row"><span class="lm-key">門票</span>現場成人 2 次 ₩28,000；Pass 免費換 2 次（價值 ₩28,000）</div>
+        <div class="landmark-row"><span class="lm-key">預約</span>無需預約，現場到售票窗口出示 Pass 直接換票</div>
+        <div class="landmark-row"><span class="lm-key">每次</span>搭空中纜椅上山 + 斜坡滑車下來，約 15–20 分鐘</div>
+        <div class="landmark-row"><span class="lm-key">賽道</span>4 條路線（紅/藍/黃/橘），依當日開放；2 人可互相追逐</div>
+        <div class="landmark-row"><span class="lm-key">禁止</span>孕婦、高血壓、心臟病、椎間盤突出者不可搭乘；85cm 以下不可搭</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-dot dot-orange">①</div>
+      <div class="step-title">到售票窗口出示 Pass 換票</div>
+      <div class="step-body"><p>說「釜山通行證（Visit Busan Pass），2 次斜坡滑車（Luge 2 times）」即可換到 QR code 票券。</p><p>換票後先選好頭盔尺寸（可自備拋棄式浴帽墊著戴，更衛生）。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-orange">②</div>
+      <div class="step-title">搭空中纜椅（Skyride）上山</div>
+      <div class="step-body"><p>開放式四人座吊椅，慢速上山，可看到遠方釜山樂天世界城堡。上山時拍照順手。</p><p>第一次工作人員會給你安全說明，認真聽！主要就是：手柄往後推加速、往前拉煞車，下坡時保持距離。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-orange">③</div>
+      <div class="step-title">第一次滑行：走新手路線</div>
+      <div class="step-body"><p>在山頂上坐上滑車，跟著指示出發。兩人可以一前一後互相追逐超車，有競速感。滑行過程<strong>禁止拿出手機拍攝</strong>，定點攝影機會自動拍，結束後可在照片區查看並購買。</p><p>一圈約 15–20 分鐘，含等待纜椅。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-orange">④</div>
+      <div class="step-title">第二次滑行：挑刺激路線</div>
+      <div class="step-body"><p>再搭纜椅上山，第二次選更刺激的路線（如紅色路線）。這次不用重聽教學，直接出發，可以更放開飆速！</p><p>若覺得 2 次不夠過癮，可現場加購 1 次 ₩12,000（約 NT$265），以 Pass 節省了主費用後，加購非常划算。</p></div>
+    </div>
+  </div>
+
+  <div class="alert warn"><span class="alert-icon">⚠</span>手柄要握穩，煞車要提前。彎道多，第一次一定要慢慢來感受，等第二次再飆速。「手很酸」是普遍心得，請有心理準備。</div>
+  <div class="alert tip"><span class="alert-icon">💡</span>結束後安全帽先別急著還！走到照片挑選區，感應手環或票券就會跳出你滑行中的定格照，覺得好的話可以購買留念（₩10,000–15,000）。</div>
+
+  <div class="photo-ref">
+    <div class="photo-ref-icon">📸</div>
+    <div class="photo-ref-body">
+      <div class="photo-ref-label">空中纜椅視角・滑車俯衝・Pass 換票流程</div>
+      <div class="photo-ref-desc">纜椅上看樂天世界全景、換票流程、賽道俯瞰、定點攝影照選購</div>
+      <div class="photo-ref-links">
+        <a class="photo-link" href="https://debbiechien.com/busan-skyline-luge/" target="_blank">→ Debbie｜Pass換票+搭乘全流程</a>
+        <a class="photo-link plum" href="https://kimiyo.tw/busan-skyline-luge/" target="_blank">→ 喵爸｜2km賽道心得+照片</a>
+        <a class="photo-link gold" href="https://bishdream.com/skyline-luge-busan/" target="_blank">→ BISH｜超值評價+纜椅俯瞰照</a>
+        <a class="photo-link blue" href="https://tsnio.com/busan-skyline-luge/" target="_blank">→ 蔡小妞｜2次體驗影片紀錄</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 04 前往尾浦站 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">Skyline Luge → 尾浦站（天空膠囊列車起點）</span>
+    <span class="section-time">11:00–11:25</span>
+  </div>
+  <div class="info-card blue">
+    <div class="info-row"><span class="info-label">交通</span><span class="info-val">Skyline Luge 出口搭計程車，目的地：<strong>海雲台藍線公園 尾浦站</strong> <span class="ko">해운대블루라인파크 미포역</span></span></div>
+    <div class="info-row"><span class="info-label">費用</span><span class="info-val">約 <strong>₩15,000–20,000、20–25 分鐘</strong>。沿途公車站就在入口前，但計程車省時。</span></div>
+    <div class="info-row"><span class="info-label">目的</span><span class="info-val">在 11:30 的預約時段前 10 分鐘抵達尾浦站，上二樓搭乘天空膠囊列車。</span></div>
+  </div>
+  <div class="ticket">Skyline Luge 出口 → 尾浦站 ｜ 計程車 <span>≈ ₩17,000</span> ｜ 約 <span>22 分</span></div>
+  <div class="alert orange"><span class="alert-icon">⏰</span>膠囊列車是預約時段制（如 11:30–12:00），<strong>必須在時段內抵達</strong>，建議提早 10 分鐘到站排隊。時段過了就無法搭乘！</div>
+</div>
+
+<!-- 05 天空膠囊列車 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">天空膠囊列車（尾浦 → 青沙浦）</span>
+    <span class="section-time">11:30–12:20</span>
+  </div>
+
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">🚠</div><div class="landmark-badge">SKY<br>CAPSULE</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">天空膠囊列車 <span class="pass-badge paid">另行付費</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">路線</span>尾浦站 → 青沙浦站，靠海外側，單程約 30 分鐘</div>
+        <div class="landmark-row"><span class="lm-key">票價</span>2人座單程 <strong>₩40,000</strong>（2024/12 漲價後），即 2 人共用一張票</div>
+        <div class="landmark-row"><span class="lm-key">預約</span>必須提前線上預約！官網英文版或 Trip.com。每週二開放往後 4 週票。</span></div>
+        <div class="landmark-row"><span class="lm-key">注意</span>Pass 只含海岸列車（免費），天空膠囊列車不含在 Pass 內，需另外付費</div>
+        <div class="landmark-row"><span class="lm-key">換票</span>尾浦站 1F 自動售票機或人工窗台，掃描預訂 QR code 即可換票</div>
+        <div class="landmark-row"><span class="lm-key">入口</span>膠囊列車在 2F，海岸列車在 1F，入口不同勿走錯</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <div class="highlight-title">🌊 乘車體驗重點</div>
+    <div class="highlight-body">
+      尾浦出發的去程走<strong>靠海外側</strong>，海景視野完全無遮蔽，是拍照的黃金方向。車廂最多坐 4 人，2 人獨享一個車廂是最浪漫的！時速僅 5km/h，超緩慢，讓你有充裕時間邊搖晃邊拍照。往後看可以看到廣安大橋橫跨海面，往前則是湛藍無邊海景。
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-dot dot-blue">①</div>
+      <div class="step-title">到 1F 自動售票機換票</div>
+      <div class="step-body"><p>掃描預訂 QR code 換取實體票券。機台有中文介面，不難操作。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-blue">②</div>
+      <div class="step-title">上 2F 排隊候車</div>
+      <div class="step-body"><p>工作人員會依序安排上車，通常 2 人就獨享一台車廂。</p><p>上車後可開窗通風（夏天建議開），也可以<strong>連接藍牙喇叭</strong>播自己的背景音樂，超加分。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-blue">③</div>
+      <div class="step-title">青沙浦站下車 → 拍灌籃高手平交道</div>
+      <div class="step-body"><p>到站後先別急著去吃飯，出站後往鐵軌平交道方向走，就是網紅「釜山版灌籃高手平交道」，拍攝角度：站在平交道正中，遠方就是湛藍海天一線。</p><p><strong>注意安全！</strong>雖然列車速度很慢，但仍要注意有無車輛通過。</p></div>
+    </div>
+  </div>
+
+  <div class="alert note"><span class="alert-icon">ℹ</span>膠囊列車官網：<strong>blueline.haundaebluelinepark.com</strong>（選 English 版，選 Mipo 出發，Sky Capsule，2人座單程）。Trip.com 購票也可以，且免到官網兌票，直接掃碼入場。</div>
+  <div class="alert warn"><span class="alert-icon">⚠</span>天空膠囊列車有不定期定期檢查停駛（通常每年 11 月），出發前請至官網確認當天有正常運營。</div>
+
+  <div class="photo-ref">
+    <div class="photo-ref-icon">📸</div>
+    <div class="photo-ref-body">
+      <div class="photo-ref-label">膠囊列車車廂內部・海景・灌籃高手平交道</div>
+      <div class="photo-ref-desc">車廂內拍海景最佳角度、尾浦站外觀換票機台、灌籃高手平交道拍攝位置</div>
+      <div class="photo-ref-links">
+        <a class="photo-link" href="https://www.bigfang.tw/blog/post/bluelinepark-busan" target="_blank">→ 樂活大方｜官網預約圖解教學</a>
+        <a class="photo-link plum" href="https://debbiechien.com/bluelinepark-sky-capsule-beach-train/" target="_blank">→ Debbie｜尾浦出發全攻略</a>
+        <a class="photo-link gold" href="https://tsnio.com/haeundae-blueline-park/" target="_blank">→ 蔡小妞｜3次搭乘心得比較</a>
+        <a class="photo-link blue" href="https://lizzzstyle.tw/sky-capsule/" target="_blank">→ Liz｜Trip.com訂票不兌換教學</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 06 青沙浦 中場 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-title">青沙浦中場：三種方案依當下狀態選擇</span>
+    <span class="section-time">12:30–14:00</span>
+  </div>
+
+  <div class="alert orange" style="margin-bottom:14px;">
+    <span class="alert-icon">💬</span>
+    玩完 Luge + 膠囊列車，到達青沙浦時約 12:30。<strong>依當下肚子感覺選擇方案</strong>，不用強迫自己吃正餐。Spa Land 內也有拉麵和點心，所以青沙浦這裡輕食或跳過都完全沒問題。
+  </div>
+
+  <!-- 方案 A -->
+  <div style="border:2px solid var(--teal);border-radius:12px;overflow:hidden;margin-bottom:12px;">
+    <div style="background:var(--teal);color:white;padding:8px 15px;display:flex;align-items:center;gap:10px;">
+      <span style="font-family:'DM Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.08em;">方案 A</span>
+      <span style="font-size:13.5px;font-weight:600;">炭火烤扇貝正餐</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;margin-left:auto;opacity:0.8;">肚子餓・想吃海鮮</span>
+    </div>
+    <div style="padding:12px 15px;background:white;">
+      <table class="compare" style="margin-bottom:10px;">
+        <tr><th>店家</th><th>特色</th><th>2人建議點法</th></tr>
+        <tr class="rec">
+          <td><strong>秀敏家</strong> <span class="ko">수민이네</span><br><span class="tag-rec">推薦</span></td>
+          <td>炭火烤法鮮甜、Local 風格、菜單有中文，11:30 開門，平日較少等待</td>
+          <td>烤蛤蠣什錦中份 ₩40,000–50,000<br>+ 拉麵或鮑魚粥共享一碗 ₩12,000–15,000</td>
+        </tr>
+        <tr>
+          <td><strong>道熙家</strong> <span class="ko">도희네</span></td>
+          <td>知名度高、網紅打卡過、海景落地窗、全程代烤服務</td>
+          <td>綜合烤貝小份 ₩40,000<br>+ 鮑魚泡麵一碗 ₩15,000</td>
+        </tr>
+      </table>
+      <div class="alert warn" style="margin-top:0;">
+        <span class="alert-icon">⚠</span>
+        <span><strong>絕對不要點套餐！</strong>最便宜的套餐也要 ₩150,000（台幣3,600）起。直接點單品，2人吃飽約 ₩50,000–65,000 就夠。</span>
+      </div>
+      <div class="photo-ref" style="margin-top:8px;">
+        <div class="photo-ref-icon">📸</div>
+        <div class="photo-ref-body">
+          <div class="photo-ref-desc" style="margin-bottom:5px;">烤扇貝澎湃擺盤、炭火烤法流程、紅白燈塔</div>
+          <div class="photo-ref-links">
+            <a class="photo-link" href="https://www.bigfang.tw/blog/post/cheongsapo-suminine-busan" target="_blank">→ 秀敏家攻略</a>
+            <a class="photo-link plum" href="https://debbiechien.com/dohee-nae/" target="_blank">→ 道熙家攻略</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 方案 B -->
+  <div style="border:2px solid var(--gold);border-radius:12px;overflow:hidden;margin-bottom:12px;">
+    <div style="background:var(--gold);color:white;padding:8px 15px;display:flex;align-items:center;gap:10px;">
+      <span style="font-family:'DM Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.08em;">方案 B</span>
+      <span style="font-size:13.5px;font-weight:600;">青沙浦海景咖啡廳輕食</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;margin-left:auto;opacity:0.9;">不太餓・想坐著看海補能量</span>
+    </div>
+    <div style="padding:12px 15px;background:white;">
+      <div class="info-row" style="font-size:13px;margin-bottom:8px;"><span class="info-label">選擇</span><span class="info-val">青沙浦站出口步行 2–5 分鐘內就有多家海景咖啡廳，隨意挑一家坐下，點飲料＋一個點心，吹海風慢慢補能量，為下午 Spa Land 蓄力。</span></div>
+
+      <table class="compare">
+        <tr><th>店名</th><th>特色</th><th>推薦點</th></tr>
+        <tr class="rec">
+          <td><strong>Cheongsa Foret</strong><br><span class="ko">청사포레</span> <span class="tag-rec">推薦</span></td>
+          <td>屋頂咖啡廳，可同時拍到紅白燈塔＋膠囊列車＋平交道，出站左轉白色建築即達</td>
+          <td>可頌鬆餅（招牌）＋咖啡，約 ₩18,000–22,000 / 2人</td>
+        </tr>
+        <tr>
+          <td><strong>Broni</strong><br><span class="ko">브로니</span></td>
+          <td>三層樓海景咖啡廳，巴斯克乳酪蛋糕知名，從青沙浦站步行約 5 分鐘</td>
+          <td>巴斯克乳酪蛋糕＋飲料，約 ₩18,000–24,000 / 2人</td>
+        </tr>
+        <tr>
+          <td><strong>Liberta</strong><br><span class="ko">리베르타</span></td>
+          <td>三層樓，有烘焙麵包和甜點可選，環境寬敞，面海窗景帶隔間設計</td>
+          <td>麵包＋飲料（各自選一樣），約 ₩18,000–25,000 / 2人</td>
+        </tr>
+      </table>
+      <div class="alert tip" style="margin-top:8px;">
+        <span class="alert-icon">💡</span>
+        方案 B 省時省錢（預算比方案 A 少 ₩30,000–40,000），還能多拍幾張海景照，適合有出國旅遊不太餓習慣的人。Spa Land 內下午有拉麵自助，肚子餓了再吃剛剛好。
+      </div>
+      <div class="photo-ref" style="margin-top:8px;">
+        <div class="photo-ref-icon">📸</div>
+        <div class="photo-ref-body">
+          <div class="photo-ref-desc" style="margin-bottom:5px;">屋頂海景・可頌鬆餅・燈塔拍攝角度</div>
+          <div class="photo-ref-links">
+            <a class="photo-link gold" href="https://lifebank.tw/chengsaporet/" target="_blank">→ Cheongsa Foret 屋頂攻略</a>
+            <a class="photo-link plum" href="https://lizzzstyle.tw/broni/" target="_blank">→ Broni 乳酪蛋糕</a>
+            <a class="photo-link blue" href="https://www.biteamap.com/blog/post/liberta/" target="_blank">→ Liberta 麵包咖啡</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 方案 C -->
+  <div style="border:2px solid var(--plum);border-radius:12px;overflow:hidden;margin-bottom:12px;">
+    <div style="background:var(--plum);color:white;padding:8px 15px;display:flex;align-items:center;gap:10px;">
+      <span style="font-family:'DM Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.08em;">方案 C</span>
+      <span style="font-size:13.5px;font-weight:600;">直接前往 Spa Land，館內解決</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;margin-left:auto;opacity:0.9;">完全不餓・想早點泡湯</span>
+    </div>
+    <div style="padding:12px 15px;background:white;">
+      <div class="info-row" style="font-size:13px;margin-bottom:8px;"><span class="info-label">流程</span><span class="info-val">拍完平交道直接叫車出發，12:30–13:00 抵達 Spa Land，先入場泡湯，餓了再到館內<strong>自助拉麵區</strong>解決，配料豐富（花枝、起司、年糕…），吃這個也能讓停留延長至 6 小時。</span></div>
+      <div class="info-card plum" style="margin-top:0;">
+        <div class="info-row"><span class="info-label">Spa Land 內吃</span><span class="info-val"><strong>自助拉麵區</strong>（₩10,000/人）：泡麵自選＋配料自助，一碗拉麵搭甜米露（식혜）經典組合，整個 Spa Land 流程會順帶讓你吃到飽。</span></div>
+        <div class="info-row"><span class="info-label">其他館內</span><span class="info-val">點心吧（烤雞蛋、甜米露，₩3,000–6,500）；2F 韓式料理餐廳（拌飯、炸醬麵 ₩12,000 左右）。</span></div>
+        <div class="info-row"><span class="info-label">優點</span><span class="info-val">節省 1 小時在青沙浦、提早進 Spa Land 享受完整 4 小時，也省下方案 A 的 ₩55,000 餐費，加上拉麵 ₩10,000/人 就達到 6 小時低消。</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <div class="highlight-title">🎯 怎麼選？一句話判斷</div>
+    <div class="highlight-body">
+      <strong>「下膠囊列車時肚子餓了」→ 方案 A</strong>（正餐 ₩55,000–65,000，約 1 小時）<br>
+      <strong>「小餓想坐著看海歇腳」→ 方案 B</strong>（輕食 ₩20,000–25,000，約 30–40 分鐘）<br>
+      <strong>「不餓，只想快點泡湯」→ 方案 C</strong>（直達 Spa Land，館內吃 ₩10,000/人）
+    </div>
+  </div>
+</div>
+
+<!-- 07 前往 Spa Land -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-title">青沙浦 → Centum City（Spa Land）</span>
+    <span class="section-time">14:00–14:30</span>
+  </div>
+
+  <div class="info-card blue">
+    <div class="info-row"><span class="info-label">方案 A</span><span class="info-val"><strong>海岸列車（Pass 免費）</strong>：在青沙浦站搭海岸列車，可坐到 Centum City 附近換地鐵，或先到尾浦再轉乘。慢一點但省錢，適合沒時間壓力時。<br><span style="font-size:11px;color:var(--ink-muted);">路線：青沙浦→尾浦（海岸列車，Pass免費）→ Centum City（地鐵2號線，₩1,400）</span></span></div>
+    <div class="info-row"><span class="info-label">方案 B</span><span class="info-val"><strong>計程車直達（推薦）</strong>：青沙浦 → 新世界百貨 Centum City，約 <strong>₩9,000–12,000、15 分鐘</strong>。午餐後直接出發，效率最高。</span></div>
+  </div>
+  <div class="ticket">青沙浦 → 新世界百貨 Centum City ｜ 計程車 <span>≈ ₩10,000</span> ｜ 約 <span>15 分</span></div>
+</div>
+
+<!-- 08 Spa Land -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <span class="section-title">Spa Land 新世界汗蒸幕</span>
+    <span class="section-time">14:30–18:30｜最長4小時</span>
+  </div>
+
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">♨️</div><div class="landmark-badge">SPA<br>LAND</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">新世界 Spa Land <span class="pass-badge purple">Pass 紫色 #2</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">地址</span>新世界百貨 Centum City 店 1F（Dior 旁通道）</div>
+        <div class="landmark-row"><span class="lm-key">交通</span>地鐵 2 號線 Centum City 站 12 號出口，步行 1 分鐘</div>
+        <div class="landmark-row"><span class="lm-key">時間</span>平日淡季 09:00–22:00（最後入場 21:00）</div>
+        <div class="landmark-row"><span class="lm-key">門票</span>成人 ₩23,000（平日）；持 Pass 免費入場 4 小時</div>
+        <div class="landmark-row"><span class="lm-key">Pass</span>在入口出示 Visit Busan Pass，免費換票</div>
+        <div class="landmark-row"><span class="lm-key">時限</span>入場含 4 小時；場內消費 ₩10,000 以上可延長至 6 小時</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-box">
+    <div class="flow-title">入場 → 體驗流程</div>
+    <div class="flow-steps">
+      <div class="flow-step">📋 出示 Pass 換票</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">👟 脫鞋放鞋櫃</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">💳 領取晶片手環</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🛁 男女分開更衣淋浴</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">👕 換汗蒸服</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🧖 汗蒸幕 × 溫泉泡湯</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">😴 公共休息區</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🍜 泡麵吃到飽區</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🚿 沖澡 → 結帳離場</div>
+    </div>
+  </div>
+
+  <div class="info-card plum">
+    <div class="info-row"><span class="info-label">設施亮點</span><span class="info-val">18 種溫泉池 + 13 種主題汗蒸幕（黃土房、鹽房、玉石房、芬蘭桑拿、羅馬式…），男女分開泡湯區，男女合用公共汗蒸幕大廳。</span></div>
+    <div class="info-row"><span class="info-label">必體驗</span><span class="info-val"><strong>配料吃到飽拉麵區</strong>：點基本拉麵（₩10,000），花枝、起司、年糕、豆芽等配料自助加！幾乎人人必吃，靠這個可延長停留至 6 小時。</span></div>
+    <div class="info-row"><span class="info-label">帶去的</span><span class="info-val">一套備用內衣褲（泡湯後換上），簡單梳洗用品（現場有提供基本的），浴帽（自備，戴安全帽時有用到）。</span></div>
+    <div class="info-row"><span class="info-label">注意</span><span class="info-val">全館禁帶外食、禁菸、溫泉區更衣室<strong>嚴禁錄影拍照</strong>（手機要收起來！）；公共汗蒸幕區可以拍照。</span></div>
+  </div>
+
+  <div class="alert tip"><span class="alert-icon">💡</span>建議體驗順序：①先泡湯（男女分開大浴場） → ②換汗蒸服進公共區 → ③輪流進各種汗蒸房（從低溫到高溫） → ④在休息區發呆睡覺 → ⑤吃泡麵 → ⑥再泡足湯 → ⑦最後沖澡梳洗準備晚餐。</div>
+  <div class="alert warn"><span class="alert-icon">⚠</span>消費全靠手環紀錄，離場前務必到「出場結帳台」刷手環結清，再插回鞋櫃取鞋。忘記結帳的話出不去！</div>
+
+  <div class="photo-ref">
+    <div class="photo-ref-icon">📸</div>
+    <div class="photo-ref-body">
+      <div class="photo-ref-label">Spa Land 內部・汗蒸房・泡麵區・流程圖解</div>
+      <div class="photo-ref-desc">公共大廳汗蒸幕主題區照片、配料拉麵實拍、入場換票流程、更衣室結構說明</div>
+      <div class="photo-ref-links">
+        <a class="photo-link" href="https://debbiechien.com/spa-land-centum-city-busan/" target="_blank">→ Debbie｜超詳細流程+必玩設施</a>
+        <a class="photo-link plum" href="https://mamahuhu.blog/overseas/spa-land-centum-city/" target="_blank">→ MAMAHUHU｜更衣室圖解+行李寄放</a>
+        <a class="photo-link gold" href="https://kimiyo.tw/spa-land/" target="_blank">→ 喵爸｜五星設備完整評測</a>
+        <a class="photo-link blue" href="https://kiara.tw/spa-land/" target="_blank">→ Kiara｜配料泡麵區+體驗心得</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 09 晚餐 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <span class="section-title">晚餐：廣安里烤肉</span>
+    <span class="section-time">18:30 起</span>
+  </div>
+  <div class="info-card red">
+    <div class="info-row"><span class="info-label">交通</span><span class="info-val">Centum City 站搭地鐵 2 號線，往廣安里方向（Marine City 或廣安站），約 10–15 分鐘。</span></div>
+    <div class="info-row"><span class="info-label">選項 A</span><span class="info-val"><strong>李河貞醬蟹</strong> <span class="ko">이하정간장게장</span>（廣安里附近）｜生醃醬蟹，韓國米飯小偷美食，夠吃 2 人份 ₩60,000–80,000。先查 Naver 評分確認還在。</span></div>
+    <div class="info-row"><span class="info-label">選項 B</span><span class="info-val"><strong>廣安里燒烤街</strong>｜廣安里海邊附近有很多烤肉店，烤完散步到海邊看廣安大橋燈光，完美收尾。</span></div>
+    <div class="info-row"><span class="info-label">選項 C</span><span class="info-val">如果 Spa Land 泡到飽懶得走遠，<strong>新世界百貨內</strong>本身就有不少餐廳，直接在百貨內解決也很方便。</span></div>
+  </div>
+  <div class="alert note"><span class="alert-icon">ℹ</span>Spa Land 泡完會整個人放空懶洋洋，晚餐選近一點、不用等太久的地方。廣安里搭地鐵 2 站就到，或Centum City 站附近直接找都行。</div>
+</div>
+
+<!-- 10 費用試算 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <span class="section-title">Day 4 費用試算（2人）</span>
+  </div>
+  <table class="cost-table">
+    <tr><th>項目</th><th class="cost-r">費用</th><th>備注</th></tr>
+    <tr><td>OPS 早餐（2人）</td><td class="cost-r">₩20,000</td><td>輕食各一份</td></tr>
+    <tr><td>計程車 海雲台→Skyline Luge</td><td class="cost-r">₩23,000</td><td>約 35 分</td></tr>
+    <tr><td>Skyline Luge（2人×2次）</td><td class="cost-r">₩0</td><td>Pass 免費（省 ₩56,000）</td></tr>
+    <tr><td>計程車 Skyline Luge→尾浦站</td><td class="cost-r">₩17,000</td><td>約 22 分</td></tr>
+    <tr><td>天空膠囊列車（2人座單程）</td><td class="cost-r">₩40,000</td><td>非 Pass 項目，需另行付費</td></tr>
+    <tr><td>計程車 青沙浦→Centum City</td><td class="cost-r">₩10,000</td><td>約 15 分</td></tr>
+    <tr><td>青沙浦中場（方案A 烤扇貝）</td><td class="cost-r">₩55,000</td><td>烤貝中份+拉麵 ← 肚子餓選這</td></tr>
+    <tr style="background:var(--gold-pale);"><td style="color:var(--gold);font-size:11px;">方案B 咖啡廳輕食（替代）</td><td class="cost-r" style="color:var(--gold);">₩22,000</td><td style="color:var(--gold);">點心+飲料（省 ₩33,000）</td></tr>
+    <tr style="background:var(--plum-pale);"><td style="color:var(--plum);font-size:11px;">方案C Spa Land館內（替代）</td><td class="cost-r" style="color:var(--plum);">₩20,000</td><td style="color:var(--plum);">館內拉麵×2（省 ₩35,000）</td></tr>
+    <tr><td>Spa Land（2人）</td><td class="cost-r">₩0</td><td>Pass 免費（省 ₩46,000）</td></tr>
+    <tr><td>Spa Land 泡麵（各一碗）</td><td class="cost-r">₩20,000</td><td>配料吃到飽，場內消費</td></tr>
+    <tr><td>地鐵 Centum City → 廣安里</td><td class="cost-r">₩2,800</td><td>2人 ×₩1,400</td></tr>
+    <tr><td>晚餐（2人）</td><td class="cost-r">₩70,000</td><td>烤肉或醬蟹</td></tr>
+    <tr class="total"><td>合計（以方案A為基準）</td><td class="cost-r">≈ ₩257,800</td><td>方案B省₩33,000；方案C省₩35,000</td></tr>
+  </table>
+  <div class="alert tip" style="margin-top:10px;"><span class="alert-icon">💡</span>Day 4 的 Pass 使用效益最高：Luge ₩56,000 + Spa Land ₩46,000，合計省 <strong>₩102,000（約 NT$2,260）</strong>，今天一天就回本大半張 BIG5 Pass！</div>
+</div>
+
+<!-- 11 checklist -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <span class="section-title">Day 4 行前 Checklist</span>
+  </div>
+  <ul class="checklist">
+    <li><span class="check-icon">☐</span><span><strong>出發前（訂票）</strong>：天空膠囊列車 Trip.com 或官網訂票，選尾浦出發，時段 11:30–12:00，2人座單程 ₩40,000。</span></li>
+    <li><span class="check-icon">☐</span><span><strong>Pass 確認</strong>：Day 4 要用紫色景點 ×2（Luge + Spa Land），確認還有足夠使用次數。</span></li>
+    <li><span class="check-icon">☐</span><span><strong>自備浴帽</strong>：戴頭盔時隔絕公用安全帽，Spa Land 也有用（非必要但貼心）。</span></li>
+    <li><span class="check-icon">☐</span><span><strong>帶備用內衣褲</strong>：Spa Land 泡完後換上的，讓身體更舒爽。</span></li>
+    <li><span class="check-icon">☐</span><span><strong>Skyline Luge 地址</strong>：提前存入叫車 App，韓文：<span class="ko">부산 기장군 기장읍 기장해안로 205</span></span></li>
+    <li><span class="check-icon">☐</span><span><strong>膠囊列車時段</strong>：<strong>必須在預約時段內抵達！</strong>計程車提前10分鐘叫車確保準時。</span></li>
+    <li><span class="check-icon">☐</span><span><strong>青沙浦平交道</strong>：從膠囊列車青沙浦站出來，先拍灌籃高手平交道（出站後左轉），再去吃午餐。</span></li>
+    <li><span class="check-icon">☐</span><span><strong>Spa Land 手環</strong>：入場領到手環後好好保管，場內所有消費都靠它刷。離場前到出場台結帳。</span></li>
+    <li><span class="check-icon">☐</span><span><strong>晚餐方向</strong>：泡完 Spa Land 後懶懶的，就在 Centum City 附近吃，或搭 2 站地鐵去廣安里。</span></li>
+  </ul>
+</div>
+
+<div style="text-align:center; padding-top:24px; border-top:1px solid var(--paper-border); font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-muted); letter-spacing:0.08em;">
+  DAY 4 OF 5 · BUSAN · EAST BUSAN FULL DAY · LUGE × CAPSULE × SPA
+</div>
+
+</div>
+</body>
+</html>

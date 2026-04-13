@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 3 計畫書｜影島→西區串聯→海雲台</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=DM+Mono:wght@400;500&display=swap');
+:root{--ink:#1A1917;--ink-soft:#55524A;--ink-muted:#96948E;--paper:#F9F7F3;--paper-warm:#F1EDE5;--paper-border:#E3DDD4;--teal:#1A6A5A;--teal-pale:#DFF0EB;--plum:#6A2A5A;--plum-pale:#F0DFF0;--gold:#B07A10;--gold-pale:#FAF0D0;--blue:#1A5A8A;--blue-pale:#DCE9F5;--red:#C04A28;--red-pale:#F5E5DF;--orange:#C05A10;--orange-pale:#FAE8D8;--green:#1A6A3A;--green-pale:#DFF0E5;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif TC',serif;background:var(--paper);color:var(--ink);line-height:1.7;padding:32px 20px 64px;}
+.page{max-width:660px;margin:0 auto;}
+.cover{text-align:center;padding:40px 0 36px;border-bottom:2px solid var(--ink);margin-bottom:36px;}
+.cover-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--ink-muted);text-transform:uppercase;margin-bottom:10px;}
+.cover-title{font-size:30px;font-weight:900;line-height:1.2;margin-bottom:8px;}
+.cover-title em{font-style:normal;color:var(--plum);}
+.cover-sub{font-size:12.5px;color:var(--ink-soft);line-height:1.6;max-width:500px;margin:0 auto;}
+.cover-tags{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:16px;}
+.ctag{font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border:1px solid var(--paper-border);border-radius:20px;color:var(--ink-soft);}
+.route-bar{display:flex;align-items:center;overflow-x:auto;background:var(--ink);border-radius:8px;padding:12px 16px;margin-bottom:32px;scrollbar-width:none;}
+.route-bar::-webkit-scrollbar{display:none;}
+.rb-stop{text-align:center;flex-shrink:0;}
+.rb-dot{width:8px;height:8px;border-radius:50%;margin:0 auto 4px;}
+.rb-label{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.7);white-space:nowrap;}
+.rb-time{font-size:9px;color:rgba(255,255,255,.45);}
+.rb-arrow{color:rgba(255,255,255,.25);font-size:12px;padding:0 8px;flex-shrink:0;padding-bottom:14px;}
+.section{margin-bottom:36px;}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:7px;border-bottom:1px solid var(--paper-border);}
+.section-num{font-family:'DM Mono',monospace;font-size:11px;background:var(--ink);color:var(--paper);padding:2px 8px;border-radius:3px;}
+.section-title{font-size:15px;font-weight:600;}
+.section-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-muted);margin-left:auto;}
+.pass-badge{display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:9px;font-weight:600;background:var(--ink);color:var(--paper);padding:2px 8px;border-radius:3px;letter-spacing:.06em;vertical-align:middle;margin-left:5px;}
+.pass-badge.blue{background:#1A5A8A;}
+.info-card{border:1px solid var(--paper-border);border-radius:10px;padding:13px 15px;margin-bottom:10px;background:white;}
+.info-card.teal{border-left:3px solid var(--teal);}
+.info-card.plum{border-left:3px solid var(--plum);}
+.info-card.gold{border-left:3px solid var(--gold);}
+.info-card.blue{border-left:3px solid var(--blue);}
+.info-card.red{border-left:3px solid var(--red);}
+.info-card.orange{border-left:3px solid var(--orange);}
+.info-card.green{border-left:3px solid var(--green);}
+.info-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:5px;font-size:13px;}
+.info-row:last-child{margin-bottom:0;}
+.info-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-muted);min-width:52px;padding-top:2px;flex-shrink:0;}
+.info-val{color:var(--ink);line-height:1.6;}
+.info-val strong{font-weight:600;}
+.ko{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-soft);background:var(--paper-warm);padding:1px 5px;border-radius:3px;margin-left:3px;}
+.landmark{display:grid;grid-template-columns:80px 1fr;border:1px solid var(--paper-border);border-radius:10px;overflow:hidden;background:white;margin-bottom:10px;}
+.landmark-side{background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 8px;gap:5px;}
+.landmark-icon{font-size:24px;}
+.landmark-badge{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6);text-align:center;}
+.landmark-body{padding:12px 14px;}
+.landmark-name{font-size:14px;font-weight:600;margin-bottom:5px;}
+.landmark-rows{font-size:12px;color:var(--ink-soft);}
+.landmark-row{display:flex;gap:8px;margin-bottom:3px;}
+.landmark-row:last-child{margin-bottom:0;}
+.lm-key{font-family:'DM Mono',monospace;font-size:9px;color:var(--ink-muted);min-width:40px;padding-top:2px;flex-shrink:0;}
+.steps{position:relative;padding-left:42px;}
+.steps::before{content:'';position:absolute;left:12px;top:14px;bottom:14px;width:1.5px;background:var(--paper-border);}
+.step{position:relative;margin-bottom:20px;}
+.step:last-child{margin-bottom:0;}
+.step-dot{position:absolute;left:-36px;top:2px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:white;border:2px solid var(--paper);}
+.dot-plum{background:var(--plum);}.dot-teal{background:var(--teal);}.dot-gold{background:var(--gold);}.dot-blue{background:var(--blue);}.dot-red{background:var(--red);}.dot-green{background:var(--green);}
+.step-title{font-size:13.5px;font-weight:600;margin-bottom:3px;line-height:1.4;}
+.step-body{font-size:12.5px;color:var(--ink-soft);line-height:1.65;}
+.step-body p{margin-bottom:3px;}.step-body p:last-child{margin-bottom:0;}.step-body strong{color:var(--ink);}
+.ticket{background:var(--paper-warm);border:1px dashed var(--paper-border);border-radius:8px;padding:7px 11px;margin-top:7px;font-family:'DM Mono',monospace;font-size:10.5px;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:10px;}
+.ticket span{color:var(--ink);font-weight:500;}
+.alert{border-radius:8px;padding:8px 12px;font-size:12px;line-height:1.6;margin-top:7px;display:flex;gap:7px;align-items:flex-start;}
+.alert-icon{flex-shrink:0;font-size:13px;}
+.alert.warn{background:var(--gold-pale);color:#6B4E10;}
+.alert.tip{background:var(--teal-pale);color:#0D4A34;}
+.alert.note{background:var(--blue-pale);color:#1A3A5A;}
+.alert.red{background:var(--red-pale);color:#6B2A0A;}
+.alert.plum{background:var(--plum-pale);color:#4A1A4A;}
+.highlight{background:var(--plum-pale);border:1px solid #C0A0D0;border-radius:10px;padding:11px 15px;margin-bottom:11px;}
+.highlight-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--plum);font-weight:600;margin-bottom:5px;}
+.highlight-body{font-size:13px;color:var(--ink-soft);line-height:1.65;}
+.highlight-teal{background:var(--teal-pale);border:1px solid #A8D8C8;border-radius:10px;padding:11px 15px;margin-bottom:11px;}
+.highlight-teal .highlight-title{color:var(--teal);}
+.photo-ref{background:#EEF3EE;border:1px solid #BDDACC;border-radius:8px;padding:9px 13px;margin:8px 0;display:flex;gap:9px;align-items:flex-start;}
+.photo-ref-icon{font-size:17px;flex-shrink:0;}
+.photo-ref-body{flex:1;}
+.photo-ref-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--ink-muted);text-transform:uppercase;margin-bottom:3px;}
+.photo-ref-desc{font-size:12px;color:var(--ink-soft);line-height:1.5;margin-bottom:5px;}
+.photo-ref-links{display:flex;flex-wrap:wrap;gap:5px;}
+.photo-link{display:inline-block;font-size:10.5px;font-weight:500;color:var(--teal);background:var(--teal-pale);padding:2px 9px;border-radius:20px;text-decoration:none;}
+.photo-link.plum{color:var(--plum);background:var(--plum-pale);}
+.photo-link.gold{color:var(--gold);background:var(--gold-pale);}
+.photo-link.blue{color:var(--blue);background:var(--blue-pale);}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.menu-card{background:white;border:1px solid var(--paper-border);border-radius:8px;padding:9px 11px;}
+.menu-name{font-size:12.5px;font-weight:600;margin-bottom:2px;}
+.menu-ko{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-muted);margin-bottom:3px;}
+.menu-note{font-size:11px;color:var(--ink-soft);line-height:1.5;}
+.menu-price{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);font-weight:500;margin-top:3px;}
+.cost-table{width:100%;border-collapse:collapse;font-size:13px;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--paper-border);}
+.cost-table th{background:var(--ink);color:var(--paper);padding:7px 11px;text-align:left;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.06em;}
+.cost-table td{padding:7px 11px;border-bottom:1px solid var(--paper-border);}
+.cost-table tr:last-child td{border-bottom:none;}
+.cost-table tr.total td{font-weight:600;background:var(--paper-warm);}
+.cost-r{text-align:right;font-family:'DM Mono',monospace;}
+.checklist{list-style:none;}
+.checklist li{display:flex;gap:9px;align-items:flex-start;padding:6px 0;font-size:12.5px;border-bottom:1px dotted var(--paper-border);line-height:1.55;}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{flex-shrink:0;font-size:14px;}
+.appendix{background:var(--paper-warm);border:1px solid var(--paper-border);border-radius:10px;padding:14px 15px;margin-top:14px;}
+.appendix-title{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;}
+.appendix-body{font-size:12.5px;color:var(--ink-soft);line-height:1.75;}
+.appendix-body strong{color:var(--ink);}
+.prereq{background:var(--plum-pale);border:1.5px solid var(--plum);border-radius:10px;padding:13px 15px;margin-bottom:20px;}
+.prereq-title{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--plum);margin-bottom:7px;}
+.prereq-list{font-size:12.5px;color:var(--ink-soft);}
+.prereq-list li{margin-bottom:4px;display:flex;gap:7px;}
+.prereq-list li:last-child{margin-bottom:0;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="cover">
+  <div class="cover-eyebrow">釜山自由行 5天4夜 · 行程計畫書</div>
+  <div class="cover-title">Day <em>3</em><br>影島文化 → 西區串聯 → 入住海雲台</div>
+  <div class="cover-sub">退房＋Egg Drop早餐 → ARTE MUSEUM → 甘川洞 → 松島纜車 → 南浦洞採買 → 樂天超市 → 海雲台入住 → 海雲台市場晚餐</div>
+  <div class="cover-tags">
+    <span class="ctag">Pass 藍色 ×2（ARTE + 松島纜車）</span>
+    <span class="ctag">今日換住海雲台</span>
+    <span class="ctag">ZIM CARRY 行李宅配</span>
+    <span class="ctag">最長移動日</span>
+  </div>
+</div>
+
+<div class="route-bar">
+  <div class="rb-stop"><div class="rb-dot" style="background:#C8A840"></div><div class="rb-label">Egg Drop</div><div class="rb-time">08:30</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#6A2A5A"></div><div class="rb-label">ARTE</div><div class="rb-time">10:00</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#1A6A3A"></div><div class="rb-label">甘川洞</div><div class="rb-time">12:20</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#1A5A8A"></div><div class="rb-label">松島纜車</div><div class="rb-time">13:20</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#C04A28"></div><div class="rb-label">南浦洞</div><div class="rb-time">14:30</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#B07A10"></div><div class="rb-label">樂天超市</div><div class="rb-time">16:00</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#1A6A5A"></div><div class="rb-label">海雲台</div><div class="rb-time">18:00</div></div>
+  <span class="rb-arrow">→</span>
+  <div class="rb-stop"><div class="rb-dot" style="background:#C05A10"></div><div class="rb-label">市場晚餐</div><div class="rb-time">19:30</div></div>
+</div>
+
+<div class="prereq">
+  <div class="prereq-title">⚡ 前一晚必做（ZIM CARRY 行李宅配）</div>
+  <ul class="prereq-list">
+    <li><span>①</span><span>KKday 預訂 <strong>ZIM CARRY 行李宅配</strong>：西面飯店取件 → 金海機場 3F 送達。今天行程橫跨全城 5 個點，行李宅配是唯一讓你全程輕裝的方式。</span></li>
+    <li><span>②</span><span>費用：每件 ₩15,000（24吋以上 +₩5,000）。退房時把行李交給飯店 Check-in 台，確認 ZIM CARRY 上午取件時間。</span></li>
+    <li><span>③</span><span><strong>隨身小包備好</strong>：Pass 卡、換洗衣物一套、充電器、重要證件，不要把當晚要用的東西全部放進托運行李。</span></li>
+  </ul>
+</div>
+
+<!-- 01 退房 + Egg Drop -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">退房 + 早餐：Egg Drop 西面店</span>
+    <span class="section-time">08:00–09:20</span>
+  </div>
+
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">🥚</div><div class="landmark-badge">EGG<br>DROP</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">Egg Drop 西面樂天後門店 <span class="ko">에그드랍 서면롯데후문점</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">韓文地址</span><span class="ko">부산광역시 부산진구 부전로66번길 12</span></div>
+        <div class="landmark-row"><span class="lm-key">交通</span>西面站 7 號出口步行約 5–6 分鐘，樂天百貨後門巷子</div>
+        <div class="landmark-row"><span class="lm-key">時間</span>08:00–21:00</div>
+        <div class="landmark-row"><span class="lm-key">另一分店</span>田浦分店 <span class="ko">전포대로199번길 27</span>（人更少但 09:00 才開）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-card gold">
+    <div class="info-row"><span class="info-label">必點</span><span class="info-val"><strong>蒜香培根起司（Garlic Bacon Cheese）</strong>₩5,400 — 大蒜吐司＋厚燒歐姆蛋＋培根＋起司，人氣 No.1。<br><strong>美式火腿起司（American Ham Cheese）</strong>₩4,900 — 口味較清淡，初次嘗試的好選擇。</span></div>
+    <div class="info-row"><span class="info-label">建議點法</span><span class="info-val">食量小的兩人：<strong>各點一份三明治，共享一份薯餅</strong>就夠。不需要點套餐，套餐量多容易撐到影響後續行程。</span></div>
+    <div class="info-row"><span class="info-label">點餐方式</span><span class="info-val">自助點餐機，右上角切換「中文」（大陸用語）或「English」（更直覺）。刷信用卡或 WOWPASS，收據號碼叫到再去領。</span></div>
+    <div class="info-row"><span class="info-label">等待時間</span><span class="info-val">平日早上約 10–20 分鐘，店內約 8–10 個座位，外帶站著吃很常見。</span></div>
+  </div>
+
+  <div class="alert warn"><span class="alert-icon">⚠</span>菜單中文翻譯是大陸用語（「芝士」＝起司、「牛油果」＝酪梨），若看不懂建議切英文介面。「套餐」比「單點」多薯餅＋飲料，食量小的話直接單點三明治就好。</div>
+  <div class="alert tip"><span class="alert-icon">💡</span>退房後先把行李交給飯店（ZIM CARRY 上午取件），再輕鬆步行去吃早餐。今天是最長的移動日，早餐吃輕一點，留肚子給下午的各種小吃。</div>
+</div>
+
+<!-- 02 前往影島 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">西面 → ARTE MUSEUM（影島）</span>
+    <span class="section-time">09:20 出發</span>
+  </div>
+  <div class="info-card plum">
+    <div class="info-row"><span class="info-label">交通</span><span class="info-val">西面飯店 → ARTE MUSEUM，計程車約 <strong>20 分鐘、₩12,000–15,000</strong></span></div>
+    <div class="info-row"><span class="info-label">叫車韓文</span><span class="info-val"><span class="ko">아르떼뮤지엄 부산</span>　或　<span class="ko">부산 영도구 해양로247번길 29</span></span></div>
+    <div class="info-row"><span class="info-label">ARTE 開門</span><span class="info-val">10:00。建議 09:50 前到，趕第一批人場最清靜。</span></div>
+  </div>
+  <div class="ticket">西面 → ARTE MUSEUM ｜ 計程車 <span>≈ ₩13,000</span> ｜ 約 <span>20 分</span></div>
+</div>
+
+<!-- 03 ARTE -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">ARTE MUSEUM 釜山</span>
+    <span class="section-time">10:00–12:00｜停留約 2 小時</span>
+  </div>
+
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">🎨</div><div class="landmark-badge">ARTE<br>MUSEUM</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">아르떼뮤지엄 부산 <span class="pass-badge blue">Pass 藍色 #1</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">地址</span>釜山廣域市影島區海洋路247番街29</div>
+        <div class="landmark-row"><span class="lm-key">時間</span>10:00–19:00（最後入場 18:00）</div>
+        <div class="landmark-row"><span class="lm-key">Pass</span>原價 ₩22,000；Pass 藍色 #1 免費入場</div>
+        <div class="landmark-row"><span class="lm-key">建議</span>開館即入最清靜；停留 1.5–2 小時足夠</div>
+        <div class="landmark-row"><span class="lm-key">穿著</span>不要穿純白衣服，光影投射會讓白衣太搶鏡</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-dot dot-plum">①</div>
+      <div class="step-title">出示 Pass 換票入場</div>
+      <div class="step-body"><p>售票口出示 Visit Busan Pass（藍色），換票入場。10:00 剛開門人最少，拍照不用搶位置。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-plum">②</div>
+      <div class="step-title">四個必拍展廳</div>
+      <div class="step-body">
+        <p><strong>花卉展廳</strong>：地板反射花海，角蹲構圖最佳，人在花海中</p>
+        <p><strong>瀑布廳</strong>：水幕配動態光效，站在中央往上仰拍很壯觀</p>
+        <p><strong>動態星空廳</strong>：躺地板仰拍效果最佳，帶小外套鋪地比較舒服</p>
+        <p><strong>無限鏡廳</strong>：人在鏡中無限延伸，等沒有其他遊客入鏡的瞬間耐心拍</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-plum">③</div>
+      <div class="step-title">12:00 出館，旁邊的 P.ARK 快速路過</div>
+      <div class="step-body"><p>ARTE 旁的文創空間 P.ARK 有幾間咖啡廳，可以路過看一眼。今天若肚子餓了，這裡是午餐備選方案之一（詳見附錄）。不特地停留，準時出發趕甘川洞。</p></div>
+    </div>
+  </div>
+
+  <div class="photo-ref">
+    <div class="photo-ref-icon">📸</div>
+    <div class="photo-ref-body">
+      <div class="photo-ref-label">ARTE 必拍展廳位置 · Pass換票流程</div>
+      <div class="photo-ref-desc">花卉廳角蹲拍法、瀑布廳人像位置、星空廳躺拍構圖、P.ARK 咖啡廳</div>
+      <div class="photo-ref-links">
+        <a class="photo-link plum" href="#" target="_blank">→ Pass 換票流程</a>
+        <a class="photo-link gold" href="#" target="_blank">→ 必拍角度整理</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 04 甘川洞 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">ARTE → 甘川洞文化村</span>
+    <span class="section-time">12:00 出發 · 12:20–13:10（停留 55 分）</span>
+  </div>
+  <div class="ticket">ARTE → 甘川洞文化村 ｜ 計程車 <span>≈ ₩6,000</span> ｜ 約 <span>12–15 分</span></div>
+
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">🏘</div><div class="landmark-badge">GAMCHEON<br>VILLAGE</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">甘川洞文化村 <span class="ko">감천문화마을</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">叫車韓文</span><span class="ko">감천문화마을 안내센터</span></div>
+        <div class="landmark-row"><span class="lm-key">地址</span>釜山沙下區甘內2路203（遊客中心）</div>
+        <div class="landmark-row"><span class="lm-key">入村</span>免費，地圖＋小王子磁鐵紀念品組合 ₩2,000</div>
+        <div class="landmark-row"><span class="lm-key">策略</span>今天走馬看花 55 分鐘，主拍彩色階梯、小王子壁畫、全村俯瞰</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-dot dot-green">①</div>
+      <div class="step-title">遊客中心買地圖（₩2,000）</div>
+      <div class="step-body"><p>進村後先到遊客中心買地圖，上面標有所有必拍點位，讓你不會迷路走冤枉路。含小王子磁鐵當作紀念品也很合適。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-green">②</div>
+      <div class="step-title">必拍三個點</div>
+      <div class="step-body">
+        <p><strong>小王子壁畫</strong>：最著名打卡點，對著蒼藍大海的小王子彩繪，廣場上拍</p>
+        <p><strong>彩色階梯俯瞰</strong>：從高處往下看滿村彩色房屋，代表性全景照</p>
+        <p><strong>甘川洞全景最高點</strong>：找視野最開闊位置，把整個村子＋海港一起入鏡</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-green">③</div>
+      <div class="step-title">13:10 出村叫車</div>
+      <div class="step-body"><p>走馬看花不需全部走透透。下坡路出村，直接叫計程車前往松島纜車。<strong>不能貪玩太久</strong>，後面還有三個大點要跑。</p></div>
+    </div>
+  </div>
+
+  <div class="alert warn"><span class="alert-icon">⚠</span>甘川洞山路多、階梯多，今天行程全天步行量大，建議穿舒適的鞋。氣溫高時山坡曬得很厲害，帶遮陽帽或防曬。</div>
+</div>
+
+<!-- 05 松島纜車 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">甘川洞 → 松島海上纜車（水晶車廂）</span>
+    <span class="section-time">13:10 出發 · 13:25–14:20（停留約 1 小時）</span>
+  </div>
+  <div class="ticket">甘川洞 → 松島纜車 A 站 ｜ 計程車 <span>≈ ₩7,000</span> ｜ 約 <span>12–15 分</span></div>
+
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">🚠</div><div class="landmark-badge">SONGDO<br>CABLE CAR</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">松島海上纜車（水晶車廂） <span class="pass-badge blue">Pass 藍色 #2</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">叫車韓文</span><span class="ko">송도해상케이블카 / 부산 서구 송도해변로 171</span></div>
+        <div class="landmark-row"><span class="lm-key">時間</span>09:00–22:00（冬季至 21:00）</div>
+        <div class="landmark-row"><span class="lm-key">Pass</span>水晶車廂原價 ₩22,000 / 人；Pass 藍色 #2 免費（指定換水晶車廂）</div>
+        <div class="landmark-row"><span class="lm-key">路線</span>A站（松島海水浴場端）出發；全程 1.8km，單趟約 10 分鐘</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-dot dot-blue">①</div>
+      <div class="step-title">A 站售票口換票</div>
+      <div class="step-body"><p>1F 售票窗口出示 Pass 藍色換票，指定<strong>水晶車廂（유리 캡슐 / Crystal Capsule）</strong>。平日等候通常不超過 20 分鐘。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-blue">②</div>
+      <div class="step-title">水晶車廂體驗</div>
+      <div class="step-body">
+        <p>車廂底部全透明，腳下直接踩著大海，有懼高感的人要有心理準備！</p>
+        <p>從 A 站出發往 B 站，沿途可欣賞松島海岸線全景。<strong>請確認換票時含單程還是來回</strong>——Pass 通常含單程，到 B 站後可搭返回的一般車廂或步行回 A 站。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-blue">③</div>
+      <div class="step-title">松島龍宮空中步道（加選）</div>
+      <div class="step-body"><p>纜車下來後，附近的<strong>松島龍宮雲橋</strong>（空中步道）也是 Pass 免費景點，15 分鐘可走完，俯瞰效果不錯。今天時間較緊，可依狀況選擇要不要走。</p></div>
+    </div>
+  </div>
+
+  <div class="alert tip"><span class="alert-icon">💡</span>水晶車廂和一般車廂差很多——透明底部踩著海是最大亮點，一定要用 Pass 換水晶車廂。Pass 節省的 ₩44,000 就靠這兩個景點回本。</div>
+</div>
+
+<!-- 06 南浦洞 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-title">松島 → 南浦洞採買串聯</span>
+    <span class="section-time">14:20 出發 · 14:30–15:50（停留約 1.5 小時）</span>
+  </div>
+  <div class="ticket">松島 → 南浦洞 ｜ 計程車 <span>≈ ₩5,000</span> ｜ 約 <span>10 分</span></div>
+
+  <div class="info-card red">
+    <div class="info-row"><span class="info-label">重點</span><span class="info-val">南浦洞以<strong>邊走邊吃的街頭小吃</strong>為主，<strong>不在這裡坐下來吃正餐</strong>——主力採買留在後面樂天超市。</span></div>
+    <div class="info-row"><span class="info-label">動線</span><span class="info-val">BIFF 廣場黑糖餅 → 光復路隨意逛（Olive Young / 藥妝補貨）→ 步行至樂天超市光復店（約 5–8 分鐘）</span></div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-dot dot-red">①</div>
+      <div class="step-title">BIFF 廣場：元祖黑糖餅</div>
+      <div class="step-body">
+        <p><strong>元祖大叔黑糖餅（원조할아버지씨앗호떡）</strong>人龍最長，黑糖蜂蜜口味 ₩1,500 一個，外脆內燙要小心咬。</p>
+        <p>旁邊還有昇基堅果黑糖餅（堅果版），口感不同各買一個比較，食量小各吃一個就夠了，別買太多撐壞肚子。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-red">②</div>
+      <div class="step-title">光復路補貨（選）</div>
+      <div class="step-body"><p>Olive Young、藥妝店在光復路上很集中，有需要的話順手補充美妝、面膜。<strong>主力採買留在樂天超市做</strong>，這裡只是路過看看。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-dot dot-red">③</div>
+      <div class="step-title">15:50 步行到樂天超市</div>
+      <div class="step-body"><p>南浦洞光復路往樂天超市光復店步行約 5–8 分鐘，不需叫車。</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 07 樂天超市 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-title">樂天超市光復店（伴手禮大採買）</span>
+    <span class="section-time">16:00–17:30（停留約 1.5 小時）</span>
+  </div>
+
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">🛒</div><div class="landmark-badge">LOTTE<br>MART</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">樂天超市 光復店 <span class="ko">롯데마트 광복점</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">地址</span>釜山中區中區路59（南浦洞光復路旁步行可達）</div>
+        <div class="landmark-row"><span class="lm-key">時間</span>10:00–23:00（每月二、四週週一公休，出發前確認）</div>
+        <div class="landmark-row"><span class="lm-key">退稅</span>單筆消費滿 ₩15,000 可辦，結帳時出示護照申請 TAX FREE 退稅單</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <div class="highlight-title">🛍 樂天超市掃貨清單（食量小版本）</div>
+    <div class="highlight-body">
+      <strong>零食伴手禮（輕盈好帶）</strong>：HBAF 杏仁果各口味（蜂蜜奶油、哇沙咪必入）、烏龜餅乾多口味組、辣炒年糕味餅乾、Binch 巧克力餅乾、蜂蜜貝果片（Olive Young 有，這裡也有）<br>
+      <strong>泡麵（限帶得走的量）</strong>：農心辣牛肉麵、辛拉麵黑色版、炸醬麵、釜山限定口味。注意：泡麵佔重量和體積，別買太多<br>
+      <strong>生活小物</strong>：韓系面膜（比 Olive Young 便宜一些）、牙貼、護手霜<br>
+      <strong>⚠ 液體類</strong>（醬料、飲料）只能托運，不能帶手提上飛機。今天 ZIM CARRY 行李已送走，液體類請謹慎或找宅配服務
+    </div>
+  </div>
+
+  <div class="alert warn"><span class="alert-icon">⚠</span>今天行李已 ZIM CARRY 送機場，不能臨時加東西進去！採買的東西要<strong>自己隨身帶著去海雲台</strong>。建議只買輕便好拿的，重的留 Day 5 前往機場前的最後機會再買。</div>
+  <div class="alert tip"><span class="alert-icon">💡</span>退稅建議在機場辦，比在現場辦更快。購物時請店員開立 <strong>TAX FREE 退稅單</strong>（非一般收據），保存好，回程機場退稅機掃描即可拿現金。</div>
+</div>
+
+<!-- 08 前往海雲台 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <span class="section-title">南浦洞 → 海雲台 · 入住飯店</span>
+    <span class="section-time">17:30 出發 · 18:00–19:00</span>
+  </div>
+
+  <div class="info-card teal">
+    <div class="info-row"><span class="info-label">交通</span><span class="info-val">樂天超市光復店 → 海雲台飯店，計程車約 <strong>35–40 分鐘、₩28,000–35,000</strong>。走廣安大橋快約 10 分，加收 <strong>₩1,000 橋費</strong>（正常現象，跳表加入即可）。帶著採買袋不建議搭地鐵換線。</span></div>
+    <div class="info-row"><span class="info-label">叫車目的地</span><span class="info-val">直接輸入海雲台飯店韓文名稱，或 Uber 輸入中文地址。</span></div>
+    <div class="info-row"><span class="info-label">入住</span><span class="info-val">海雲台飯店通常 15:00 後可入住。抵達先辦 Check-in，整理好採買物品，輕裝出門吃晚餐。</span></div>
+  </div>
+  <div class="ticket">南浦洞 → 海雲台飯店 ｜ 計程車 <span>≈ ₩32,000</span> ｜ 約 <span>38 分（走廣安大橋）</span></div>
+  <div class="alert note"><span class="alert-icon">ℹ</span>Check-in 後確認 ZIM CARRY 行李是否送達（通常 17:00–20:00 間送到）。若未到先盥洗梳妝，晚餐回來剛好可以拿行李整理。</div>
+</div>
+
+<!-- 09 晚餐 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <span class="section-title">晚餐：海雲台傳統市場</span>
+    <span class="section-time">19:30–21:00</span>
+  </div>
+
+  <div class="landmark">
+    <div class="landmark-side"><div class="landmark-icon">🏪</div><div class="landmark-badge">HAEUNDAE<br>MARKET</div></div>
+    <div class="landmark-body">
+      <div class="landmark-name">海雲台傳統市場 <span class="ko">해운대전통시장</span></div>
+      <div class="landmark-rows">
+        <div class="landmark-row"><span class="lm-key">交通</span>海雲台站 3 號出口，往海水浴場方向直走約 5 分鐘，左手邊</div>
+        <div class="landmark-row"><span class="lm-key">時間</span>各店家大約 10:00–24:00（攤販傍晚開始最熱鬧）</div>
+        <div class="landmark-row"><span class="lm-key">氛圍</span>傳統市場式晚餐，小吃＋正餐都有，在地人＋觀光客混合，氣氛熱鬧</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu-grid">
+    <div class="menu-card">
+      <div class="menu-name">爐紅餃子刀切麵</div>
+      <div class="menu-ko">노홍만두칼국수</div>
+      <div class="menu-note">市場內超過 60 年老店，蛤蜊刀切麵料多湯鮮，蝦仁蒸餃紮實好吃。是食量小的最佳正餐選擇。</div>
+      <div class="menu-price">蛤蜊刀切麵 ₩9,000｜蒸蝦餃 ₩5,000起</div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-name">名品糖餅</div>
+      <div class="menu-ko">해운대명품호떡</div>
+      <div class="menu-note">海雲台市場最著名小吃，5 種口味（蜂蜜/堅果/紅豆/黑糖/起司），長排隊代表好吃。吃完正餐後的甜點收尾。</div>
+      <div class="menu-price">₩2,000–2,500 / 個</div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-name">尚國家飯捲</div>
+      <div class="menu-ko">상국이네떡볶이</div>
+      <div class="menu-note">辣炒年糕＋飯捲＋炸物組合，市場招牌攤，便宜快速，在攤子旁站著吃很常見。適合輕食補充。</div>
+      <div class="menu-price">辣炒年糕 ₩4,000起</div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-name">黑芝麻拿鐵</div>
+      <div class="menu-ko">시장 입구 블루 카페</div>
+      <div class="menu-note">市場入口附近藍色招牌咖啡廳，上層厚實黑芝麻鮮奶油＋下層咖啡，建議先不攪拌直接喝奶油層。芝麻香氣濃郁讓人上癮。</div>
+      <div class="menu-price">₩4,800</div>
+    </div>
+  </div>
+
+  <div class="highlight-teal">
+    <div class="highlight-title">✨ 今晚海雲台市場的最佳玩法</div>
+    <div class="highlight-body">
+      食量小的兩人推薦：<strong>爐紅餃子刀切麵一碗</strong>（當正餐）→ 出來繞市場隨意逛 → <strong>名品糖餅各一個</strong>（甜點收尾）→ <strong>黑芝麻拿鐵一杯</strong>（散步邊喝）。三項合計約 ₩16,000–20,000 / 2人，輕鬆不撐。吃完步行到海雲台海灘吹海風，完美收尾第一個海雲台之夜。
+    </div>
+  </div>
+
+  <div class="photo-ref">
+    <div class="photo-ref-icon">📸</div>
+    <div class="photo-ref-body">
+      <div class="photo-ref-label">海雲台市場夜景 · 名品糖餅攤 · 刀切麵菜單</div>
+      <div class="photo-ref-desc">市場入口夜間氛圍、名品糖餅排隊實況、爐紅餃子刀切麵菜單、黑芝麻拿鐵藍色咖啡廳</div>
+      <div class="photo-ref-links">
+        <a class="photo-link" href="https://whatime.space/haeundae-market/" target="_blank">→ 5家必吃地圖</a>
+        <a class="photo-link plum" href="https://www.bigfang.tw/blog/post/busan-haeundae-delicioius" target="_blank">→ 海雲台美食總整理</a>
+        <a class="photo-link gold" href="https://blueberry1991.com/" target="_blank">→ 糖餅對決＋芝麻拿鐵心得</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10 費用 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <span class="section-title">Day 3 費用試算（2人）</span>
+  </div>
+  <table class="cost-table">
+    <tr><th>項目</th><th class="cost-r">費用</th><th>備注</th></tr>
+    <tr><td>Egg Drop 早餐（2人）</td><td class="cost-r">₩13,000</td><td>各一份三明治</td></tr>
+    <tr><td>ZIM CARRY 行李宅配</td><td class="cost-r">₩30,000</td><td>2件×₩15,000（前一晚預訂）</td></tr>
+    <tr><td>計程車 西面→ARTE</td><td class="cost-r">₩13,000</td><td>約 20 分</td></tr>
+    <tr><td>ARTE MUSEUM（2人）</td><td class="cost-r">₩0</td><td>Pass 藍色 #1（原價 ₩44,000）</td></tr>
+    <tr><td>計程車 ARTE→甘川洞</td><td class="cost-r">₩6,000</td><td>約 13 分</td></tr>
+    <tr><td>甘川洞地圖×2（含磁鐵）</td><td class="cost-r">₩4,000</td><td>遊客中心購買</td></tr>
+    <tr><td>計程車 甘川洞→松島</td><td class="cost-r">₩7,000</td><td>約 13 分</td></tr>
+    <tr><td>松島水晶纜車（2人）</td><td class="cost-r">₩0</td><td>Pass 藍色 #2（原價 ₩44,000）</td></tr>
+    <tr><td>計程車 松島→南浦洞</td><td class="cost-r">₩5,000</td><td>約 10 分</td></tr>
+    <tr><td>BIFF 黑糖餅 ×2</td><td class="cost-r">₩3,000</td><td>邊走邊吃</td></tr>
+    <tr><td>樂天超市採買（估）</td><td class="cost-r">₩60,000</td><td>零食伴手禮（可依需求增減）</td></tr>
+    <tr><td>計程車 南浦洞→海雲台</td><td class="cost-r">₩32,000</td><td>含橋費，約 38 分</td></tr>
+    <tr><td>海雲台市場晚餐（2人）</td><td class="cost-r">₩18,000</td><td>刀切麵＋糖餅＋芝麻拿鐵</td></tr>
+    <tr class="total"><td>合計（不含採買）</td><td class="cost-r">≈ ₩131,000</td><td>約 NT$2,900</td></tr>
+    <tr class="total"><td>Pass 今日省費（2人）</td><td class="cost-r">₩88,000</td><td>ARTE ₩44,000 + 松島纜車 ₩44,000</td></tr>
+  </table>
+</div>
+
+<!-- 11 Checklist -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <span class="section-title">Day 3 行前 Checklist</span>
+  </div>
+  <ul class="checklist">
+    <li><span class="check-icon">☐</span><span><strong>前一晚</strong>：KKday 預訂 ZIM CARRY 行李宅配（西面飯店取件 → 金海機場 3F 送達）</span></li>
+    <li><span class="check-icon">☐</span><span><strong>Pass 確認</strong>：Day 3 使用藍色 ×2（ARTE + 松島纜車），確認通行證有效</span></li>
+    <li><span class="check-icon">☐</span><span><strong>ARTE MUSEUM</strong>：10:00 開門，建議 09:50 前到現場。不需預約，到現場出示 Pass 換票</span></li>
+    <li><span class="check-icon">☐</span><span><strong>松島纜車換票</strong>：指定「水晶車廂（유리 캡슐）」，確認 Pass 含單程或來回</span></li>
+    <li><span class="check-icon">☐</span><span><strong>採買策略</strong>：ZIM CARRY 行李已送機場，採買物品要隨身帶去海雲台。只買輕便的，重的留 Day 5 買</span></li>
+    <li><span class="check-icon">☐</span><span><strong>退稅單保存</strong>：樂天超市結帳時出示護照，請店員開 TAX FREE 退稅單，保存到機場退稅</span></li>
+    <li><span class="check-icon">☐</span><span><strong>廣安大橋過橋費</strong>：南浦洞→海雲台計程車走橋加 ₩1,000，正常現象不用糾結</span></li>
+    <li><span class="check-icon">☐</span><span><strong>ZIM CARRY 確認</strong>：Check-in 後詢問飯店行李是否送達（通常 17:00–20:00）</span></li>
+    <li><span class="check-icon">☐</span><span><strong>海雲台市場晚餐</strong>：爐紅餃子刀切麵＋名品糖餅，不用提前預約，現場排隊即可</span></li>
+  </ul>
+</div>
+
+<!-- 附錄：午餐備選 -->
+<div class="appendix">
+  <div class="appendix-title">📋 附錄：午餐備選方案（依當下狀態選擇）</div>
+  <div class="appendix-body">
+    今天主線行程緊湊，沒有特別安排午餐時間。以下三個備選依肚子狀況決定，不需強迫自己吃正餐：<br><br>
+    <strong>方案 A｜P.ARK 咖啡廳輕食（11:30 離開 ARTE 後）</strong><br>
+    看完 ARTE 後直接去旁邊的 P.ARK 文創空間，有幾間咖啡廳和輕食店，坐下來吃個簡餐或甜點補能量，30–40 分鐘後出發。適合：還不太餓、只想輕食。<br><br>
+    <strong>方案 B｜甘川洞內邊走邊吃（12:20 逛村時）</strong><br>
+    甘川洞遊客中心附近有章魚炸物、炒年糕、飯捲等小吃，邊逛邊吃，走馬看花同時解決肚子。適合：想快一點、不想另外花時間找餐廳。<br><br>
+    <strong>方案 C｜南浦洞商圈午餐（14:30 抵達後）</strong><br>
+    南浦洞老店集中：<strong>南浦蔘雞湯</strong>（釜山觀光大使推薦的 30 年老店，一碗 ₩14,000）或<strong>老奶奶伽倻小麥冷麵</strong>（釜山在地冷麵代表，冰涼爽口），吃完再去樂天超市最順。適合：真的肚子餓、想正式吃一頓。
+  </div>
+</div>
+
+<div style="text-align:center;padding-top:24px;border-top:1px solid var(--paper-border);font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-muted);letter-spacing:.08em;margin-top:32px;">
+  DAY 3 OF 5 · BUSAN · EGG DROP → ARTE → GAMCHEON → SONGDO → NAMPO → LOTTE MART → HAEUNDAE
+</div>
+
+</div>
+</body>
+</html>

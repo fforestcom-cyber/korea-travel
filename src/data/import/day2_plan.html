@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 2 計畫書｜水上樂園日</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --ink: #1C1B18;
+  --ink-soft: #5A5850;
+  --ink-muted: #9A9890;
+  --paper: #FAF8F4;
+  --paper-warm: #F3EFE7;
+  --paper-border: #E5DFD3;
+  --accent: #1A7A5A;          /* teal for water day */
+  --accent-pale: #E0F2EA;
+  --accent2: #2A6A9A;         /* blue */
+  --accent2-pale: #E0EBF5;
+  --amber: #B8861A;
+  --amber-pale: #FAF0D8;
+  --red: #C85A2A;
+  --red-pale: #F5E8E0;
+  --photo-bg: #EDF4F1;
+  --photo-border: #C0D9D0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Serif TC', serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  padding: 32px 20px 60px;
+}
+.page { max-width: 660px; margin: 0 auto; }
+
+/* ── 封面 ── */
+.cover {
+  text-align: center;
+  padding: 40px 0 36px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 36px;
+}
+.cover-eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.18em; color: var(--ink-muted); text-transform: uppercase; margin-bottom: 10px; }
+.cover-title { font-size: 32px; font-weight: 900; letter-spacing: -0.01em; line-height: 1.15; margin-bottom: 8px; }
+.cover-title em { font-style: normal; color: var(--accent); }
+.cover-sub { font-size: 13px; color: var(--ink-soft); }
+.cover-tags { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.ctag { font-family: 'DM Mono', monospace; font-size: 10px; padding: 3px 10px; border: 1px solid var(--paper-border); border-radius: 20px; color: var(--ink-soft); letter-spacing: 0.06em; }
+
+/* ── 區塊 ── */
+.section { margin-bottom: 36px; }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--paper-border); }
+.section-num { font-family: 'DM Mono', monospace; font-size: 11px; background: var(--ink); color: var(--paper); padding: 2px 8px; border-radius: 3px; }
+.section-title { font-size: 16px; font-weight: 600; }
+.section-time { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-muted); margin-left: auto; }
+
+/* ── 照片參考 ── */
+.photo-ref { background: var(--photo-bg); border: 1px solid var(--photo-border); border-radius: 8px; padding: 10px 14px; margin: 10px 0; display: flex; align-items: flex-start; gap: 10px; }
+.photo-ref-icon { font-size: 18px; flex-shrink: 0; }
+.photo-ref-body { flex: 1; }
+.photo-ref-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--ink-muted); text-transform: uppercase; margin-bottom: 3px; }
+.photo-ref-desc { font-size: 12px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 5px; }
+.photo-ref-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.photo-link { display: inline-block; font-size: 11px; font-weight: 500; color: var(--accent); background: var(--accent-pale); padding: 2px 10px; border-radius: 20px; text-decoration: none; transition: opacity 0.15s; }
+.photo-link:hover { opacity: 0.75; }
+.photo-link.blue  { color: var(--accent2); background: var(--accent2-pale); }
+.photo-link.amber { color: var(--amber); background: var(--amber-pale); }
+.photo-link.red   { color: var(--red); background: var(--red-pale); }
+
+/* ── info card ── */
+.info-card { border: 1px solid var(--paper-border); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; background: white; }
+.info-card.teal  { border-left: 3px solid var(--accent); }
+.info-card.blue  { border-left: 3px solid var(--accent2); }
+.info-card.amber { border-left: 3px solid var(--amber); }
+.info-card.red   { border-left: 3px solid var(--red); }
+.info-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 6px; font-size: 13px; }
+.info-row:last-child { margin-bottom: 0; }
+.info-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-muted); min-width: 52px; padding-top: 2px; flex-shrink: 0; }
+.info-val { color: var(--ink); line-height: 1.6; }
+.info-val strong { font-weight: 600; }
+.ko { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-soft); background: var(--paper-warm); padding: 1px 6px; border-radius: 4px; margin-left: 4px; }
+
+/* ── 步驟 ── */
+.steps { position: relative; padding-left: 44px; }
+.steps::before { content: ''; position: absolute; left: 13px; top: 14px; bottom: 14px; width: 1.5px; background: var(--paper-border); }
+.step { position: relative; margin-bottom: 22px; }
+.step:last-child { margin-bottom: 0; }
+.step-dot { position: absolute; left: -38px; top: 3px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: white; border: 2px solid var(--paper); }
+.dot-teal  { background: var(--accent); }
+.dot-blue  { background: var(--accent2); }
+.dot-amber { background: var(--amber); }
+.dot-red   { background: var(--red); }
+.dot-gray  { background: var(--ink-muted); }
+.step-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; line-height: 1.4; }
+.step-body { font-size: 13px; color: var(--ink-soft); line-height: 1.65; }
+.step-body p { margin-bottom: 4px; }
+.step-body p:last-child { margin-bottom: 0; }
+.step-body strong { color: var(--ink); font-weight: 600; }
+
+/* ── timeline summary ── */
+.timeline-summary { display: grid; grid-template-columns: 60px 1fr; border: 1px solid var(--paper-border); border-radius: 10px; overflow: hidden; background: white; }
+.ts-time { background: var(--paper-warm); padding: 9px 10px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-soft); border-bottom: 1px solid var(--paper-border); display: flex; align-items: center; }
+.ts-content { padding: 9px 14px; font-size: 13px; border-bottom: 1px solid var(--paper-border); display: flex; align-items: center; gap: 8px; }
+.ts-time:last-of-type, .ts-content:last-of-type { border-bottom: none; }
+.ts-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── alert ── */
+.alert { border-radius: 8px; padding: 9px 13px; font-size: 12px; line-height: 1.6; margin-top: 8px; display: flex; gap: 8px; align-items: flex-start; }
+.alert-icon { flex-shrink: 0; font-size: 14px; }
+.alert.warn  { background: var(--amber-pale); color: #6B4E10; }
+.alert.tip   { background: var(--accent-pale); color: #0D4A34; }
+.alert.note  { background: var(--accent2-pale); color: #1A3A5A; }
+.alert.red   { background: var(--red-pale); color: #6B2A0A; }
+
+/* ── ticket ── */
+.ticket { background: var(--paper-warm); border: 1px dashed var(--paper-border); border-radius: 8px; padding: 8px 12px; margin-top: 8px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 10px; }
+.ticket span { color: var(--ink); font-weight: 500; }
+
+/* ── 設施卡 ── */
+.facility-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.facility-card { background: white; border: 1px solid var(--paper-border); border-radius: 8px; padding: 10px 12px; }
+.facility-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.facility-tag { font-family: 'DM Mono', monospace; font-size: 9px; padding: 1px 7px; border-radius: 20px; display: inline-block; margin-bottom: 4px; }
+.f-thrill { background: #FDE8E0; color: #8B2010; }
+.f-relax  { background: #E0F2EA; color: #0A4A30; }
+.f-must   { background: #FFF0CC; color: #7A4A00; }
+.facility-note { font-size: 11px; color: var(--ink-muted); line-height: 1.5; }
+
+/* ── 費用表 ── */
+.cost-table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; border-radius: 10px; overflow: hidden; border: 1px solid var(--paper-border); }
+.cost-table th { background: var(--ink); color: var(--paper); padding: 8px 12px; text-align: left; font-weight: 500; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.06em; }
+.cost-table td { padding: 8px 12px; border-bottom: 1px solid var(--paper-border); }
+.cost-table tr:last-child td { border-bottom: none; }
+.cost-table tr.total td { font-weight: 600; background: var(--paper-warm); }
+.cost-right { text-align: right; font-family: 'DM Mono', monospace; }
+
+/* ── checklist ── */
+.checklist { list-style: none; }
+.checklist li { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; font-size: 13px; border-bottom: 1px dotted var(--paper-border); line-height: 1.55; }
+.checklist li:last-child { border-bottom: none; }
+.check-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+/* ── menu box ── */
+.menu-box { background: white; border: 1px solid var(--paper-border); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+.menu-header { background: var(--ink); color: var(--paper); padding: 7px 14px; font-size: 12px; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; }
+.menu-body { padding: 10px 14px; }
+.menu-item { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; border-bottom: 1px dotted var(--paper-border); font-size: 13px; gap: 12px; }
+.menu-item:last-child { border-bottom: none; }
+.menu-note { font-size: 11px; color: var(--ink-muted); text-align: right; }
+
+/* ── highlight box ── */
+.highlight { background: var(--accent-pale); border: 1px solid #A8D8C8; border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; }
+.highlight-title { font-size: 12px; font-weight: 600; color: #0A4A34; margin-bottom: 6px; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+.highlight-body { font-size: 13px; color: var(--ink-soft); line-height: 1.65; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 封面 -->
+  <div class="cover">
+    <div class="cover-eyebrow">釜山自由行 5天4夜 · 行程計畫書</div>
+    <div class="cover-title">Day <em>2</em><br>全日玩水・水上樂園日</div>
+    <div class="cover-sub">西面 → 金海樂天水上樂園 → 西面飯店（原路返回）</div>
+    <div class="cover-tags">
+      <span class="ctag">計程車去回</span>
+      <span class="ctag">車程各 35–40 分</span>
+      <span class="ctag">車資各 ₩20,000–25,000</span>
+      <span class="ctag">10:00 開園</span>
+    </div>
+  </div>
+
+  <!-- 總覽 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">00</span>
+      <span class="section-title">今日行程總覽</span>
+    </div>
+    <div class="timeline-summary">
+      <div class="ts-time">08:00</div><div class="ts-content"><span class="ts-dot" style="background:var(--amber)"></span>早餐：飯店樓下或西面便利商店解決</div>
+      <div class="ts-time">08:30</div><div class="ts-content"><span class="ts-dot" style="background:var(--accent2)"></span>打開 Kakao T 叫計程車出發</div>
+      <div class="ts-time">09:10</div><div class="ts-content"><span class="ts-dot" style="background:var(--accent)"></span>抵達金海樂天水上樂園・換票・更衣・儲值手環</div>
+      <div class="ts-time">10:00</div><div class="ts-content"><span class="ts-dot" style="background:var(--accent)"></span>開園！衝熱門設施（Giant Boomerang、Tornado Slide）</div>
+      <div class="ts-time">12:30</div><div class="ts-content"><span class="ts-dot" style="background:var(--amber)"></span>園內午餐（手環刷卡消費）</div>
+      <div class="ts-time">13:30</div><div class="ts-content"><span class="ts-dot" style="background:var(--accent)"></span>午後繼續玩：懶人河、室內波浪池、SPA區放鬆</div>
+      <div class="ts-time">16:00</div><div class="ts-content"><span class="ts-dot" style="background:var(--accent2)"></span>更衣吹乾・退手環押金・準備離園</div>
+      <div class="ts-time">16:30</div><div class="ts-content"><span class="ts-dot" style="background:var(--accent2)"></span>園門口叫計程車回西面</div>
+      <div class="ts-time">17:15</div><div class="ts-content"><span class="ts-dot" style="background:var(--amber)"></span>回飯店梳洗休息</div>
+      <div class="ts-time">19:00</div><div class="ts-content"><span class="ts-dot" style="background:var(--red)"></span>晚餐：西面烤肉（味贊王 或 烤肉的男子）</div>
+      <div class="ts-time">21:00</div><div class="ts-content"><span class="ts-dot" style="background:var(--ink-muted)"></span>早睡養精蓄銳，明天 Day 3 行程最重</div>
+    </div>
+  </div>
+
+  <!-- 01 早餐 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">早餐・出發前準備</span>
+      <span class="section-time">07:30–08:30</span>
+    </div>
+    <div class="info-card amber">
+      <div class="info-row">
+        <span class="info-label">早餐</span>
+        <span class="info-val">今天全日玩水，體力消耗大，務必好好吃早餐。飯店旁的 <strong>CU / GS25 / emart24</strong> 便利商店即可解決：飯糰＋三角壽司＋熱美式，快速方便。</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">行前裝備</span>
+        <span class="info-val">泳衣（身上穿或夾鏈袋裝）、毛巾（水上樂園可租，但自帶更省錢）、夾腳拖或水鞋、防曬乳、防水手機袋（重要！手環付款期間手機要能拿出來）、換洗衣物＋護膚品（玩完要舒服出門吃晚餐）。</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">現金</span>
+        <span class="info-val">手環儲值後園內大多刷手環，但建議帶 ₩30,000–50,000 現金備用（計程車、手環押金等）。</span>
+      </div>
+    </div>
+    <div class="alert warn">
+      <span class="alert-icon">⚠</span>
+      <strong>禁帶物品：</strong>外食、玻璃瓶、大型充氣水上器材（1m以上）、寵物、嬰兒車。水上樂園入場前會有<strong>隨機行李檢查</strong>，零食可帶密封容器水果、寶特瓶飲料，但外食便當絕對不行。
+    </div>
+  </div>
+
+  <!-- 02 交通去程 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">交通：西面 → 金海樂天水上樂園</span>
+      <span class="section-time">08:30 出發｜車程 35–40 分鐘</span>
+    </div>
+    <div class="highlight">
+      <div class="highlight-title">💡 為什麼搭計程車，不搭大眾運輸？</div>
+      <div class="highlight-body">水上樂園位於金海市長有路，離釜山市區有段距離。公車需在輕軌府院站（502）轉搭，加上等候時間約 60–70 分鐘，且今天帶泳裝毛巾行李，計程車兩人分攤每人約 ₩10,000–12,500（約 NT$220–280），划算又快。</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot dot-blue">①</div>
+        <div class="step-title">用 Kakao T App 叫車（建議出門前 10 分鐘叫）</div>
+        <div class="step-body">
+          <p>打開 <strong>Kakao T</strong>（韓國最大叫車平台），設定出發地為飯店、目的地輸入 <strong>「롯데워터파크 김해」</strong>（金海樂天水上樂園）。</p>
+          <p>選一般車（일반택시）即可，費用預估會顯示在畫面上，信用卡付款或現金均可。</p>
+        </div>
+        <div class="alert note">
+          <span class="alert-icon">ℹ</span>
+          Kakao T 也支援英文介面，在設定切換語言即可。韓國計程車多為瓦斯車（LPG），後車廂空間比一般油車略小，帶大包包的話提前告知司機或選較大車型。
+        </div>
+        <div class="photo-ref">
+          <div class="photo-ref-icon">📸</div>
+          <div class="photo-ref-body">
+            <div class="photo-ref-label">Kakao T 叫車教學</div>
+            <div class="photo-ref-desc">App 介面操作、如何輸入目的地韓文、付款方式設定</div>
+            <div class="photo-ref-links">
+              <a class="photo-link" href="https://debbiechien.com/busan-gimhae-airport-transportation/" target="_blank">→ Debbie｜叫車流程說明</a>
+              <a class="photo-link blue" href="https://panpanlife.com/busan-arrival/" target="_blank">→ PanPan｜計程車費用試算</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-dot dot-blue">②</div>
+        <div class="step-title">車程與費用</div>
+        <div class="step-body">
+          <p>西面出發，走金海方向，全程不塞車約 <strong>35–40 分鐘</strong>，含高速路段。</p>
+          <p>費用約 <strong>₩20,000–25,000</strong>，若走高速公路需加 ₩2,000–3,000 路費，司機會自動走最快路線。</p>
+        </div>
+        <div class="ticket">
+          西面 → 金海樂天水上樂園 ｜ 車程 <span>35–40 分鐘</span> ｜ 費用 <span>₩20,000–25,000</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-dot dot-blue">③</div>
+        <div class="step-title">抵達・入口確認</div>
+        <div class="step-body">
+          <p>地址：<strong>경상남도 김해시 장유로 555</strong>（慶尚南道金海市長有路555）。告訴司機「롯데워터파크」（樂天水上樂園）即可，司機都知道。</p>
+          <p>抵達後，在入口處下車，進去前先找到<strong>換票處</strong>兌換已預購的 KKday / Klook 票券（掃 QR Code 即可入場）。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 門票 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">門票・預購策略</span>
+    </div>
+    <div class="info-card teal">
+      <div class="info-row">
+        <span class="info-label">官網現場</span>
+        <span class="info-val">成人約 <strong>₩42,000–45,000</strong>（依季節浮動，夏季旺季最高）</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">App 線上預購</span>
+        <span class="info-val">官方 App 或網站預購約 <strong>₩32,000</strong>（2025年夏季旺季資訊），比現場便宜約 ₩10,000/人，兩人省 ₩20,000（約 NT$440）</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">KKday / Klook</span>
+        <span class="info-val">台灣平台有時有更低折扣，建議出發前一週比較，最划算方案購入，掃 QR Code 直接入場</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">下午券</span>
+        <span class="info-val">14:00 後入場的「오후권（下午券）」更便宜，但我們一整天玩，選全日票</span>
+      </div>
+    </div>
+    <div class="alert tip">
+      <span class="alert-icon">💡</span>
+      強烈建議出發前在 KKday 或 Klook 預購，可現場省去排隊購票時間，一到園直接掃碼進場，特別在旺季人潮大的時候非常有感。
+    </div>
+  </div>
+
+  <!-- 04 入場流程 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">入場流程・手環儲值・置物</span>
+      <span class="section-time">09:10–10:00</span>
+    </div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-dot dot-teal">①</div>
+        <div class="step-title">入場驗票</div>
+        <div class="step-body">
+          <p>在入口掃 QR Code 後，工作人員會在手腕綁上<strong>橡皮筋手環</strong>（這是入場識別，全天不能取下）。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-dot dot-teal">②</div>
+        <div class="step-title">領取付款手環（RF 手環）・繳押金</div>
+        <div class="step-body">
+          <p>入場後到服務台領取<strong>無線感應付款手環（RF 팔찌）</strong>，這個手環用來在園內刷卡消費：餐廳、租毛巾、附加項目等均刷此手環。</p>
+          <p>需<strong>繳交押金約 ₩10,000</strong>，離場時退還（沒有消費到的餘額也退）。建議儲值 ₩30,000–50,000 在手環裡，一天午餐＋小點心＋租借項目大致夠用。</p>
+        </div>
+        <div class="alert warn">
+          <span class="alert-icon">⚠</span>
+          手環押金需現金繳交，記得帶 ₩10,000–20,000 現金備用。手環一定要帶好，離場前退還時會核對。
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-dot dot-teal">③</div>
+        <div class="step-title">更衣室・置物櫃</div>
+        <div class="step-body">
+          <p>入場後先找更衣室換泳衣。置物櫃以手環感應鎖/開，全天可重複開關，<strong>不需另外付費</strong>（包含在入場費內）。</p>
+          <p>手機、現金、換洗衣物、防曬乳等均存入置物櫃，只帶防水手機袋裝手機出去玩。</p>
+        </div>
+        <div class="alert tip">
+          <span class="alert-icon">💡</span>
+          開園前（09:30–10:00 之間）先搶置物櫃，越靠近水區的置物櫃越搶手，人潮多的旺季建議早點到。
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-dot dot-teal">④</div>
+        <div class="step-title">領取毛巾（選擇自帶或租借）</div>
+        <div class="step-body">
+          <p>若未自帶毛巾，可現場刷手環租借，費用約 ₩3,000–5,000。自帶一條大浴巾最划算也最舒適。</p>
+          <p>救生圈/浮具也可租用或自備（長度不超過 1m）。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="photo-ref">
+      <div class="photo-ref-icon">📸</div>
+      <div class="photo-ref-body">
+        <div class="photo-ref-label">水上樂園入場流程・手環・設施外觀</div>
+        <div class="photo-ref-desc">入口外觀、手環樣式、置物櫃使用方式、更衣室照片</div>
+        <div class="photo-ref-links">
+          <a class="photo-link" href="https://www.klook.com/zh-TW/activity/88947-lotte-waterpark-pass-gimhae/" target="_blank">→ Klook｜金海樂天水上樂園票券說明</a>
+          <a class="photo-link blue" href="https://www.kkday.com/zh-tw/product/104822" target="_blank">→ KKday｜門票含注意事項說明</a>
+          <a class="photo-link amber" href="https://www.hk01.com/%E6%97%85%E9%81%8A/189751" target="_blank">→ HK01｜三大水上樂園攻略（含金海）</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 必玩設施 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">必玩設施攻略</span>
+      <span class="section-time">開園 10:00 衝刺</span>
+    </div>
+
+    <div class="highlight">
+      <div class="highlight-title">🎯 開園策略</div>
+      <div class="highlight-body">開園前 10 分鐘到閘口等候，開園後<strong>立刻先衝 Giant Boomerang 和 Tornado Slide</strong>，這兩個是排隊最長的設施，開園初期人最少。之後再回頭玩其他設施，下午人潮稍退再泡 SPA。</div>
+    </div>
+
+    <div class="facility-grid">
+      <div class="facility-card">
+        <div class="facility-name">Giant Boomerang<br>자이언트 부메랑고</div>
+        <span class="facility-tag f-must">★ 必玩</span>
+        <span class="facility-tag f-thrill">超刺激</span>
+        <div class="facility-note">國內最大 6 人用迴旋滑梯，開放式軌道高速衝下再急速上衝，腎上腺素爆表。開園必衝，人少時排隊僅 10–20 分鐘，旺季可達 60 分鐘。</div>
+      </div>
+      <div class="facility-card">
+        <div class="facility-name">Tornado Slide<br>토네이도 슬라이드</div>
+        <span class="facility-tag f-must">★ 必玩</span>
+        <span class="facility-tag f-thrill">超刺激</span>
+        <div class="facility-note">龍捲風造型超大滑梯，坐橡皮艇急速衝入漩渦，超有速度感。人氣設施之一，也是開園先搶。</div>
+      </div>
+      <div class="facility-card">
+        <div class="facility-name">Racing Slide<br>레이싱 슬라이드</div>
+        <span class="facility-tag f-thrill">刺激</span>
+        <div class="facility-note">多人並排競速滑梯，趴著衝下來比速度，很有趣。可以跟另一半比賽，節奏輕快不需等待太久。</div>
+      </div>
+      <div class="facility-card">
+        <div class="facility-name">Water Coaster<br>워터 코스터</div>
+        <span class="facility-tag f-thrill">刺激</span>
+        <div class="facility-note">水上雲霄飛車型設施，坐車廂在水道上起伏衝浪，水陸結合的新體驗，強烈推薦嘗試。</div>
+      </div>
+      <div class="facility-card">
+        <div class="facility-name">室內波浪池<br>실내 파도풀</div>
+        <span class="facility-tag f-relax">輕鬆</span>
+        <div class="facility-note">四季皆可玩的室內造浪池，浪高可達 1m 以上，夏天熱了可以進室內涼快一下，也很好玩。</div>
+      </div>
+      <div class="facility-card">
+        <div class="facility-name">懶人河<br>래피드 리버</div>
+        <span class="facility-tag f-relax">休閒</span>
+        <div class="facility-note">坐橡皮圈沿著水道漂流，很適合玩累了中場休息，可以邊漂邊曬太陽放鬆，非常舒服。</div>
+      </div>
+      <div class="facility-card">
+        <div class="facility-name">Giant Volcano<br>자이언트 볼케이노</div>
+        <span class="facility-tag f-thrill">刺激</span>
+        <div class="facility-note">38m高、35m寬的巨型火山，戶外波浪從中湧出，是整個樂園的地標。在旁邊感受海浪也很過癮。</div>
+      </div>
+      <div class="facility-card">
+        <div class="facility-name">SPA 溫泉區<br>스파풀</div>
+        <span class="facility-tag f-relax">放鬆</span>
+        <div class="facility-note">溫熱水按摩池，下午 3 點後人少，特別適合玩累了泡一泡舒緩肌肉。SPA 區營業至 20:00，比戶外設施晚關閉。</div>
+      </div>
+    </div>
+
+    <div class="alert note">
+      <span class="alert-icon">ℹ</span>
+      <strong>室內 vs 戶外：</strong>室內區（파도풀、스파풀、室內滑梯）全年開放；戶外區（Giant Boomerang、Tornado Slide 等）依季節及天氣開放，夏季旺季全部開放。若遇陰天戶外設施仍多半運作，大雨才會暫停。
+    </div>
+
+    <div class="photo-ref">
+      <div class="photo-ref-icon">📸</div>
+      <div class="photo-ref-body">
+        <div class="photo-ref-label">設施實拍・水上樂園全景</div>
+        <div class="photo-ref-desc">Giant Boomerang、Tornado Slide、懶人河、室內波浪池、SPA 區實拍，以及整個樂園鳥瞰</div>
+        <div class="photo-ref-links">
+          <a class="photo-link" href="https://www.lotteresort.com/main/ko/theme-park/lotte-water-park?bizCd=91&urlLang=ko" target="_blank">→ 樂天官網｜設施介紹（含圖）</a>
+          <a class="photo-link blue" href="https://www.klook.com/zh-TW/activity/88947-lotte-waterpark-pass-gimhae/" target="_blank">→ Klook｜設施照片集</a>
+          <a class="photo-link amber" href="https://www.gimhae.go.kr/00204/03060/03723.web?amode=view&idx=312" target="_blank">→ 金海市官方｜水上樂園介紹照片</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 建議玩法順序 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">建議遊玩順序（效率最高版）</span>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot dot-teal">1</div>
+        <div class="step-title">10:00 開園 → 立刻衝 Giant Boomerang</div>
+        <div class="step-body"><p>開園排隊最短的黃金 30 分鐘，先搶熱門，不排長龍。</p></div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-teal">2</div>
+        <div class="step-title">10:30 Tornado Slide → Racing Slide</div>
+        <div class="step-body"><p>趁人潮還少連玩兩個刺激設施。</p></div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-teal">3</div>
+        <div class="step-title">11:30 Water Coaster → 懶人河休息</div>
+        <div class="step-body"><p>刺激後用懶人河放鬆，順帶曬曬太陽消磨中午前時光。</p></div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-amber">4</div>
+        <div class="step-title">12:30 午餐</div>
+        <div class="step-body"><p>刷手環在園內餐廳用餐，避開尖峰時段（11:30–13:00 最擠），稍等到 12:30 再去比較順。</p></div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-teal">5</div>
+        <div class="step-title">13:30 室內波浪池 → Giant Volcano 旁感受浪</div>
+        <div class="step-body"><p>下午室外人潮稍多，室內波浪池反而空一些。</p></div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-teal">6</div>
+        <div class="step-title">14:30 回玩熱門設施第二輪（若想再刷）</div>
+        <div class="step-body"><p>下午 2–3 點是一般玩完的人開始離場的時段，熱門設施隊伍會縮短。</p></div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-teal">7</div>
+        <div class="step-title">15:30 SPA 溫泉區泡泡・放鬆</div>
+        <div class="step-body"><p>玩一整天，最後用 SPA 收尾，全身舒緩一下再出發。</p></div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-blue">8</div>
+        <div class="step-title">16:00 更衣・退手環・準備離園</div>
+        <div class="step-body"><p>吹乾頭髮（更衣室有吹風機），手環押金退回，整理好出發。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 園內午餐 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">園內午餐</span>
+      <span class="section-time">約 12:30–13:20</span>
+    </div>
+    <div class="info-card teal">
+      <div class="info-row">
+        <span class="info-label">付款</span>
+        <span class="info-val">全部刷<strong>手環</strong>，不需拿出錢包，非常方便。</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">選項</span>
+        <span class="info-val">園內有多家餐廳和小吃攤，韓式炒飯、拉麵、炸雞、烤肉飯等，也有便利的自助式小食區。</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">價位</span>
+        <span class="info-val">韓國水上樂園餐廳普遍定價偏高，一餐約 ₩12,000–18,000/人，<strong>食量不大建議各點一份主食＋分食小點心</strong>。</span>
+      </div>
+    </div>
+    <div class="menu-box">
+      <div class="menu-header">午餐建議點法（食量小版）</div>
+      <div class="menu-body">
+        <div class="menu-item">
+          <span>海鮮炒飯 <span class="ko">해물볶음밥</span> 或 石鍋拌飯 <span class="ko">돌솥비빔밥</span></span>
+          <span class="menu-note">各點一份</span>
+        </div>
+        <div class="menu-item">
+          <span>炸雞 <span class="ko">치킨</span> 小份分食</span>
+          <span class="menu-note">體力消耗大，補充蛋白質</span>
+        </div>
+        <div class="menu-item">
+          <span>運動飲料 / 碳酸飲料</span>
+          <span class="menu-note">消耗大補充電解質</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert warn">
+      <span class="alert-icon">⚠</span>
+      水上樂園禁止外帶食物入場，若想省餐費可帶密封容器裝去籽水果（如葡萄、草莓）或寶特瓶飲料進去，這是允許的。
+    </div>
+  </div>
+
+  <!-- 08 回程交通 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">回程交通：水上樂園 → 西面</span>
+      <span class="section-time">16:30 出發</span>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot dot-blue">①</div>
+        <div class="step-title">在園門口叫計程車（Kakao T）</div>
+        <div class="step-body">
+          <p>離園後在<strong>正門口外</strong>打開 Kakao T，設定目的地為西面飯店名稱或地址。</p>
+          <p>若 Kakao T 在此處難叫，也可詢問門口工作人員或在停車場外攔計程車。</p>
+        </div>
+        <div class="alert note">
+          <span class="alert-icon">ℹ</span>
+          下午 16:00–18:00 是許多人離園的時段，計程車需求高，建議<strong>在換衣服時就用 App 預約叫車</strong>，換好衣服出門計程車差不多也到了。
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-blue">②</div>
+        <div class="step-title">回程費用與時間</div>
+        <div class="step-body">
+          <p>回程同樣約 <strong>₩20,000–25,000</strong>，35–40 分鐘，下午可能稍微遇到路況。</p>
+        </div>
+        <div class="ticket">
+          金海水上樂園 → 西面 ｜ 車程 <span>35–40 分</span> ｜ 費用 <span>₩20,000–25,000</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09 晚餐 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">晚餐：西面烤肉</span>
+      <span class="section-time">19:00–21:00</span>
+    </div>
+    <div class="info-card red">
+      <div class="info-row">
+        <span class="info-label">今晚主題</span>
+        <span class="info-val">玩了一整天水，晚上用韓式烤肉犒賞自己。今天在西面有兩個好選擇，擇一即可。</span>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+      <div class="info-card red">
+        <div style="font-size:13px; font-weight:600; margin-bottom:8px;">選項 A<br>味贊王鹽烤肉</div>
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-muted);">맛찬들왕소금구이</div>
+        <div class="info-row" style="margin-top:8px;">
+          <span class="info-label">位置</span>
+          <span class="info-val" style="font-size:12px;">西面站步行約 5 分鐘</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">特色</span>
+          <span class="info-val" style="font-size:12px;">14天熟成豬肉、有專人桌邊烤服務，豬頸肉最推</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">注意</span>
+          <span class="info-val" style="font-size:12px;">有排隊，建議 18:00 前避開用餐尖峰，或稍微等</span>
+        </div>
+      </div>
+      <div class="info-card red">
+        <div style="font-size:13px; font-weight:600; margin-bottom:8px;">選項 B<br>烤肉的男子</div>
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-muted);">고기굽는남자 서면점</div>
+        <div class="info-row" style="margin-top:8px;">
+          <span class="info-label">位置</span>
+          <span class="info-val" style="font-size:12px;">西面站步行約 7 分鐘</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">特色</span>
+          <span class="info-val" style="font-size:12px;">桌邊代烤服務、點餐附贈螃蟹海鮮湯，豬五花推薦</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">注意</span>
+          <span class="info-val" style="font-size:12px;">可事先用 Naver 預約，人潮高峰也需等位</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert tip">
+      <span class="alert-icon">💡</span>
+      玩了一天水消耗大，晚餐可以大方點，豬頸肉（목살）或五花肉（삼겹살）各一份＋生啤酒一杯，就是完美的一天收尾。兩個人點 2 份肉＋各一碗白飯即可，食量不大不要多點。
+    </div>
+
+    <div class="photo-ref">
+      <div class="photo-ref-icon">📸</div>
+      <div class="photo-ref-body">
+        <div class="photo-ref-label">烤肉餐廳外觀・菜單・桌邊烤肉服務</div>
+        <div class="photo-ref-desc">味贊王、烤肉的男子的店內環境、桌邊烤服務、豬頸肉照片</div>
+        <div class="photo-ref-links">
+          <a class="photo-link" href="https://debbiechien.com/busan-restaurant-seomyeon/" target="_blank">→ Debbie｜味贊王實拍＋評價</a>
+          <a class="photo-link blue" href="https://feitravel.tw/blog/post/68753684" target="_blank">→ 小菲｜烤肉的男子西面店介紹</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 費用試算 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <span class="section-title">Day 2 費用試算（2人）</span>
+    </div>
+    <table class="cost-table">
+      <tr><th>項目</th><th class="cost-right">費用</th><th>備注</th></tr>
+      <tr><td>計程車去程（2人）</td><td class="cost-right">₩22,000</td><td>西面 → 水上樂園，約 35 分</td></tr>
+      <tr><td>水上樂園門票（2人）</td><td class="cost-right">₩64,000</td><td>預購約 ₩32,000/人，現場更貴</td></tr>
+      <tr><td>手環押金（2人）</td><td class="cost-right">₩20,000</td><td>離場退還，₩10,000/人</td></tr>
+      <tr><td>手環儲值消費（2人）</td><td class="cost-right">₩40,000</td><td>午餐＋飲料＋雜項，估計</td></tr>
+      <tr><td>計程車回程（2人）</td><td class="cost-right">₩22,000</td><td>水上樂園 → 西面，約 35 分</td></tr>
+      <tr><td>晚餐烤肉（2人）</td><td class="cost-right">₩40,000</td><td>2份肉＋白飯＋飲料</td></tr>
+      <tr class="total"><td>合計（不含押金）</td><td class="cost-right">≈ ₩188,000</td><td>約 NT$4,200</td></tr>
+    </table>
+    <div class="alert note">
+      <span class="alert-icon">ℹ</span>
+      手環押金 ₩20,000 離場退還，實際支出不含此項。門票建議用 KKday / Klook 預購省 ₩20,000 左右。
+    </div>
+  </div>
+
+  <!-- 11 行前 Checklist -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <span class="section-title">Day 2 行前 Checklist</span>
+    </div>
+    <ul class="checklist">
+      <li><span class="check-icon">☐</span><span><strong>行前預購</strong>：KKday 或 Klook 購入水上樂園全日票，確認 QR Code 在手機可顯示，備份截圖。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>泳衣</strong>：男士泳褲、女士連身或兩件式泳衣，注意備有舒適的水上活動泳衣，不建議穿比基尼三角褲玩滑梯（容易走光）。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>毛巾</strong>：自帶一條大浴巾最省，否則現場租借需付費。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>夾腳拖 / 水鞋</strong>：水上樂園地面會燙，室外要穿。水鞋防滑更好。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>防曬乳</strong>：強烈建議高 SPF（50+），玩水後需補擦，準備防水型。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>防水手機袋</strong>：手環刷卡消費時需要看手機確認，要能在水邊使用。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>現金</strong>：帶 ₩30,000–50,000，計程車、手環押金用現金比較方便。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>換洗衣物＋護膚品</strong>：玩完要去吃晚餐，準備舒服的換洗衣物和乳液（玩水很乾燥）。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>Kakao T 事先安裝</strong>：出發前確認已安裝並綁定信用卡或支付方式。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>早餐吃好</strong>：玩水消耗體力，空腹不建議玩刺激設施。</span></li>
+      <li><span class="check-icon">☐</span><span><strong>手機防水</strong>：若手機本身非防水，請務必裝入防水袋，水上樂園有大量水花。</span></li>
+    </ul>
+  </div>
+
+  <!-- 頁尾 -->
+  <div style="text-align:center; padding-top:28px; border-top:1px solid var(--paper-border); font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-muted); letter-spacing:0.08em;">
+    DAY 2 OF 5 · BUSAN · GIMHAE LOTTE WATERPARK
+  </div>
+
+</div>
+</body>
+</html>
