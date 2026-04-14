@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { WEATHER_DAYS, WeatherType } from '../../data/mockData';
 
 /* ── iOS 線條風格 SVG 天氣圖示 ── */
@@ -102,8 +101,12 @@ const ShirtIcon = () => (
 );
 
 /* ── Main Component ── */
-const WeatherCard = () => {
-  const [activeIdx, setActiveIdx] = useState(0);
+interface WeatherCardProps {
+  activeIdx: number;
+  onDayChange: (idx: number) => void;
+}
+
+const WeatherCard = ({ activeIdx, onDayChange }: WeatherCardProps) => {
   const d = WEATHER_DAYS[activeIdx];
 
   return (
@@ -114,7 +117,7 @@ const WeatherCard = () => {
           <div
             key={day.date}
             className={`date-item${i === activeIdx ? ' date-item--active' : ''}`}
-            onClick={() => setActiveIdx(i)}
+            onClick={() => onDayChange(i)}
           >
             <span className="date-item__day">{day.day}</span>
             <div className="date-item__number">{day.date}</div>

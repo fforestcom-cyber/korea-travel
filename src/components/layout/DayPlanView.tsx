@@ -538,12 +538,20 @@ const SectionCard = ({ section, displayNum }: { section: DaySection; displayNum:
 };
 
 // ── DayPlanView ────────────────────────────────────────────────────────
-const TRANSPORT_NUMS = new Set(['01', '02', '03', '04', '05']);
-const SKIP_NUMS      = new Set(['10']);
+const DAY1_TRANSPORT_NUMS = new Set(['01', '02', '03', '04', '05']);
+const SKIP_NUMS           = new Set(['10', '11']);
 
 const DayPlanView = ({ plan }: { plan: DayPlan }) => {
-  const transportSections = plan.sections.filter(s => TRANSPORT_NUMS.has(s.num));
-  const regularSections   = plan.sections.filter(s => !TRANSPORT_NUMS.has(s.num) && !SKIP_NUMS.has(s.num));
+  // 只有 Day 1 才把 01~05 合併成 MergedTransportCard
+  const transportSections = plan.day === 1
+    ? plan.sections.filter(s => DAY1_TRANSPORT_NUMS.has(s.num))
+    : [];
+
+  const regularSections = plan.sections.filter(s =>
+    !transportSections.includes(s) &&
+    !SKIP_NUMS.has(s.num) &&
+    !s.title.includes('Checklist')
+  );
 
   return (
     <div>
@@ -564,7 +572,7 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
         <SectionCard
           key={section.num}
           section={section}
-          displayNum={String(i + 2).padStart(2, '0')}
+          displayNum={plan.day === 1 ? String(i + 2).padStart(2, '0') : section.num}
         />
       ))}
     </div>
