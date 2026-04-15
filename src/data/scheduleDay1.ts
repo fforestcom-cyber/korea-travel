@@ -63,6 +63,7 @@ const day1Plan: DayPlan = {
       "num": "01",
       "title": "抵達金海機場・入境手續",
       "timeRange": "15:30–15:50",
+      "mapQuery": "",
       "blocks": [
         {
           "kind": "info-card",
@@ -110,6 +111,7 @@ const day1Plan: DayPlan = {
       "num": "02",
       "title": "機場換錢・儲值交通卡",
       "timeRange": "15:50–16:05",
+      "mapQuery": "",
       "blocks": [
         {
           "kind": "steps",
@@ -188,6 +190,7 @@ const day1Plan: DayPlan = {
       "num": "03",
       "title": "搭輕軌：機場站（504）→ 沙上站（501）",
       "timeRange": "16:10–16:18｜車程 7 分鐘",
+      "mapQuery": "",
       "blocks": [
         {
           "kind": "steps",
@@ -258,6 +261,7 @@ const day1Plan: DayPlan = {
       "num": "04",
       "title": "步行換乘：輕軌沙上 → 地鐵沙上站（227）",
       "timeRange": "16:18–16:25｜步行 6–7 分鐘",
+      "mapQuery": "",
       "blocks": [
         {
           "kind": "info-card",
@@ -355,6 +359,7 @@ const day1Plan: DayPlan = {
       "num": "05",
       "title": "搭地鐵：沙上站（227）→ 西面站（219）",
       "timeRange": "16:25–16:40｜車程 14 分鐘",
+      "mapQuery": "",
       "blocks": [
         {
           "kind": "steps",
@@ -428,6 +433,7 @@ const day1Plan: DayPlan = {
       "num": "06",
       "title": "抵達飯店・Check-in",
       "timeRange": "17:00–18:30",
+      "mapQuery": "어반스테이 서면",
       "blocks": [
         {
           "kind": "info-card",
@@ -458,6 +464,7 @@ const day1Plan: DayPlan = {
       "num": "07",
       "title": "晚餐：松亭三代豬肉湯飯",
       "timeRange": "18:30–19:30",
+      "mapQuery": "송정3대국밥 서면",
       "blocks": [
         {
           "kind": "info-card",
@@ -546,6 +553,7 @@ const day1Plan: DayPlan = {
       "num": "08",
       "title": "田浦文創商圈初探",
       "timeRange": "20:00–22:00",
+      "mapQuery": "오브젝트 전포동",
       "blocks": [
         {
           "kind": "info-card",
@@ -604,6 +612,7 @@ const day1Plan: DayPlan = {
       "num": "09",
       "title": "宵夜：西面布帳馬車",
       "timeRange": "22:00–23:00",
+      "mapQuery": "서면 포장마차",
       "blocks": [
         {
           "kind": "info-card",
@@ -692,6 +701,7 @@ const day1Plan: DayPlan = {
       "num": "10",
       "title": "行前 Checklist",
       "timeRange": "",
+      "mapQuery": "",
       "blocks": [
         {
           "kind": "checklist",

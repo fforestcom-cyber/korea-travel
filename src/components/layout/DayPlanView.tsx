@@ -232,6 +232,53 @@ const renderBlock = (block: ContentBlock, idx: number, stepOffset = 0) => {
         </div>
       );
 
+    case 'facility-grid':
+      return (
+        <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
+          {block.items.map((item, i) => (
+            <div key={i} style={{
+              background: '#faf8f4',
+              border: '1px solid #ece8e3',
+              borderRadius: 8,
+              padding: '10px 12px',
+            }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 5, lineHeight: 1.4 }}>
+                {item.name}
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+                {item.tags.map((tag, j) => (
+                  <span key={j} style={{
+                    fontSize: 10, fontWeight: 600, padding: '1px 7px', borderRadius: 20, display: 'inline-block',
+                    ...(tag.type === 'thrill' ? { background: '#fde8e0', color: '#8b2010' }
+                      : tag.type === 'relax'  ? { background: '#e0f2ea', color: '#0a4a30' }
+                      :                         { background: '#fff0cc', color: '#7a4a00' }),
+                  }}>
+                    {tag.label}
+                  </span>
+                ))}
+              </div>
+              <p style={{ fontSize: 11, color: '#9ca3af', lineHeight: 1.5, margin: 0 }}>{item.note}</p>
+            </div>
+          ))}
+        </div>
+      );
+
+    case 'highlight':
+      return (
+        <div key={idx} style={{
+          background: 'rgba(158,171,150,0.12)',
+          border: '1px solid rgba(158,171,150,0.3)',
+          borderRadius: 8,
+          padding: '10px 14px',
+          marginBottom: 12,
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: '#7d9baa', letterSpacing: '0.04em', marginBottom: 5 }}>
+            {block.title}
+          </div>
+          <div style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.65 }}>{block.body}</div>
+        </div>
+      );
+
     case 'photo-ref':
     default:
       return null;
@@ -461,8 +508,20 @@ const MergedTransportCard = ({ sections }: { sections: DaySection[] }) => {
 };
 
 // ── SectionCard（06~09，顯示連續 02~05） ─────────────────────────────
-const SectionCard = ({ section, displayNum }: { section: DaySection; displayNum: string }) => {
-  const [open, setOpen] = useState(false);
+const SectionCard = ({
+  section, displayNum, sectionId,
+}: {
+  section: DaySection;
+  displayNum: string;
+  sectionId: string;
+}) => {
+  const [open, setOpen]           = useState(false);
+  const [linksOpen, setLinksOpen] = useState(false);
+
+  const contentBlocks  = section.blocks.filter(b => b.kind !== 'photo-ref');
+  const photoRefBlocks = section.blocks.filter(b => b.kind === 'photo-ref') as
+    Extract<import('../../types/dayPlan').ContentBlock, { kind: 'photo-ref' }>[];
+  const allLinks = photoRefBlocks.flatMap(ref => ref.links);
 
   return (
     <div style={{
@@ -498,39 +557,93 @@ const SectionCard = ({ section, displayNum }: { section: DaySection; displayNum:
 
       {open && (
         <div style={{ padding: '0 16px 16px', borderTop: `1px solid ${MORANDI_LINE}`, paddingTop: 14 }}>
-          {section.blocks.map((block, i) => renderBlock(block, i))}
-          <div style={{ display: 'flex', gap: 8, marginTop: 14, paddingTop: 12, borderTop: `1px solid ${MORANDI_LINE}` }}>
-            <a
-              href={`https://map.naver.com/v5/search/${encodeURIComponent(section.title)}`}
-              target="_blank" rel="noopener noreferrer"
-              style={{
-                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                padding: '8px 0', borderRadius: 'var(--radius-md)',
-                background: '#e8f5e9', color: '#1a7340',
-                fontSize: 13, fontWeight: 600, textDecoration: 'none',
-              }}
-            >
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2}>
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
-              Naver Map
-            </a>
-            <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(section.title + ' 부산')}`}
-              target="_blank" rel="noopener noreferrer"
-              style={{
-                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                padding: '8px 0', borderRadius: 'var(--radius-md)',
-                background: '#e8f0fe', color: '#1a56db',
-                fontSize: 13, fontWeight: 600, textDecoration: 'none',
-              }}
-            >
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2}>
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
-              Google Map
-            </a>
-          </div>
+          {contentBlocks.map((block, i) => renderBlock(block, i))}
+
+          {/* Naver / Google Map — 僅在 mapQuery 有值時顯示 */}
+          {section.mapQuery && (
+            <div style={{ display: 'flex', gap: 8, marginTop: 14, paddingTop: 12, borderTop: `1px solid ${MORANDI_LINE}` }}>
+              <a
+                href={`https://map.naver.com/p/search/${encodeURIComponent(section.mapQuery)}`}
+                target="_blank" rel="noopener noreferrer"
+                style={{
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                  padding: '8px 0', borderRadius: 'var(--radius-md)',
+                  background: '#e8f5e9', color: '#1a7340',
+                  fontSize: 13, fontWeight: 600, textDecoration: 'none',
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                Naver Map
+              </a>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(section.mapQuery)}`}
+                target="_blank" rel="noopener noreferrer"
+                style={{
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                  padding: '8px 0', borderRadius: 'var(--radius-md)',
+                  background: '#e8f0fe', color: '#1a56db',
+                  fontSize: 13, fontWeight: 600, textDecoration: 'none',
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                Google Map
+              </a>
+            </div>
+          )}
+
+          {/* 參考連結（從 photo-ref 解析） */}
+          {allLinks.length > 0 && (
+            <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${MORANDI_LINE}` }}>
+              <button
+                onClick={() => setLinksOpen(!linksOpen)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  fontSize: 11, fontWeight: 600, color: '#9ca3af',
+                  letterSpacing: '0.05em', background: 'none', border: 'none',
+                  cursor: 'pointer', width: '100%',
+                }}
+              >
+                <svg viewBox="0 0 24 24" style={{ width: 13, height: 13 }} fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                </svg>
+                參考連結
+                <svg viewBox="0 0 24 24" style={{
+                  width: 13, height: 13, marginLeft: 'auto',
+                  transform: linksOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s',
+                }} fill="none" stroke="currentColor" strokeWidth={2}>
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+
+              {linksOpen && (
+                <ul style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {allLinks.map((link, i) => (
+                    <li key={i} style={{ display: 'flex', gap: 6 }}>
+                      <span style={{ fontSize: 10, color: '#c0b8b0', flexShrink: 0, marginTop: 1, minWidth: 16 }}>
+                        {i + 1}.
+                      </span>
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: 12, color: '#7d9baa', textDecoration: 'underline', textUnderlineOffset: 2, lineHeight: 1.5 }}
+                      >
+                        {link.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+
+          {/* 我的照片 */}
+          <SectionPhotoGallery sectionId={sectionId} />
         </div>
       )}
     </div>
@@ -573,6 +686,7 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
           key={section.num}
           section={section}
           displayNum={plan.day === 1 ? String(i + 2).padStart(2, '0') : section.num}
+          sectionId={`day${plan.day}-s${section.num}`}
         />
       ))}
     </div>

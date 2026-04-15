@@ -26,23 +26,23 @@ const day3Plan: DayPlan = {
       "num": "01",
       "title": "退房 + 早餐：Egg Drop 西面店",
       "timeRange": "08:00–09:20",
+      "mapQuery": "에그드랍 서면롯데후문점",
       "blocks": [
-        {
-          "kind": "alert",
-          "variant": "tip",
-          "text": "**前一晚必做（ZIM CARRY 行李宅配）**：KKday 預訂 ZIM CARRY 行李宅配：西面飯店取件 → 金海機場 3F 送達。今天行程橫跨全城 5 個點，行李宅配是唯一讓你全程輕裝的方式。費用：每件 ₩15,000（24吋以上 +₩5,000）。退房時把行李交給飯店 Check-in 台，確認 ZIM CARRY 上午取件時間。**隨身小包備好**：Pass 卡、換洗衣物一套、充電器、重要證件，不要把當晚要用的東西全部放進托運行李。"
-        },
         {
           "kind": "info-card",
           "variant": "gold",
           "rows": [
             {
-              "label": "必點",
-              "value": "**蒜香培根起司（Garlic Bacon Cheese）**₩5,400 — 大蒜吐司＋厚燒歐姆蛋＋培根＋起司，人氣 No.1。\n**美式火腿起司（American Ham Cheese）**₩4,900 — 口味較清淡，初次嘗試的好選擇。"
+              "label": "前往方法",
+              "value": "退房後步行：西面站 1 號出口方向，沿樂天百貨後門走約 5–8 分鐘即達。或叫計程車約 ₩3,000（1–2 分）。**建議先把行李交給飯店（ZIM CARRY 上午取件）再輕裝前往。**"
             },
             {
-              "label": "建議點法",
-              "value": "食量小的兩人：**各點一份三明治，共享一份薯餅**就夠。不需要點套餐，套餐量多容易撐到影響後續行程。"
+              "label": "營業時間",
+              "value": "08:00–22:00（全年無休）"
+            },
+            {
+              "label": "必點",
+              "value": "**蒜香培根起司（Garlic Bacon Cheese）**₩5,400 — 大蒜吐司＋厚燒歐姆蛋＋培根＋起司，人氣 No.1。\n**美式火腿起司（American Ham Cheese）**₩4,900 — 口味較清淡，初次嘗試的好選擇。"
             },
             {
               "label": "點餐方式",
@@ -70,6 +70,7 @@ const day3Plan: DayPlan = {
       "num": "02",
       "title": "西面 → ARTE MUSEUM（影島）",
       "timeRange": "09:20 出發",
+      "mapQuery": "아르떼뮤지엄 부산",
       "blocks": [
         {
           "kind": "info-card",
@@ -163,8 +164,8 @@ const day3Plan: DayPlan = {
           "label": "ARTE 必拍展廳位置 · Pass換票流程",
           "desc": "花卉廳角蹲拍法、瀑布廳人像位置、星空廳躺拍構圖、P.ARK 咖啡廳",
           "links": [
-            { "text": "→ Pass 換票流程", "href": "#", "style": "default" },
-            { "text": "→ 必拍角度整理", "href": "#", "style": "amber" }
+            { "text": "→ Pass 換票流程", "href": "https://www.google.com/search?q=아르떼뮤지엄+부산+visit+busan+pass+환권+방법", "style": "default" },
+            { "text": "→ 必拍角度整理", "href": "https://www.google.com/search?q=아르떼뮤지엄+부산+인생샷+포토스팟", "style": "amber" }
           ]
         }
       ]
@@ -172,7 +173,8 @@ const day3Plan: DayPlan = {
     {
       "num": "04",
       "title": "ARTE → 甘川洞文化村",
-      "timeRange": "12:00 出發 · 12:20–13:10（停留 55 分）",
+      "timeRange": "12:00–13:10",
+      "mapQuery": "감천문화마을",
       "blocks": [
         {
           "kind": "ticket",
@@ -242,7 +244,8 @@ const day3Plan: DayPlan = {
     {
       "num": "05",
       "title": "甘川洞 → 松島海上纜車（水晶車廂）",
-      "timeRange": "13:10 出發 · 13:25–14:20（停留約 1 小時）",
+      "timeRange": "13:10–14:20",
+      "mapQuery": "송도해상케이블카",
       "blocks": [
         {
           "kind": "ticket",
@@ -312,7 +315,8 @@ const day3Plan: DayPlan = {
     {
       "num": "06",
       "title": "松島 → 南浦洞採買串聯",
-      "timeRange": "14:20 出發 · 14:30–15:50（停留約 1.5 小時）",
+      "timeRange": "14:20–15:50",
+      "mapQuery": "남포동",
       "blocks": [
         {
           "kind": "ticket",
@@ -356,6 +360,15 @@ const day3Plan: DayPlan = {
             {
               "dotColor": "accent",
               "label": "③",
+              "title": "國際市場買棉被（加選）",
+              "body": "BIFF 廣場旁的**國際市場（국제시장）**以韓國傳統床品聞名，**輕量羽絨被、蠶絲被**是熱門伴手禮，真空壓縮後體積小好帶。\n**建議規格**：單人輕量款（春秋用）₩35,000–60,000，雙人款 ₩60,000–100,000。告訴店家「진공 포장 해주세요（請幫我真空包裝）」。\n⚠️ 今天 ZIM CARRY 行李已送走，棉被要**自己帶去海雲台**——體積壓縮後不大，可背著走。",
+              "alerts": [],
+              "tickets": [],
+              "photoRefs": []
+            },
+            {
+              "dotColor": "accent",
+              "label": "④",
               "title": "15:50 步行到樂天超市",
               "body": "南浦洞光復路往樂天超市光復店步行約 5–8 分鐘，不需叫車。",
               "alerts": [],
@@ -363,13 +376,24 @@ const day3Plan: DayPlan = {
               "photoRefs": []
             }
           ]
+        },
+        {
+          "kind": "photo-ref",
+          "label": "南浦洞 · 國際市場參考",
+          "desc": "BIFF 廣場黑糖餅攻略、國際市場棉被買法、光復路藥妝分佈",
+          "links": [
+            { "text": "→ 국제시장 이불 구입 가이드", "href": "https://www.google.com/search?q=국제시장+이불+구입+가격", "style": "default" },
+            { "text": "→ BIFF 廣場黑糖餅攻略", "href": "https://www.google.com/search?q=부산+BIFF+광장+씨앗호떡+원조", "style": "amber" },
+            { "text": "→ 南浦洞逛街動線", "href": "https://www.google.com/search?q=부산+남포동+쇼핑+코스", "style": "teal" }
+          ]
         }
       ]
     },
     {
       "num": "07",
       "title": "樂天超市光復店（伴手禮大採買）",
-      "timeRange": "16:00–17:30（停留約 1.5 小時）",
+      "timeRange": "16:00–17:30",
+      "mapQuery": "롯데마트 광복점",
       "blocks": [
         {
           "kind": "info-card",
@@ -409,34 +433,38 @@ const day3Plan: DayPlan = {
     {
       "num": "08",
       "title": "南浦洞 → 海雲台 · 入住飯店",
-      "timeRange": "17:30 出發 · 18:00–19:00",
+      "timeRange": "17:30–19:00",
+      "mapQuery": "Ramada Encore by Wyndham Busan Haeundae",
       "blocks": [
+        {
+          "kind": "ticket",
+          "text": "南浦洞樂天超市 → 海雲台飯店 ｜ 計程車 ≈ ₩32,000 ｜ 約 38 分（走廣安大橋）"
+        },
         {
           "kind": "info-card",
           "variant": "teal",
           "rows": [
             {
               "label": "交通",
-              "value": "樂天超市光復店 → 海雲台飯店，計程車約 **35–40 分鐘、₩28,000–35,000**。走廣安大橋快約 10 分，加收 **₩1,000 橋費**（正常現象，跳表加入即可）。帶著採買袋不建議搭地鐵換線。"
+              "value": "樂天超市光復店 → 海雲台，計程車約 **35–40 分鐘、₩28,000–35,000**。走廣安大橋快約 10 分，加收 **₩1,000 橋費**（正常現象）。帶採買袋不建議搭地鐵換線。"
             },
             {
               "label": "叫車目的地",
-              "value": "直接輸入海雲台飯店韓文名稱，或 Uber 輸入中文地址。"
+              "value": "라마다 앙코르 바이 윈덤 부산 해운대（或輸入地址：부산 해운대구 해운대해변로 264）"
             },
             {
-              "label": "入住",
-              "value": "海雲台飯店通常 15:00 後可入住。抵達先辦 Check-in，整理好採買物品，輕裝出門吃晚餐。"
+              "label": "飯店",
+              "value": "**Ramada Encore by Wyndham Busan Haeundae**\n海雲台海水浴場正對面，步行至海灘約 1 分鐘，位置絕佳。海景房可直接看海。"
+            },
+            {
+              "label": "Check-in",
+              "value": "15:00 後可入住。抵達先辦理 Check-in，把採買物品放房間，輕裝步行出門吃晚餐。"
+            },
+            {
+              "label": "ZIM CARRY 確認",
+              "value": "Check-in 時請飯店確認行李是否送達（通常 17:00–20:00 間送到）。若未到先盥洗，晚餐回來再整理。"
             }
           ]
-        },
-        {
-          "kind": "ticket",
-          "text": "南浦洞 → 海雲台飯店 ｜ 計程車 ≈ ₩32,000 ｜ 約 38 分（走廣安大橋）"
-        },
-        {
-          "kind": "alert",
-          "variant": "note",
-          "text": "Check-in 後確認 ZIM CARRY 行李是否送達（通常 17:00–20:00 間送到）。若未到先盥洗梳妝，晚餐回來剛好可以拿行李整理。"
         }
       ]
     },
@@ -451,7 +479,7 @@ const day3Plan: DayPlan = {
           "rows": [
             {
               "label": "交通",
-              "value": "海雲台站 3 號出口，往海水浴場方向直走約 5 分鐘，左手邊"
+              "value": "從 Ramada Encore 出發：飯店正面朝海灘方向步行，沿海灘右轉往海雲台站方向，步行約 8–10 分鐘即達市場入口。或從**海雲台站 3 號出口**往海水浴場直走約 5 分鐘，左手邊。"
             },
             {
               "label": "時間",
@@ -526,7 +554,8 @@ const day3Plan: DayPlan = {
         {
           "kind": "checklist",
           "items": [
-            "**前一晚**：KKday 預訂 ZIM CARRY 行李宅配（西面飯店取件 → 金海機場 3F 送達）",
+            "**前一晚**：KKday 預訂 ZIM CARRY 行李宅配（西面飯店取件 → 送達海雲台 Ramada Encore by Wyndham Busan Haeundae）",
+            "ZIM CARRY 行李已送飯店，採買物品要隨身帶去海雲台。",
             "**Pass 確認**：Day 3 使用藍色 ×2（ARTE + 松島纜車），確認通行證有效",
             "**ARTE MUSEUM**：10:00 開門，建議 09:50 前到現場。不需預約，到現場出示 Pass 換票",
             "**松島纜車換票**：指定「水晶車廂（유리 캡슐）」，確認 Pass 含單程或來回",

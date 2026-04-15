@@ -15,7 +15,9 @@
       "Bash(sed -i '487s/fontSize: 11/fontSize: 13/' src/components/layout/DayPlanView.tsx)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(node scripts/import-schedule.mjs 1 2)",
+      "Bash(node scripts/import-schedule.mjs 2)"
     ]
   }
 }

@@ -3,7 +3,7 @@
 export interface PhotoRefLink {
   text: string;
   href: string;
-  style: 'default' | 'teal' | 'amber' | 'red';
+  style: 'default' | 'teal' | 'amber' | 'red' | 'blue';
 }
 
 export interface AlertItem {
@@ -30,19 +30,33 @@ export interface InfoRow {
   value: string;
 }
 
+export interface FacilityTag {
+  label: string;
+  type: 'thrill' | 'relax' | 'must';
+}
+
+export interface FacilityItem {
+  name: string;
+  tags: FacilityTag[];
+  note: string;
+}
+
 export type ContentBlock =
-  | { kind: 'info-card'; variant: 'accent' | 'teal' | 'gold' | 'blue'; rows: InfoRow[] }
+  | { kind: 'info-card'; variant: 'accent' | 'teal' | 'gold' | 'blue' | 'amber' | 'red'; rows: InfoRow[] }
   | { kind: 'steps'; items: Step[] }
   | { kind: 'alert'; variant: 'warn' | 'tip' | 'note'; text: string }
   | { kind: 'ticket'; text: string }
   | { kind: 'menu'; header: string; items: { name: string; note: string }[] }
   | { kind: 'checklist'; items: string[] }
-  | { kind: 'photo-ref'; label: string; desc: string; links: PhotoRefLink[] };
+  | { kind: 'photo-ref'; label: string; desc: string; links: PhotoRefLink[] }
+  | { kind: 'facility-grid'; items: FacilityItem[] }
+  | { kind: 'highlight'; title: string; body: string };
 
 export interface DaySection {
   num: string;
   title: string;
   timeRange: string;
+  mapQuery?: string;
   blocks: ContentBlock[];
 }
 
