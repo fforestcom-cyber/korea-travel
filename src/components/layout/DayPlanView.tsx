@@ -622,21 +622,28 @@ const SectionCard = ({
 
               {linksOpen && (
                 <ul style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {allLinks.map((link, i) => (
-                    <li key={i} style={{ display: 'flex', gap: 6 }}>
-                      <span style={{ fontSize: 10, color: '#c0b8b0', flexShrink: 0, marginTop: 1, minWidth: 16 }}>
-                        {i + 1}.
-                      </span>
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ fontSize: 12, color: '#7d9baa', textDecoration: 'underline', textUnderlineOffset: 2, lineHeight: 1.5 }}
-                      >
-                        {link.text}
-                      </a>
-                    </li>
-                  ))}
+                  {allLinks.map((link, i) => {
+                    let site = '';
+                    try { site = new URL(link.href).hostname.replace('www.', ''); } catch {}
+                    return (
+                      <li key={i} style={{ display: 'flex', gap: 6 }}>
+                        <span style={{ fontSize: 10, color: '#c0b8b0', flexShrink: 0, marginTop: 1, minWidth: 16 }}>
+                          {i + 1}.
+                        </span>
+                        <div>
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ fontSize: 12, color: '#7d9baa', textDecoration: 'underline', textUnderlineOffset: 2, lineHeight: 1.5 }}
+                          >
+                            {link.text}
+                          </a>
+                          {site && <span style={{ marginLeft: 4, fontSize: 10, color: '#c0b8b0' }}>{site}</span>}
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>

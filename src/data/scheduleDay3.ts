@@ -68,8 +68,8 @@ const day3Plan: DayPlan = {
     },
     {
       "num": "02",
-      "title": "西面 → ARTE MUSEUM（影島）",
-      "timeRange": "09:20 出發",
+      "title": "西面 → ARTE MUSEUM 釜山",
+      "timeRange": "09:20 出發｜10:00–12:00 停留約 2 小時",
       "mapQuery": "아르떼뮤지엄 부산",
       "blocks": [
         {
@@ -81,33 +81,12 @@ const day3Plan: DayPlan = {
               "value": "西面飯店 → ARTE MUSEUM，計程車約 **20 分鐘、₩12,000–15,000**"
             },
             {
-              "label": "叫車韓文",
-              "value": "(아르떼뮤지엄 부산)　或　(부산 영도구 해양로247번길 29)"
+              "label": "叫車韓文／地址",
+              "value": "(아르떼뮤지엄 부산)　或　(부산 영도구 해양로247번길 29)\n釜山廣域市影島區海洋路247番街29"
             },
             {
               "label": "ARTE 開門",
-              "value": "10:00。建議 09:50 前到，趕第一批人場最清靜。"
-            }
-          ]
-        },
-        {
-          "kind": "ticket",
-          "text": "西面 → ARTE MUSEUM ｜ 計程車 ≈ ₩13,000 ｜ 約 20 分"
-        }
-      ]
-    },
-    {
-      "num": "03",
-      "title": "ARTE MUSEUM 釜山",
-      "timeRange": "10:00–12:00｜停留約 2 小時",
-      "blocks": [
-        {
-          "kind": "info-card",
-          "variant": "accent",
-          "rows": [
-            {
-              "label": "地址",
-              "value": "釜山廣域市影島區海洋路247番街29（아르떼뮤지엄 부산）"
+              "value": "10:00。建議 09:50 前到，趕第一批入場最清靜。"
             },
             {
               "label": "時間",
@@ -126,6 +105,10 @@ const day3Plan: DayPlan = {
               "value": "不要穿純白衣服，光影投射會讓白衣太搶鏡"
             }
           ]
+        },
+        {
+          "kind": "ticket",
+          "text": "西面 → ARTE MUSEUM ｜ 計程車 ≈ ₩13,000 ｜ 約 20 分"
         },
         {
           "kind": "steps",
@@ -164,14 +147,13 @@ const day3Plan: DayPlan = {
           "label": "ARTE 必拍展廳位置 · Pass換票流程",
           "desc": "花卉廳角蹲拍法、瀑布廳人像位置、星空廳躺拍構圖、P.ARK 咖啡廳",
           "links": [
-            { "text": "→ Pass 換票流程", "href": "https://www.google.com/search?q=아르떼뮤지엄+부산+visit+busan+pass+환권+방법", "style": "default" },
-            { "text": "→ 必拍角度整理", "href": "https://www.google.com/search?q=아르떼뮤지엄+부산+인생샷+포토스팟", "style": "amber" }
+            { "text": "→ ARTE MUSEUM 釜山攻略", "href": "https://lizzzstyle.tw/arte-museum/", "style": "default" }
           ]
         }
       ]
     },
     {
-      "num": "04",
+      "num": "03",
       "title": "ARTE → 甘川洞文化村",
       "timeRange": "12:00–13:10",
       "mapQuery": "감천문화마을",
@@ -185,12 +167,8 @@ const day3Plan: DayPlan = {
           "variant": "teal",
           "rows": [
             {
-              "label": "叫車韓文",
-              "value": "(감천문화마을 안내센터)"
-            },
-            {
-              "label": "地址",
-              "value": "釜山沙下區甘內2路203（遊客中心）"
+              "label": "叫車韓文／地址",
+              "value": "(감천문화마을 안내센터)\n釜山沙下區甘內2路203（遊客中心）"
             },
             {
               "label": "入村",
@@ -238,11 +216,19 @@ const day3Plan: DayPlan = {
           "kind": "alert",
           "variant": "warn",
           "text": "甘川洞山路多、階梯多，今天行程全天步行量大，建議穿舒適的鞋。氣溫高時山坡曬得很厲害，帶遮陽帽或防曬。"
+        },
+        {
+          "kind": "photo-ref",
+          "label": "甘川洞文化村 · 中文攻略",
+          "desc": "彩色階梯、小王子壁畫、俯瞰全景拍攝位置",
+          "links": [
+            { "text": "→ 甘川洞攻略（中文）", "href": "https://www.google.com/search?q=釜山+甘川洞文化村+攻略+中文", "style": "default" }
+          ]
         }
       ]
     },
     {
-      "num": "05",
+      "num": "04",
       "title": "甘川洞 → 松島海上纜車（水晶車廂）",
       "timeRange": "13:10–14:20",
       "mapQuery": "송도해상케이블카",
@@ -256,7 +242,7 @@ const day3Plan: DayPlan = {
           "variant": "blue",
           "rows": [
             {
-              "label": "叫車韓文",
+              "label": "叫車韓文／地址",
               "value": "(송도해상케이블카 / 부산 서구 송도해변로 171)"
             },
             {
@@ -309,11 +295,19 @@ const day3Plan: DayPlan = {
           "kind": "alert",
           "variant": "tip",
           "text": "水晶車廂和一般車廂差很多——透明底部踩著海是最大亮點，一定要用 Pass 換水晶車廂。Pass 節省的 ₩44,000 就靠這兩個景點回本。"
+        },
+        {
+          "kind": "photo-ref",
+          "label": "松島海上纜車 · 中文攻略",
+          "desc": "Pass換票流程、水晶車廂底部透明體驗、龍宮空中步道",
+          "links": [
+            { "text": "→ 松島纜車攻略（中文）", "href": "https://www.google.com/search?q=釜山+松島海上纜車+水晶車廂+攻略+中文", "style": "default" }
+          ]
         }
       ]
     },
     {
-      "num": "06",
+      "num": "05",
       "title": "松島 → 南浦洞採買串聯",
       "timeRange": "14:20–15:50",
       "mapQuery": "남포동",
@@ -382,15 +376,15 @@ const day3Plan: DayPlan = {
           "label": "南浦洞 · 國際市場參考",
           "desc": "BIFF 廣場黑糖餅攻略、國際市場棉被買法、光復路藥妝分佈",
           "links": [
-            { "text": "→ 국제시장 이불 구입 가이드", "href": "https://www.google.com/search?q=국제시장+이불+구입+가격", "style": "default" },
-            { "text": "→ BIFF 廣場黑糖餅攻略", "href": "https://www.google.com/search?q=부산+BIFF+광장+씨앗호떡+원조", "style": "amber" },
-            { "text": "→ 南浦洞逛街動線", "href": "https://www.google.com/search?q=부산+남포동+쇼핑+코스", "style": "teal" }
+            { "text": "→ 南浦洞採買攻略（中文）", "href": "https://www.google.com/search?q=釜山+南浦洞+採買+攻略+中文", "style": "default" },
+            { "text": "→ BIFF廣場黑糖餅攻略（中文）", "href": "https://www.google.com/search?q=釜山+BIFF廣場+黑糖餅+中文+攻略", "style": "amber" },
+            { "text": "→ 國際市場棉被購買攻略（中文）", "href": "https://www.google.com/search?q=釜山+國際市場+棉被+中文+攻略", "style": "teal" }
           ]
         }
       ]
     },
     {
-      "num": "07",
+      "num": "06",
       "title": "樂天超市光復店（伴手禮大採買）",
       "timeRange": "16:00–17:30",
       "mapQuery": "롯데마트 광복점",
@@ -431,7 +425,7 @@ const day3Plan: DayPlan = {
       ]
     },
     {
-      "num": "08",
+      "num": "07",
       "title": "南浦洞 → 海雲台 · 入住飯店",
       "timeRange": "17:30–19:00",
       "mapQuery": "Ramada Encore by Wyndham Busan Haeundae",
@@ -469,9 +463,10 @@ const day3Plan: DayPlan = {
       ]
     },
     {
-      "num": "09",
+      "num": "08",
       "title": "晚餐：海雲台傳統市場",
       "timeRange": "19:30–21:00",
+      "mapQuery": "부산해운대시장",
       "blocks": [
         {
           "kind": "info-card",
@@ -519,7 +514,7 @@ const day3Plan: DayPlan = {
       ]
     },
     {
-      "num": "10",
+      "num": "09",
       "title": "Day 3 費用試算（2人）",
       "timeRange": "",
       "blocks": [
@@ -547,7 +542,7 @@ const day3Plan: DayPlan = {
       ]
     },
     {
-      "num": "11",
+      "num": "10",
       "title": "Day 3 行前 Checklist",
       "timeRange": "",
       "blocks": [
@@ -555,7 +550,7 @@ const day3Plan: DayPlan = {
           "kind": "checklist",
           "items": [
             "**前一晚**：KKday 預訂 ZIM CARRY 行李宅配（西面飯店取件 → 送達海雲台 Ramada Encore by Wyndham Busan Haeundae）",
-            "ZIM CARRY 行李已送飯店，採買物品要隨身帶去海雲台。",
+            "**採買策略** ZIM CARRY 行李已送飯店，採買物品要隨身帶去海雲台。",
             "**Pass 確認**：Day 3 使用藍色 ×2（ARTE + 松島纜車），確認通行證有效",
             "**ARTE MUSEUM**：10:00 開門，建議 09:50 前到現場。不需預約，到現場出示 Pass 換票",
             "**松島纜車換票**：指定「水晶車廂（유리 캡슐）」，確認 Pass 含單程或來回",

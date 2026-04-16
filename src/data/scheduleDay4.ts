@@ -24,19 +24,24 @@ const day4Plan: DayPlan = {
       "num": "01",
       "title": "早餐：OPS 烘焙坊",
       "timeRange": "08:00–09:00",
+      "mapQuery": "옵스해운대점",
       "blocks": [
         {
           "kind": "alert",
           "variant": "tip",
-          "text": "**出發前必做（行前重要預約）：**①**天空膠囊列車提前預約**：膠囊列車非常熱門，旺季提前 1–2 週、平日也建議 3–5 天前在官網或 Trip.com 訂票。選 **尾浦 → 青沙浦**，靠海外側視野最佳。Day 4 目標時段 **11:30–12:00**。②**OPS 烘焙坊確認是否有排隊**：海雲台人氣早餐店，08:00 開門。平日通常不用太久，早點到就好。③**Visit Busan Pass 剩餘確認**：Day 4 使用紫色景點 2 個：Skyline Luge（₩28,000）+ Spa Land（₩23,000），合計省 ₩51,000。"
+          "text": "OPS 烘焙坊為海雲台人氣早餐店，08:00 開門。平日通常不用太久，早點到就好。"
         },
         {
           "kind": "info-card",
           "variant": "gold",
           "rows": [
             {
-              "label": "地點",
-              "value": "海雲台（步行或短程計程車）"
+              "label": "步行",
+              "value": "從 Ramada Encore 出發：沿海雲台海濱路步行約 8–10 分鐘可達。"
+            },
+            {
+              "label": "叫車韓文／地址",
+              "value": "(옵스해운대점)"
             },
             {
               "label": "時間",
@@ -45,11 +50,15 @@ const day4Plan: DayPlan = {
             {
               "label": "推薦",
               "value": "招牌生乳包、可頌、三明治；2人點 2–3 樣輕食即可"
-            },
-            {
-              "label": "注意",
-              "value": "食量小，今天還有烤扇貝大餐，早餐吃輕一點"
             }
+          ]
+        },
+        {
+          "kind": "photo-ref",
+          "label": "OPS 烘焙坊 · 海雲台早餐",
+          "desc": "必點品項、排隊狀況、周邊早餐選擇",
+          "links": [
+            { "text": "→ OPS 烘焙坊攻略（中文）", "href": "https://www.google.com/search?q=OPS+烘焙坊+海雲台+攻略+中文", "style": "default" }
           ]
         },
         {
@@ -61,49 +70,25 @@ const day4Plan: DayPlan = {
     },
     {
       "num": "02",
-      "title": "前往東釜山 Skyline Luge",
-      "timeRange": "09:00 出發，09:30 抵達",
+      "title": "前往東釜山 Skyline Luge → 斜坡滑車（2 次）",
+      "timeRange": "09:00 出發｜09:30–11:00 停留約 90 分鐘",
+      "mapQuery": "스카이라인 루지 부산",
       "blocks": [
         {
           "kind": "info-card",
           "variant": "accent",
           "rows": [
             {
-              "label": "地點",
-              "value": "東釜山 Osiria 觀光園區，靠近釜山樂天世界"
+              "label": "叫車韓文／地址",
+              "value": "(스카이라인 루지 부산)　或　(부산 기장군 기장읍 기장해안로 205)　｜　東釜山 Osiria 觀光園區，靠近釜山樂天世界"
             },
             {
               "label": "交通",
               "value": "海雲台飯店 → Skyline Luge，計程車約 **30–40 分鐘、₩20,000–25,000**。是全天唯一一段較遠的計程車程，必搭。"
             },
             {
-              "label": "韓文地址",
-              "value": "(부산 기장군 기장읍 기장해안로 205)（Naver Map / Uber 皆可輸入）"
-            },
-            {
               "label": "另一選項",
               "value": "從釜山站搭 1001 號公車到「龍宮寺/國立水產科學研究所」站下車步行 5 分鐘，但來回超過 3 小時，不建議。"
-            }
-          ]
-        },
-        {
-          "kind": "ticket",
-          "text": "海雲台飯店 → Skyline Luge ｜ 計程車 ≈ ₩23,000 ｜ 約 35 分"
-        }
-      ]
-    },
-    {
-      "num": "03",
-      "title": "Skyline Luge 斜坡滑車（2 次）",
-      "timeRange": "09:30–11:00｜停留約 90 分鐘",
-      "blocks": [
-        {
-          "kind": "info-card",
-          "variant": "accent",
-          "rows": [
-            {
-              "label": "地點",
-              "value": "東釜山 Osiria 觀光園區（釜山樂天世界旁）"
             },
             {
               "label": "門票",
@@ -126,6 +111,10 @@ const day4Plan: DayPlan = {
               "value": "孕婦、高血壓、心臟病、椎間盤突出者不可搭乘；85cm 以下不可搭"
             }
           ]
+        },
+        {
+          "kind": "ticket",
+          "text": "海雲台飯店 → Skyline Luge ｜ 計程車 ≈ ₩23,000 ｜ 約 35 分"
         },
         {
           "kind": "steps",
@@ -192,9 +181,10 @@ const day4Plan: DayPlan = {
       ]
     },
     {
-      "num": "04",
-      "title": "Skyline Luge → 尾浦站（天空膠囊列車起點）",
-      "timeRange": "11:00–11:25",
+      "num": "03",
+      "title": "Skyline Luge → 尾浦站 → 天空膠囊列車（尾浦 → 青沙浦）",
+      "timeRange": "11:00 出發｜11:30–12:20 搭乘",
+      "mapQuery": "해운대블루라인파크 미포역",
       "blocks": [
         {
           "kind": "info-card",
@@ -222,14 +212,7 @@ const day4Plan: DayPlan = {
           "kind": "alert",
           "variant": "warn",
           "text": "膠囊列車是預約時段制（如 11:30–12:00），**必須在時段內抵達**，建議提早 10 分鐘到站排隊。時段過了就無法搭乘！"
-        }
-      ]
-    },
-    {
-      "num": "05",
-      "title": "天空膠囊列車（尾浦 → 青沙浦）",
-      "timeRange": "11:30–12:20",
-      "blocks": [
+        },
         {
           "kind": "info-card",
           "variant": "blue",
@@ -321,7 +304,7 @@ const day4Plan: DayPlan = {
       ]
     },
     {
-      "num": "06",
+      "num": "04",
       "title": "青沙浦中場：三種方案依當下狀態選擇",
       "timeRange": "12:30–14:00",
       "blocks": [
@@ -336,11 +319,11 @@ const day4Plan: DayPlan = {
           "rows": [
             {
               "label": "方案 A",
-              "value": "**炭火烤扇貝正餐**（肚子餓・想吃海鮮）— 秀敏家 (수민이네) 推薦：炭火烤法鮮甜、Local 風格、菜單有中文。烤蛤蠣什錦中份 ₩40,000–50,000 + 拉麵或鮑魚粥共享一碗 ₩12,000–15,000。**絕對不要點套餐！**最便宜的套餐也要 ₩150,000 起。直接點單品，2人吃飽約 ₩50,000–65,000 就夠。"
+              "value": "**炭火烤扇貝正餐**（肚子餓・想吃海鮮）— 秀敏家 (수민이네) 推薦：炭火烤法鮮甜、Local 風格、菜單有中文。烤蛤蠣什錦中份 ₩40,000–50,000 + 拉麵或鮑魚粥共享一碗 ₩12,000–15,000。**絕對不要點套餐！**最便宜的套餐也要 ₩150,000 起。直接點單品，2人吃飽約 ₩50,000–65,000 就夠。\n**Naver / Google Map：수민이네 청사포**"
             },
             {
               "label": "方案 B",
-              "value": "**青沙浦海景咖啡廳輕食**（不太餓・想坐著看海補能量）— Cheongsa Foret (청사포레) 推薦：屋頂咖啡廳，可同時拍到紅白燈塔＋膠囊列車＋平交道，可頌鬆餅＋咖啡約 ₩18,000–22,000 / 2人。"
+              "value": "**青沙浦海景咖啡廳輕食**（不太餓・想坐著看海補能量）— Cheongsa Foret (청사포레) 推薦：屋頂咖啡廳，可同時拍到紅白燈塔＋膠囊列車＋平交道，可頌鬆餅＋咖啡約 ₩18,000–22,000 / 2人。\n**Naver / Google Map：청사포레**"
             },
             {
               "label": "方案 C",
@@ -367,7 +350,46 @@ const day4Plan: DayPlan = {
       ]
     },
     {
-      "num": "07",
+      "num": "05",
+      "title": "海岸列車（Pass 免費）",
+      "timeRange": "青沙浦 → 尾浦段",
+      "mapQuery": "해운대블루라인파크 청사포역",
+      "blocks": [
+        {
+          "kind": "info-card",
+          "variant": "blue",
+          "rows": [
+            {
+              "label": "Pass",
+              "value": "海岸列車全程 **Pass 免費**（Visit Busan Pass），持 Pass 直接上車，無需另行購票"
+            },
+            {
+              "label": "路線",
+              "value": "青沙浦站 → 달맞이고개역 → 尾浦站（미포역），沿海雲台海岸線行駛"
+            },
+            {
+              "label": "班次",
+              "value": "約每 30 分鐘一班，單程約 20 分鐘"
+            },
+            {
+              "label": "入口",
+              "value": "青沙浦站 1F（從天空膠囊列車 2F 下樓後右轉即達）"
+            },
+            {
+              "label": "體驗",
+              "value": "靠海外側景色最好，可欣賞海雲台海岸線全景，是輕鬆的沿海觀光體驗"
+            }
+          ]
+        },
+        {
+          "kind": "alert",
+          "variant": "tip",
+          "text": "Pass 持有者搭海岸列車完全免費，是從青沙浦前往尾浦轉乘的最佳方式，邊欣賞海景邊移動，不趕時間的話強烈推薦。"
+        }
+      ]
+    },
+    {
+      "num": "06",
       "title": "青沙浦 → Centum City（Spa Land）",
       "timeRange": "14:00–14:30",
       "blocks": [
@@ -376,12 +398,44 @@ const day4Plan: DayPlan = {
           "variant": "blue",
           "rows": [
             {
-              "label": "方案 A",
-              "value": "**海岸列車（Pass 免費）**：在青沙浦站搭海岸列車，可坐到 Centum City 附近換地鐵，或先到尾浦再轉乘。慢一點但省錢，適合沒時間壓力時。路線：青沙浦→尾浦（海岸列車，Pass免費）→ Centum City（地鐵2號線，₩1,400）"
+              "label": "方案 A（海岸列車 Pass 免費）",
+              "value": "在青沙浦站 1F 搭乘海岸列車，Pass 免費，沿海岸行駛至尾浦站（약 20분）。尾浦站下車後，步行或叫車至海雲台站，再搭地鐵 2 號線至 Centum City 站（₩1,400/人）。"
             },
             {
-              "label": "方案 B",
-              "value": "**計程車直達（推薦）**：青沙浦 → 新世界百貨 Centum City，約 **₩9,000–12,000、15 分鐘**。午餐後直接出發，效率最高。"
+              "label": "方案 B（計程車直達）",
+              "value": "**計程車直達（效率優先）**：青沙浦 → 新世界百貨 Centum City，約 **₩9,000–12,000、15 分鐘**。午餐後直接出發，效率最高。"
+            }
+          ]
+        },
+        {
+          "kind": "steps",
+          "items": [
+            {
+              "dotColor": "blue",
+              "label": "①",
+              "title": "青沙浦站 1F 搭乘海岸列車",
+              "body": "從青沙浦膠囊列車站 2F 下樓，在 1F 月台出示 Pass 免費搭乘海岸列車。靠海外側座位視野最佳。",
+              "alerts": [],
+              "tickets": [],
+              "photoRefs": []
+            },
+            {
+              "dotColor": "blue",
+              "label": "②",
+              "title": "海岸列車沿線（青沙浦 → 達迷路 → 尾浦）",
+              "body": "共 3 站，約 20 分鐘，沿途海岸景色壯觀。到**尾浦站（미포역）**下車。",
+              "alerts": [],
+              "tickets": [],
+              "photoRefs": []
+            },
+            {
+              "dotColor": "blue",
+              "label": "③",
+              "title": "尾浦站轉乘 → Centum City",
+              "body": "尾浦站下車後，步行前往**海雲台站（해운대역）**（約 10 分鐘），搭地鐵 2 號線往 서면 方向，至 **Centum City 站（센텀시티역）**下車。\n地鐵票 ₩1,400/人。或在尾浦直接叫計程車到新世界百貨（約 ₩8,000–10,000）。",
+              "alerts": [],
+              "tickets": [],
+              "photoRefs": []
             }
           ]
         },
@@ -392,7 +446,7 @@ const day4Plan: DayPlan = {
       ]
     },
     {
-      "num": "08",
+      "num": "07",
       "title": "Spa Land 新世界汗蒸幕",
       "timeRange": "14:30–18:30｜最長4小時",
       "blocks": [
@@ -478,7 +532,7 @@ const day4Plan: DayPlan = {
       ]
     },
     {
-      "num": "09",
+      "num": "08",
       "title": "晚餐：廣安里烤肉",
       "timeRange": "18:30 起",
       "blocks": [
@@ -512,7 +566,7 @@ const day4Plan: DayPlan = {
       ]
     },
     {
-      "num": "10",
+      "num": "09",
       "title": "Day 4 費用試算（2人）",
       "timeRange": "",
       "blocks": [
@@ -544,7 +598,7 @@ const day4Plan: DayPlan = {
       ]
     },
     {
-      "num": "11",
+      "num": "10",
       "title": "Day 4 行前 Checklist",
       "timeRange": "",
       "blocks": [
@@ -553,6 +607,7 @@ const day4Plan: DayPlan = {
           "items": [
             "**出發前（訂票）**：天空膠囊列車 Trip.com 或官網訂票，選尾浦出發，時段 11:30–12:00，2人座單程 ₩40,000。",
             "**Pass 確認**：Day 4 要用紫色景點 ×2（Luge + Spa Land），確認還有足夠使用次數。",
+            "**Visit Busan Pass 剩餘確認**：Day 4 使用紫色景點 2 個：Skyline Luge（₩28,000）+ Spa Land（₩23,000），合計省 ₩51,000。",
             "**自備浴帽**：戴頭盔時隔絕公用安全帽，Spa Land 也有用（非必要但貼心）。",
             "**帶備用內衣褲**：Spa Land 泡完後換上的，讓身體更舒爽。",
             "**Skyline Luge 地址**：提前存入叫車 App，韓文：(부산 기장군 기장읍 기장해안로 205)",
