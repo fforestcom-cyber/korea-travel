@@ -31,6 +31,27 @@ const CATEGORY_STYLE: Record<string, { bg: string; color: string }> = {
   路程: { bg: 'rgba(168,156,140,0.18)', color: '#5a4a3a' },
 };
 
+const detectDistrict = (query: string): string => {
+  const MAP: [string, string][] = [
+    ['서면', '西面'], ['西面', '西面'],
+    ['해운대', '海雲台'], ['海雲台', '海雲台'],
+    ['남포동', '南浦洞'], ['남포', '南浦洞'], ['南浦', '南浦洞'],
+    ['광안리', '廣安里'], ['廣安里', '廣安里'], ['광안', '廣安里'],
+    ['부평시장', '富平市場'], ['부평', '富平'], ['富平', '富平'],
+    ['중구', '中區'], ['中區', '中區'],
+    ['동래', '東萊'], ['東萊', '東萊'],
+    ['사상', '沙上'], ['沙上', '沙上'],
+    ['김해', '金海'], ['金海', '金海'],
+    ['수영', '水營'], ['水營', '水營'],
+    ['부산역', '釜山站'], ['釜山站', '釜山站'],
+    ['센텀', '仙台市'], ['기장', '機張'], ['연산', '蓮山'],
+  ];
+  for (const [key, val] of MAP) {
+    if (query.includes(key)) return val;
+  }
+  return '';
+};
+
 const markBold = (text: string): React.ReactNode[] => {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) =>
@@ -643,7 +664,7 @@ const EditPanel = ({
         <button
           onClick={onClose}
           style={{
-            padding: '7px 18px', borderRadius: 6,
+            padding: '7px 20px', borderRadius: 999,
             border: '1px solid #ece8e3', background: 'none',
             fontSize: 13, color: '#6b7280', cursor: 'pointer',
           }}
@@ -651,7 +672,7 @@ const EditPanel = ({
         <button
           onClick={save} disabled={saving}
           style={{
-            padding: '7px 18px', borderRadius: 6,
+            padding: '7px 20px', borderRadius: 999,
             border: 'none', background: '#7d9baa',
             fontSize: 13, color: '#fff', cursor: 'pointer',
             opacity: saving ? 0.7 : 1,
@@ -905,60 +926,68 @@ const MergedTransportCard = ({
 
   const naverQ  = override?.naverQuery || override?.address || '';
   const googleQ = override?.googleQuery || '';
+  const district = detectDistrict(naverQ || displayTitle);
+  const openHours = override?.openHours || '';
 
   return (
     <div style={{ border: '1px solid #ece8e3', borderRadius: 'var(--radius-md)', background: '#fff', marginBottom: 10, overflow: 'hidden' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', padding: '12px 16px', gap: 8 }}>
-        <button
-          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, minWidth: 0 }}
-          onClick={() => setOpen(!open)}
-        >
-          {catStyle && (
-            <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
-              {override!.category}
-            </span>
-          )}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
-            <span style={{ fontWeight: 600, color: '#374151', lineHeight: 1.3 }}>{displayTitle}</span>
-            {timeRange && <span style={{ fontSize: 13, color: '#9ca3af' }}>{timeRange}</span>}
+      <div style={{ padding: '12px 16px 10px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+        {catStyle && (
+          <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
+            {override!.category}
+          </span>
+        )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+            <button onClick={() => setOpen(!open)} style={{ flex: 1, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600, color: '#374151', fontSize: 14, lineHeight: 1.3 }}>
+              {displayTitle}
+            </button>
+            <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: '#9ca3af', flexShrink: 0, lineHeight: 0 }}>
+              <svg viewBox="0 0 24 24" style={{ width: 15, height: 15, display: 'block', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} fill="none" stroke="currentColor" strokeWidth={2}>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
           </div>
-        </button>
-        {naverQ && (
-          <a href={`https://map.naver.com/p/search/${encodeURIComponent(naverQ)}`}
-            target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '4px 10px', borderRadius: 20, flexShrink: 0, background: '#e8f5e9', color: '#1a7340', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Naver
-          </a>
-        )}
-        {googleQ && (
-          <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(googleQ)}`}
-            target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '4px 10px', borderRadius: 20, flexShrink: 0, background: '#e8f0fe', color: '#1a56db', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Google
-          </a>
-        )}
-        <button
-          onClick={() => onEdit({ initFields, onSave: handleSave })}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 4,
-            padding: '4px 10px', borderRadius: 20, flexShrink: 0,
-            background: 'none', border: '1px solid #ece8e3',
-            color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer',
-          }}
-        >
-          <svg viewBox="0 0 24 24" style={{ width: 11, height: 11 }} fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-          </svg>
-          編輯
-        </button>
+          {(district || openHours || timeRange) && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 7 }}>
+              {district && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, color: '#9eab96', fontWeight: 600 }}>
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  {district}
+                </span>
+              )}
+              {(openHours || timeRange) && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12, color: '#9ca3af' }}>
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  {openHours || timeRange}
+                </span>
+              )}
+            </div>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {naverQ && (
+              <a href={`https://map.naver.com/p/search/${encodeURIComponent(naverQ)}`} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '5px 12px', borderRadius: 20, background: '#e8f5e9', color: '#1a7340', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                Naver
+              </a>
+            )}
+            {googleQ && (
+              <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(googleQ)}`} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '5px 12px', borderRadius: 20, background: '#e8f0fe', color: '#1a56db', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                Google
+              </a>
+            )}
+            <button onClick={() => onEdit({ initFields, onSave: handleSave })}
+              style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 3, padding: '3px 9px', borderRadius: 20, flexShrink: 0, background: 'none', border: '1px solid #ece8e3', color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              編輯
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Action bar */}
-      <ActionBar isOpen={open} onToggle={() => setOpen(!open)} />
 
       {/* Expanded content */}
       {open && (
@@ -1060,6 +1089,8 @@ const SectionCard = ({
   const googleQ = override?.googleQuery || '';
   const catStyle = override?.category ? CATEGORY_STYLE[override.category] : null;
   const hasOverride = !!override?.name;
+  const district = detectDistrict(naverQ);
+  const openHours = override?.openHours || '';
 
   const handleSave = async (fields: EditFields) => {
     await setDoc(doc(db, 'cardOverrides', sectionId), { ...fields, dayNum, updatedAt: serverTimestamp() });
@@ -1072,56 +1103,62 @@ const SectionCard = ({
   return (
     <div style={{ border: '1px solid #ece8e3', borderRadius: 'var(--radius-md)', background: '#fff', marginBottom: 10, overflow: 'hidden' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', padding: '12px 16px', gap: 8 }}>
-        <button
-          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, minWidth: 0 }}
-          onClick={() => setOpen(!open)}
-        >
-          {catStyle && (
-            <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
-              {override!.category}
-            </span>
-          )}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
-            <span style={{ fontWeight: 600, color: '#374151', lineHeight: 1.3 }}>{displayTitle}</span>
-            {displayTime && <span style={{ fontSize: 13, color: '#9ca3af' }}>{displayTime}</span>}
+      <div style={{ padding: '12px 16px 10px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+        {catStyle && (
+          <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
+            {override!.category}
+          </span>
+        )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+            <button onClick={() => setOpen(!open)} style={{ flex: 1, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600, color: '#374151', fontSize: 14, lineHeight: 1.3 }}>
+              {displayTitle}
+            </button>
+            <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: '#9ca3af', flexShrink: 0, lineHeight: 0 }}>
+              <svg viewBox="0 0 24 24" style={{ width: 15, height: 15, display: 'block', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} fill="none" stroke="currentColor" strokeWidth={2}>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
           </div>
-        </button>
-        {naverQ && (
-          <a href={`https://map.naver.com/p/search/${encodeURIComponent(naverQ)}`}
-            target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '4px 10px', borderRadius: 20, flexShrink: 0, background: '#e8f5e9', color: '#1a7340', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Naver
-          </a>
-        )}
-        {googleQ && (
-          <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(googleQ)}`}
-            target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '4px 10px', borderRadius: 20, flexShrink: 0, background: '#e8f0fe', color: '#1a56db', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Google
-          </a>
-        )}
-        <button
-          onClick={() => onEdit({ initFields, onSave: handleSave })}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 4,
-            padding: '4px 10px', borderRadius: 20, flexShrink: 0,
-            background: 'none', border: '1px solid #ece8e3',
-            color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer',
-          }}
-        >
-          <svg viewBox="0 0 24 24" style={{ width: 11, height: 11 }} fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-          </svg>
-          編輯
-        </button>
+          {(district || openHours || displayTime) && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 7 }}>
+              {district && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, color: '#9eab96', fontWeight: 600 }}>
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  {district}
+                </span>
+              )}
+              {(openHours || displayTime) && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12, color: '#9ca3af' }}>
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  {openHours || displayTime}
+                </span>
+              )}
+            </div>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {naverQ && (
+              <a href={`https://map.naver.com/p/search/${encodeURIComponent(naverQ)}`} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '5px 12px', borderRadius: 20, background: '#e8f5e9', color: '#1a7340', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                Naver
+              </a>
+            )}
+            {googleQ && (
+              <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(googleQ)}`} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '5px 12px', borderRadius: 20, background: '#e8f0fe', color: '#1a56db', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                Google
+              </a>
+            )}
+            <button onClick={() => onEdit({ initFields, onSave: handleSave })}
+              style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 3, padding: '3px 9px', borderRadius: 20, flexShrink: 0, background: 'none', border: '1px solid #ece8e3', color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              編輯
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Action bar */}
-      <ActionBar isOpen={open} onToggle={() => setOpen(!open)} />
 
       {/* Expanded content */}
       {open && (
@@ -1216,6 +1253,7 @@ const CustomSectionCard = ({
   };
 
   const catStyle = card.category ? CATEGORY_STYLE[card.category] : null;
+  const district = detectDistrict(card.naverQuery ?? '');
 
   return (
     <div style={{
@@ -1224,56 +1262,62 @@ const CustomSectionCard = ({
       background: '#fffdf9',
       marginBottom: 10, overflow: 'hidden',
     }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', padding: '12px 16px', gap: 8 }}>
-        <button
-          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, minWidth: 0 }}
-          onClick={() => setOpen(!open)}
-        >
-          {catStyle && (
-            <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
-              {card.category}
-            </span>
-          )}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
-            <span style={{ fontWeight: 600, color: '#374151', lineHeight: 1.3 }}>{card.title}</span>
-            {card.timeRange && <span style={{ fontSize: 13, color: '#9ca3af' }}>{card.timeRange}</span>}
+      <div style={{ padding: '12px 16px 10px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+        {catStyle && (
+          <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
+            {card.category}
+          </span>
+        )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+            <button onClick={() => setOpen(!open)} style={{ flex: 1, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600, color: '#374151', fontSize: 14, lineHeight: 1.3 }}>
+              {card.title}
+            </button>
+            <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: '#9ca3af', flexShrink: 0, lineHeight: 0 }}>
+              <svg viewBox="0 0 24 24" style={{ width: 15, height: 15, display: 'block', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} fill="none" stroke="currentColor" strokeWidth={2}>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
           </div>
-        </button>
-        {card.naverQuery && (
-          <a href={`https://map.naver.com/p/search/${encodeURIComponent(card.naverQuery)}`}
-            target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '4px 10px', borderRadius: 20, flexShrink: 0, background: '#e8f5e9', color: '#1a7340', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Naver
-          </a>
-        )}
-        {card.googleQuery && (
-          <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(card.googleQuery)}`}
-            target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '4px 10px', borderRadius: 20, flexShrink: 0, background: '#e8f0fe', color: '#1a56db', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Google
-          </a>
-        )}
-        <button
-          onClick={() => onEdit({ initFields, onSave: handleSave })}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 4,
-            padding: '4px 10px', borderRadius: 20, flexShrink: 0,
-            background: 'none', border: '1px solid #ece8e3',
-            color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer',
-          }}
-        >
-          <svg viewBox="0 0 24 24" style={{ width: 11, height: 11 }} fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-          </svg>
-          編輯
-        </button>
+          {(district || card.timeRange) && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 7 }}>
+              {district && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, color: '#9eab96', fontWeight: 600 }}>
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  {district}
+                </span>
+              )}
+              {card.timeRange && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12, color: '#9ca3af' }}>
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  {card.timeRange}
+                </span>
+              )}
+            </div>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {card.naverQuery && (
+              <a href={`https://map.naver.com/p/search/${encodeURIComponent(card.naverQuery)}`} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '5px 12px', borderRadius: 20, background: '#e8f5e9', color: '#1a7340', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                Naver
+              </a>
+            )}
+            {card.googleQuery && (
+              <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(card.googleQuery)}`} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '5px 12px', borderRadius: 20, background: '#e8f0fe', color: '#1a56db', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                Google
+              </a>
+            )}
+            <button onClick={() => onEdit({ initFields, onSave: handleSave })}
+              style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 3, padding: '3px 9px', borderRadius: 20, flexShrink: 0, background: 'none', border: '1px solid #ece8e3', color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              編輯
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Action bar */}
-      <ActionBar isOpen={open} onToggle={() => setOpen(!open)} />
 
       {open && (
         <div style={{ padding: '0 16px 16px', borderTop: `1px dashed #e8d8c0`, paddingTop: 14 }}>

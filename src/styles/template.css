@@ -1178,43 +1178,56 @@
     .flight-card__airport--right { text-align: right; }
 
     /* ==========================================================================
-       15. 首頁：雙 Tab 切換（待辦 / 事前準備）
+       15. 首頁：待辦事項 + 事前準備 合併卡片
        ========================================================================== */
-    .home-subtab-ctrl { display: none; }
 
-    .home-subtabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 1rem;
+    .checklist-merged-card {
+      background-color: var(--color-bg-card);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-border);
+      border-top: none;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
     }
-    .home-subtab-label {
+
+    /* Tab 列 */
+    .checklist-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .checklist-tab {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 10px 0;
-      border-radius: var(--radius-md);
+      padding: 12px 0;
       font-size: var(--text-sm);
       font-weight: 600;
       color: var(--color-text-light);
-      background-color: var(--color-bg-card);
-      border: 1.5px solid var(--color-border);
+      background: none;
+      border: none;
       cursor: pointer;
-      transition: all .2s;
-    }
-    .home-subtab-label svg { width: 15px; height: 15px; }
-
-    #home-tab-todo:checked  ~ .home-subtabs .home-subtab-label--todo,
-    #home-tab-prep:checked  ~ .home-subtabs .home-subtab-label--prep {
-      background-color: var(--color-primary);
-      color: #ffffff;
-      border-color: var(--color-primary);
+      transition: color .15s, background .15s;
     }
 
-    .home-subview { display: none; }
-    #home-tab-todo:checked ~ .home-subviews .home-subview--todo,
-    #home-tab-prep:checked ~ .home-subviews .home-subview--prep { display: block; }
+    .checklist-tab:first-child {
+      border-radius: 0 var(--radius-xl) 0 0;
+    }
+
+    .checklist-tab:last-child {
+      border-radius: var(--radius-xl) 0 0 0;
+    }
+
+    .checklist-tab + .checklist-tab {
+      border-left: 1px solid var(--color-border);
+    }
+
+    .checklist-tab.is-active {
+      color: #fff;
+      background: var(--color-primary);
+    }
 
     /* Checklist */
     .checklist-item {
@@ -1226,12 +1239,12 @@
     }
     .checklist-item:last-child { border-bottom: none; }
     .checklist-box {
-      width: 20px;
-      height: 20px;
-      border-radius: 6px;
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
       border: 1.5px solid var(--color-primary-mid, var(--color-primary));
       flex-shrink: 0;
-      margin-top: 1px;
+      margin-top: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1241,13 +1254,13 @@
       border-color: var(--color-primary);
     }
     .checklist-box--checked svg {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       color: white;
       stroke-width: 3;
     }
     .checklist-item__text {
-      font-size: var(--text-base);
+      font-size: 15px;
       color: var(--color-text-main);
       line-height: 1.4;
     }
@@ -1494,21 +1507,13 @@
     }
 
     /* Navbar Tab 文字 → Noto Sans TC */
-    .tab-item__label,
-    .home-subtab-label {
+    .tab-item__label {
       font-family: var(--font-base);
     }
 
 /* ═══════════════════════════════════════════════════════
    React 相容層（僅補 CSS radio/[open] 無法使用的狀態）
    ═══════════════════════════════════════════════════════ */
-
-/* home-subtabs active（原本用 #home-tab-xxx:checked ~ 選擇器） */
-.home-subtab-label.is-active {
-  background-color: var(--color-primary);
-  color: #ffffff;
-  border-color: var(--color-primary);
-}
 
 /* event-card chevron 展開（原本用 details[open]） */
 .event-card.is-open .chevron-icon {
