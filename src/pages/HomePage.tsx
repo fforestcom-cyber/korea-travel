@@ -31,14 +31,6 @@ const FLIGHTS_COL   = collection(db, 'homeFlights');
 const CHECKLIST_COL = collection(db, 'homeChecklist');
 const ACCOM_COL     = collection(db, 'homeAccommodation');
 
-const DEFAULT_ACCOM: Omit<Accom, 'id' | 'order'> = {
-  name: 'Urbanstay Seomyeon',
-  checkIn: '2026/06/10', checkOut: '2026/06/14',
-  breakfast: '無',
-  naverQuery: '어반스테이 서면',
-  googleQuery: 'Urbanstay Seomyeon Busan',
-};
-
 /* ── 共用 ─────────────────────────────────────────────── */
 const iStyle: React.CSSProperties = {
   border: '1px solid #ece8e3', borderRadius: 6, padding: '6px 10px',
@@ -304,7 +296,6 @@ const AccomManagerModal = ({ items, onClose }: { items: Accom[]; onClose: () => 
   };
 
   const btnStyle: React.CSSProperties = { padding: '7px 20px', borderRadius: 999, border: 'none', background: '#7d9baa', fontSize: 12, color: '#fff', cursor: 'pointer' };
-  const cancelBtnStyle: React.CSSProperties = { padding: '7px 20px', borderRadius: 999, border: '1px solid #ece8e3', background: '#fff', fontSize: 12, color: '#6b7280', cursor: 'pointer' };
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,.4)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }} onMouseDown={e => e.target === e.currentTarget && onClose()}>
