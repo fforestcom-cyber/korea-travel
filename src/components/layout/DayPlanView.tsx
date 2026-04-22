@@ -31,6 +31,7 @@ const CATEGORY_STYLE: Record<string, { bg: string; color: string }> = {
   路程: { bg: 'rgba(168,156,140,0.18)', color: '#5a4a3a' },
 };
 
+
 const detectDistrict = (query: string): string => {
   const MAP: [string, string][] = [
     ['서면', '西面'], ['西面', '西面'],
@@ -222,8 +223,9 @@ const renderBlock = (block: ContentBlock, idx: number, stepOffset = 0) => {
 // ── Firebase collections ──────────────────────────────────────────────
 interface SectionPhoto { id: string; imageUrl: string; createdAt: Timestamp | null; }
 const PHOTOS_COL         = collection(db, 'sectionPhotos');
-const CARD_OVERRIDES_COL = collection(db, 'cardOverrides');
-const CUSTOM_CARDS_COL   = collection(db, 'customCards');
+const CARD_OVERRIDES_COL  = collection(db, 'cardOverrides');
+const CUSTOM_CARDS_COL    = collection(db, 'customCards');
+const SECTION_CARDS_COL   = collection(db, 'sectionCards');
 
 interface RefLink { text: string; href: string; }
 interface CardOverride {
@@ -247,6 +249,11 @@ interface CustomCard {
   notes: string; order: number; category?: string;
   naverQuery?: string; googleQuery?: string;
   openHours?: string; transportTime?: string; cost?: string; supplement?: string; links?: RefLink[];
+}
+interface FirestoreSection {
+  id: string; dayNum: number; order: number;
+  num: string; title: string; timeRange: string; mapQuery?: string;
+  blocks: ContentBlock[];
 }
 
 // ── 照片上傳 ──────────────────────────────────────────────────────────
@@ -846,7 +853,7 @@ const AddCardModal = ({ dayNum, nextOrder, onClose }: { dayNum: number; nextOrde
 
 // ── SectionCard ────────────────────────────────────────────────────────
 const SectionCard = ({
-  section, displayNum, sectionId, override, dayNum, onEdit, onDelete,
+  section, displayNum, sectionId, override, dayNum, onEdit, onDelete, onMoveUp, onMoveDown,
 }: {
   section: DaySection;
   displayNum: string;
@@ -855,6 +862,8 @@ const SectionCard = ({
   dayNum: number;
   onEdit: (ctx: { initFields: EditFields; onSave: (f: EditFields) => Promise<void> }) => void;
   onDelete?: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 }) => {
   const [open,      setOpen]      = useState(false);
   const [linksOpen, setLinksOpen] = useState(false);
@@ -885,15 +894,15 @@ const SectionCard = ({
   return (
     <div style={{ border: '1px solid #ece8e3', borderRadius: 'var(--radius-md)', background: '#fff', marginBottom: 10, overflow: 'hidden' }}>
       {/* Header */}
-      <div style={{ padding: '12px 16px 10px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-        {catStyle && (
-          <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
-            {override!.category}
-          </span>
-        )}
+      <div style={{ padding: '12px 14px 10px' }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-            <button onClick={() => setOpen(!open)} style={{ flex: 1, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600, color: '#374151', fontSize: 14, lineHeight: 1.3 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+            {catStyle && (
+              <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
+                {override!.category}
+              </span>
+            )}
+            <button onClick={() => setOpen(!open)} style={{ flex: 1, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600, color: '#374151', fontSize: 14, lineHeight: 1.4 }}>
               {displayTitle}
             </button>
             <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: '#9ca3af', flexShrink: 0, lineHeight: 0 }}>
@@ -934,6 +943,16 @@ const SectionCard = ({
               </a>
             )}
             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4 }}>
+              {onMoveUp && (
+                <button onClick={onMoveUp} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#9ca3af', cursor: 'pointer', flexShrink: 0 }}>
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+              )}
+              {onMoveDown && (
+                <button onClick={onMoveDown} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#9ca3af', cursor: 'pointer', flexShrink: 0 }}>
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              )}
               {onDelete && (
                 <button
                   onClick={onDelete}
@@ -1019,11 +1038,13 @@ const SectionCard = ({
 
 // ── 自訂卡片（用戶新增） ───────────────────────────────────────────────
 const CustomSectionCard = ({
-  card, displayNum, onEdit,
+  card, displayNum, onEdit, onMoveUp, onMoveDown,
 }: {
   card: CustomCard;
   displayNum: string;
   onEdit: (ctx: { initFields: EditFields; onSave: (f: EditFields) => Promise<void> }) => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -1069,15 +1090,15 @@ const CustomSectionCard = ({
       background: '#fff',
       marginBottom: 10, overflow: 'hidden',
     }}>
-      <div style={{ padding: '12px 16px 10px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-        {catStyle && (
-          <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
-            {card.category}
-          </span>
-        )}
+      <div style={{ padding: '12px 14px 10px' }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-            <button onClick={() => setOpen(!open)} style={{ flex: 1, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600, color: '#374151', fontSize: 14, lineHeight: 1.3 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+            {catStyle && (
+              <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: catStyle.bg, color: catStyle.color, flexShrink: 0 }}>
+                {card.category}
+              </span>
+            )}
+            <button onClick={() => setOpen(!open)} style={{ flex: 1, textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600, color: '#374151', fontSize: 14, lineHeight: 1.4 }}>
               {card.title}
             </button>
             <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: '#9ca3af', flexShrink: 0, lineHeight: 0 }}>
@@ -1118,6 +1139,16 @@ const CustomSectionCard = ({
               </a>
             )}
             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4 }}>
+              {onMoveUp && (
+                <button onClick={onMoveUp} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#9ca3af', cursor: 'pointer', flexShrink: 0 }}>
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+              )}
+              {onMoveDown && (
+                <button onClick={onMoveDown} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#9ca3af', cursor: 'pointer', flexShrink: 0 }}>
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              )}
               <button
                 onClick={() => window.confirm(`確定刪除「${card.title}」？`) && deleteDoc(doc(db, 'customCards', card.id))}
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#c4a882', cursor: 'pointer', flexShrink: 0 }}
@@ -1158,11 +1189,11 @@ const CustomSectionCard = ({
 };
 
 // ── DayPlanView ────────────────────────────────────────────────────────
-const SKIP_NUMS = new Set(['11']);
-
 const DayPlanView = ({ plan }: { plan: DayPlan }) => {
   const [overrides,    setOverrides]    = useState<Record<string, CardOverride>>({});
   const [customCards,  setCustomCards]  = useState<CustomCard[]>([]);
+  const [fsections,    setFsections]    = useState<FirestoreSection[] | null>(null);
+  const [seeding,      setSeeding]      = useState(false);
   const [addingCard, setAddingCard] = useState(false);
   const [editCtx,    setEditCtx]    = useState<{
     initFields: EditFields;
@@ -1204,52 +1235,120 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
     }, err => console.error(err));
   }, [plan.day]);
 
+  useEffect(() => {
+    const q = query(SECTION_CARDS_COL, where('dayNum', '==', plan.day));
+    return onSnapshot(q, snap => {
+      setFsections(
+        snap.docs
+          .map(d => ({ id: d.id, ...d.data() } as FirestoreSection))
+          .sort((a, b) => a.order - b.order)
+      );
+    }, err => console.error(err));
+  }, [plan.day]);
+
+  const seedSections = async () => {
+    if (!plan.sections.length || seeding) return;
+    setSeeding(true);
+    try {
+      for (let i = 0; i < plan.sections.length; i++) {
+        const s = plan.sections[i];
+        await setDoc(doc(db, 'sectionCards', `day${plan.day}-s${s.num}`), {
+          dayNum: plan.day, order: i,
+          num: s.num, title: s.title, timeRange: s.timeRange,
+          mapQuery: s.mapQuery ?? '',
+          blocks: s.blocks,
+        });
+      }
+    } finally {
+      setSeeding(false);
+    }
+  };
+
+  const moveSection = async (idx: number, dir: -1 | 1) => {
+    if (!fsections) return;
+    const swapIdx = idx + dir;
+    if (swapIdx < 0 || swapIdx >= fsections.length) return;
+    const a = fsections[idx], b = fsections[swapIdx];
+    await Promise.all([
+      updateDoc(doc(db, 'sectionCards', a.id), { order: b.order }),
+      updateDoc(doc(db, 'sectionCards', b.id), { order: a.order }),
+    ]);
+  };
+
+  const moveCustomCard = async (idx: number, dir: -1 | 1) => {
+    const sorted = [...customCards].sort((a, b) => a.order - b.order);
+    const swapIdx = idx + dir;
+    if (swapIdx < 0 || swapIdx >= sorted.length) return;
+    const a = sorted[idx], b = sorted[swapIdx];
+    await Promise.all([
+      updateDoc(doc(db, 'customCards', a.id), { order: b.order }),
+      updateDoc(doc(db, 'customCards', b.id), { order: a.order }),
+    ]);
+  };
+
   const nextOrder = customCards.length > 0 ? Math.max(...customCards.map(c => c.order)) + 1 : 100;
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-        <svg viewBox="0 0 24 24" style={{ width: 15, height: 15, color: '#7d9baa', flexShrink: 0 }}
-          fill="none" stroke="currentColor" strokeWidth={2}>
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
-        <h3 style={{ fontSize: 14, fontWeight: 700, color: '#374151', margin: 0 }}>今日行程</h3>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, paddingBottom: 12, borderBottom: '1px solid #ece8e3' }}>
+        <div style={{ width: 3, height: 18, borderRadius: 2, background: '#7d9baa', flexShrink: 0 }} />
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#374151', margin: 0 }}>今日行程</h3>
       </div>
 
-      {[...customCards].sort((a, b) => a.order - b.order).map(card => (
+      {[...customCards].sort((a, b) => a.order - b.order).map((card, idx, arr) => (
         <CustomSectionCard
           key={card.id}
           card={card}
           displayNum={card.order.toString().padStart(2, '0')}
           onEdit={setEditCtx}
+          onMoveUp={idx > 0 ? () => moveCustomCard(idx, -1) : undefined}
+          onMoveDown={idx < arr.length - 1 ? () => moveCustomCard(idx, 1) : undefined}
         />
       ))}
 
-      {[...plan.sections]
-        .sort((a, b) => Number(a.num) - Number(b.num))
-        .filter(s => !SKIP_NUMS.has(s.num))
-        .map(section => {
-          const sectionId = `day${plan.day}-s${section.num}`;
-          if (overrides[sectionId]?.deleted) return null;
-          const handleDelete = async () => {
-            if (window.confirm(`確定刪除「${section.title}」？`)) {
-              await setDoc(doc(db, 'cardOverrides', sectionId), { deleted: true, dayNum: plan.day }, { merge: true });
-            }
-          };
-          return (
-            <SectionCard
-              key={section.num}
-              section={section}
-              displayNum={section.num}
-              sectionId={sectionId}
-              override={overrides[sectionId]}
-              dayNum={plan.day}
-              onEdit={setEditCtx}
-              onDelete={handleDelete}
-            />
-          );
-        })}
+      {/* 尚未初始化：顯示初始化按鈕 */}
+      {fsections !== null && fsections.length === 0 && plan.sections.length > 0 && (
+        <button
+          onClick={seedSections}
+          disabled={seeding}
+          style={{
+            width: '100%', padding: '10px 0', marginBottom: 8,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            border: '1px dashed #9eab96', borderRadius: 'var(--radius-md)',
+            background: 'rgba(158,171,150,0.08)', cursor: seeding ? 'not-allowed' : 'pointer',
+            fontSize: 13, color: '#9eab96', fontWeight: 500,
+          }}
+        >
+          <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2}>
+            <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.75"/>
+          </svg>
+          {seeding ? '初始化中...' : '將行程資料移入 Firestore'}
+        </button>
+      )}
+
+      {/* Firestore 行程卡片 */}
+      {(fsections ?? []).map((section, idx, arr) => {
+        const sectionId = `day${plan.day}-s${section.num}`;
+        if (overrides[sectionId]?.deleted) return null;
+        const handleDelete = async () => {
+          if (!window.confirm(`確定刪除「${section.title}」？`)) return;
+          await deleteDoc(doc(db, 'sectionCards', section.id));
+        };
+        return (
+          <SectionCard
+            key={section.id}
+            section={section}
+            displayNum={section.num}
+            sectionId={sectionId}
+            override={overrides[sectionId]}
+            dayNum={plan.day}
+            onEdit={setEditCtx}
+            onDelete={handleDelete}
+            onMoveUp={idx > 0 ? () => moveSection(idx, -1) : undefined}
+            onMoveDown={idx < arr.length - 1 ? () => moveSection(idx, 1) : undefined}
+          />
+        );
+      })}
 
       {editCtx && (
         <div
