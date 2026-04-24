@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import {
-  collection, addDoc, deleteDoc, doc,
+  collection, addDoc, deleteDoc, doc, updateDoc,
   onSnapshot, query, orderBy, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -44,6 +44,15 @@ const NotesPage = () => {
   const [adding, setAdding]       = useState(false);
   const fileInputRef              = useRef<HTMLInputElement>(null);
   const colorIdx                  = useRef(0);
+
+  const [editingId, setEditingId]         = useState<string | null>(null);
+  const [editDraft, setEditDraft]         = useState('');
+  const [editPendingImg, setEditPendingImg] = useState('');
+  const [editPendingFile, setEditPendingFile] = useState<File | null>(null);
+  const [editKeepImg, setEditKeepImg]     = useState(true);
+  const [editUploading, setEditUploading] = useState(false);
+  const [editSaving, setEditSaving]       = useState(false);
+  const editFileInputRef                  = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const q = query(NOTES_COL, orderBy('createdAt', 'desc'));
@@ -127,6 +136,56 @@ const NotesPage = () => {
     setPendingImg('');
     setPendingFile(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const startEdit = (note: Note) => {
+    setEditingId(note.id);
+    setEditDraft(note.text);
+    setEditPendingImg('');
+    setEditPendingFile(null);
+    setEditKeepImg(true);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditDraft('');
+    setEditPendingImg('');
+    setEditPendingFile(null);
+    if (editFileInputRef.current) editFileInputRef.current.value = '';
+  };
+
+  const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setEditPendingFile(file);
+    setEditPendingImg(URL.createObjectURL(file));
+    setEditKeepImg(false);
+  };
+
+  const saveEdit = async (note: Note) => {
+    const text = editDraft.trim();
+    if (!text || editSaving) return;
+    setEditSaving(true);
+    try {
+      let imageUrl = editKeepImg ? note.imageUrl : '';
+      if (editPendingFile) {
+        setEditUploading(true);
+        const result = await uploadImage(editPendingFile, 'korea-travel/notes');
+        imageUrl = result.url;
+        setEditUploading(false);
+      }
+      await updateDoc(doc(db, 'notes', note.id), { text, imageUrl });
+      setEditingId(null);
+      setEditDraft('');
+      setEditPendingImg('');
+      setEditPendingFile(null);
+      if (editFileInputRef.current) editFileInputRef.current.value = '';
+    } catch (err) {
+      console.error('saveEdit error:', err);
+      setEditUploading(false);
+    } finally {
+      setEditSaving(false);
+    }
   };
 
   return (
@@ -226,6 +285,14 @@ const NotesPage = () => {
           </div>
         )}
 
+        <input
+          ref={editFileInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          onChange={handleEditFileChange}
+        />
+
         {notes.map((note) => (
           <div key={note.id} className="note-card">
             <div className="note-card__body">
@@ -233,21 +300,138 @@ const NotesPage = () => {
                 <span className={`note-dot note-dot--${note.dotColor}`} />
                 {formatTs(note.createdAt)}
               </p>
-              <p className="note-card__text">{note.text}</p>
-              {note.imageUrl && (
-                <img src={note.imageUrl} alt="清單附圖" className="note-card__img" />
+
+              {editingId === note.id ? (
+                <>
+                  <textarea
+                    value={editDraft}
+                    onChange={(e) => setEditDraft(e.target.value)}
+                    style={{
+                      width: '100%',
+                      background: 'var(--color-bg-input)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '10px 12px',
+                      border: 'none',
+                      fontSize: 'var(--text-sm)',
+                      resize: 'none',
+                      minHeight: 72,
+                      color: 'var(--color-text-main)',
+                      outline: 'none',
+                      marginBottom: 10,
+                      fontFamily: 'inherit',
+                      lineHeight: 1.6,
+                    }}
+                  />
+
+                  {note.imageUrl && editKeepImg && !editPendingImg && (
+                    <div style={{ position: 'relative', marginBottom: 10 }}>
+                      <img
+                        src={note.imageUrl}
+                        alt="目前圖片"
+                        style={{ width: '100%', borderRadius: 'var(--radius-md)', maxHeight: 120, objectFit: 'cover' }}
+                      />
+                      <button
+                        onClick={() => setEditKeepImg(false)}
+                        style={{
+                          position: 'absolute', top: 6, right: 6,
+                          background: 'rgba(0,0,0,.5)', color: 'white',
+                          border: 'none', borderRadius: '50%',
+                          width: 24, height: 24, cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 14, lineHeight: 1,
+                        }}
+                        aria-label="移除圖片"
+                      >×</button>
+                    </div>
+                  )}
+
+                  {editPendingImg && (
+                    <div style={{ position: 'relative', marginBottom: 10 }}>
+                      <img
+                        src={editPendingImg}
+                        alt="新圖預覽"
+                        style={{ width: '100%', borderRadius: 'var(--radius-md)', maxHeight: 120, objectFit: 'cover' }}
+                      />
+                      <button
+                        onClick={() => {
+                          setEditPendingImg('');
+                          setEditPendingFile(null);
+                          setEditKeepImg(!!note.imageUrl);
+                          if (editFileInputRef.current) editFileInputRef.current.value = '';
+                        }}
+                        style={{
+                          position: 'absolute', top: 6, right: 6,
+                          background: 'rgba(0,0,0,.5)', color: 'white',
+                          border: 'none', borderRadius: '50%',
+                          width: 24, height: 24, cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 14, lineHeight: 1,
+                        }}
+                        aria-label="移除新圖片"
+                      >×</button>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      className="expense-form-btn"
+                      onClick={() => editFileInputRef.current?.click()}
+                      disabled={editUploading}
+                      style={{ flex: 1 }}
+                    >
+                      換圖片
+                    </button>
+                    <button
+                      className="expense-form-cancel"
+                      onClick={cancelEdit}
+                      style={{ flex: 1 }}
+                    >
+                      取消
+                    </button>
+                    <button
+                      className="expense-form-submit"
+                      onClick={() => saveEdit(note)}
+                      disabled={!editDraft.trim() || editSaving}
+                      style={{ flex: 1 }}
+                    >
+                      {editSaving ? (editUploading ? '上傳中…' : '儲存中…') : '儲存'}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="note-card__text">{note.text}</p>
+                  {note.imageUrl && (
+                    <img src={note.imageUrl} alt="清單附圖" className="note-card__img" />
+                  )}
+                </>
               )}
             </div>
-            <button
-              className="note-card__delete"
-              onClick={() => deleteNote(note.id)}
-              aria-label="刪除項目"
-            >
-              <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }}>
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-              </svg>
-            </button>
+
+            {editingId !== note.id && (
+              <div className="note-card__actions">
+                <button
+                  className="note-card__edit"
+                  onClick={() => startEdit(note)}
+                  aria-label="編輯項目"
+                >
+                  <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }}>
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </button>
+                <button
+                  className="note-card__delete"
+                  onClick={() => deleteNote(note.id)}
+                  aria-label="刪除項目"
+                >
+                  <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }}>
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
         ))}
 

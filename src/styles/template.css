@@ -947,6 +947,14 @@
       width: auto;
       border: 1px solid var(--color-border);
     }
+    .note-card__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .note-card__edit { color: var(--color-primary); }
+    .note-card__edit svg { width: 18px; height: 18px; }
     .note-card__delete { color: var(--color-text-light); }
     .note-card__delete svg { width: 18px; height: 18px; }
 

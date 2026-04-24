@@ -29,6 +29,7 @@ const CATEGORY_STYLE: Record<string, { bg: string; color: string }> = {
   購物: { bg: 'rgba(176,152,152,0.18)', color: '#6a3a3a' },
   航班: { bg: 'rgba(140,157,170,0.18)', color: '#3a4a6a' },
   路程: { bg: 'rgba(168,156,140,0.18)', color: '#5a4a3a' },
+  進行中: { bg: 'rgba(210,175,100,0.22)', color: '#7a5210' },
 };
 
 
@@ -241,6 +242,7 @@ interface CardOverride {
   googleQuery?: string;
   content?: string;
   notes?: string;
+  remark?: string;
   links?: RefLink[];
   dayNum?: number;
   deleted?: boolean;
@@ -249,7 +251,7 @@ interface CustomCard {
   id: string; dayNum: number; title: string; timeRange: string;
   notes: string; order: number; category?: string; location?: string;
   naverQuery?: string; googleQuery?: string;
-  openHours?: string; transportTime?: string; cost?: string; supplement?: string; links?: RefLink[];
+  openHours?: string; transportTime?: string; cost?: string; supplement?: string; remark?: string; links?: RefLink[];
 }
 interface FirestoreSection {
   id: string; dayNum: number; order: number;
@@ -345,7 +347,7 @@ interface EditFields {
   category: string; name: string; location: string; timeRange: string;
   openHours: string; transportTime: string; cost: string;
   naverQuery: string; googleQuery: string;
-  content: string; notes: string; links: RefLink[];
+  content: string; notes: string; remark: string; links: RefLink[];
 }
 
 type SectionLike = { title: string; timeRange?: string; mapQuery?: string; blocks: ContentBlock[] };
@@ -401,6 +403,7 @@ const sectionToInitFields = (section: SectionLike): EditFields => {
     googleQuery: '',
     content: contentParts.join('\n'),
     notes: noteParts.join('\n'),
+    remark: '',
     links,
   };
 };
@@ -408,7 +411,7 @@ const sectionToInitFields = (section: SectionLike): EditFields => {
 const overrideToFields = (ov: CardOverride, section?: SectionLike): EditFields => {
   const base = section ? sectionToInitFields(section) : {
     category: '', name: '', location: '', timeRange: '', openHours: '',
-    transportTime: '', cost: '', naverQuery: '', googleQuery: '', content: '', notes: '', links: [] as RefLink[],
+    transportTime: '', cost: '', naverQuery: '', googleQuery: '', content: '', notes: '', remark: '', links: [] as RefLink[],
   };
   return {
     category:      ov.category      ?? base.category,
@@ -422,6 +425,7 @@ const overrideToFields = (ov: CardOverride, section?: SectionLike): EditFields =
     googleQuery:   ov.googleQuery   ?? base.googleQuery,
     content:       ov.content       ?? base.content,
     notes:         ov.notes         ?? base.notes,
+    remark:        ov.remark        ?? base.remark,
     links:         ov.links         ?? base.links,
   };
 };
@@ -499,7 +503,7 @@ const EditPanel = ({
           style={{ ...iStyle, color: fields.category ? '#374151' : '#9ca3af' }}
         >
           <option value="">未分類</option>
-          {['景點', '美食', '住宿', '購物', '航班', '路程'].map(c => (
+          {['景點', '美食', '住宿', '購物', '航班', '路程', '進行中'].map(c => (
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
@@ -623,6 +627,23 @@ const EditPanel = ({
             ...iStyle, resize: 'vertical',
             borderLeft: `3px solid ${ALERT_BORDER.note}`,
             background: ALERT_BG.note,
+            borderRadius: '0 6px 6px 0',
+          }}
+        />
+      </div>
+
+      {/* 備註（border-left） */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        {label('備註')}
+        <textarea
+          value={fields.remark}
+          onChange={e => set('remark', e.target.value)}
+          rows={3}
+          placeholder="個人備忘、待確認事項…"
+          style={{
+            ...iStyle, resize: 'vertical',
+            borderLeft: `3px solid ${ALERT_BORDER.warn}`,
+            background: ALERT_BG.warn,
             borderRadius: '0 6px 6px 0',
           }}
         />
@@ -795,6 +816,20 @@ const OverrideDisplay = ({ ov, isChecklist = false }: { ov: CardOverride; isChec
       </div>
     )}
 
+    {ov.remark && (
+      <div style={{
+        borderLeft: `2px solid ${ALERT_BORDER.warn}`,
+        background: ALERT_BG.warn,
+        borderRadius: '0 6px 6px 0',
+        padding: '7px 10px',
+        marginTop: 8, marginBottom: 10,
+        fontSize: 13, color: '#6b7280', lineHeight: 1.65,
+        whiteSpace: 'pre-wrap',
+      }}>
+        {markBold(ov.remark)}
+      </div>
+    )}
+
     {ov.links && ov.links.length > 0 && (
       <div style={{ marginTop: 10 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', letterSpacing: '0.05em', marginBottom: 6 }}>
@@ -822,7 +857,7 @@ const AddCardModal = ({ dayNum, nextOrder, onClose }: { dayNum: number; nextOrde
     category: '', name: '', location: '', timeRange: '',
     openHours: '', transportTime: '', cost: '',
     naverQuery: '', googleQuery: '',
-    content: '', notes: '', links: [],
+    content: '', notes: '', remark: '', links: [],
   };
 
   const handleSave = async (fields: EditFields) => {
@@ -839,6 +874,7 @@ const AddCardModal = ({ dayNum, nextOrder, onClose }: { dayNum: number; nextOrde
       transportTime: fields.transportTime,
       cost:          fields.cost,
       supplement:    fields.notes,
+      remark:        fields.remark,
       links:         fields.links,
       order:         nextOrder,
       createdAt:     serverTimestamp(),
@@ -1072,6 +1108,7 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
             transportTime: d.data().transportTime ?? '',
             cost:          d.data().cost          ?? '',
             supplement:    d.data().supplement    ?? '',
+            remark:        d.data().remark        ?? '',
             links:         d.data().links         ?? [],
           }))
           .sort((a, b) => a.order - b.order)
@@ -1167,6 +1204,7 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
         transportTime: card.transportTime,
         cost:          card.cost,
         notes:         card.supplement,
+        remark:        card.remark,
         links:         card.links,
       },
       initFields: {
@@ -1181,6 +1219,7 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
         googleQuery:   card.googleQuery   || '',
         content:       card.notes,
         notes:         card.supplement    || '',
+        remark:        card.remark        || '',
         links:         card.links         || [],
       },
       onSave: async (fields: EditFields) => {
@@ -1191,7 +1230,7 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
           category: fields.category, naverQuery: fields.naverQuery,
           googleQuery: fields.googleQuery, notes: fields.content,
           openHours: fields.openHours, transportTime: fields.transportTime,
-          cost: fields.cost, supplement: fields.notes, links: fields.links,
+          cost: fields.cost, supplement: fields.notes, remark: fields.remark, links: fields.links,
           updatedAt: serverTimestamp(),
         });
       },
