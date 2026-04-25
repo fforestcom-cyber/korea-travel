@@ -223,10 +223,11 @@ const renderBlock = (block: ContentBlock, idx: number, stepOffset = 0) => {
 
 // ── Firebase collections ──────────────────────────────────────────────
 interface SectionPhoto { id: string; imageUrl: string; createdAt: Timestamp | null; }
-const PHOTOS_COL         = collection(db, 'sectionPhotos');
-const CARD_OVERRIDES_COL  = collection(db, 'cardOverrides');
-const CUSTOM_CARDS_COL    = collection(db, 'customCards');
-const SECTION_CARDS_COL   = collection(db, 'sectionCards');
+const PHOTOS_COL             = collection(db, 'sectionPhotos');
+const CARD_OVERRIDES_COL     = collection(db, 'cardOverrides');
+const CUSTOM_CARDS_COL       = collection(db, 'customCards');
+const SECTION_CARDS_COL      = collection(db, 'sectionCards');
+const TRANSITION_NOTES_COL   = collection(db, 'transitionNotes');
 
 interface RefLink { text: string; href: string; }
 interface CardOverride {
@@ -257,6 +258,9 @@ interface FirestoreSection {
   id: string; dayNum: number; order: number;
   num: string; title: string; timeRange: string; mapQuery?: string;
   blocks: ContentBlock[];
+}
+interface TransitionNote {
+  id: string; dayNum: number; text: string; order: number;
 }
 
 // ── 照片上傳 ──────────────────────────────────────────────────────────
@@ -1067,14 +1071,47 @@ const PlanCard = ({
   );
 };
 
+// ── 轉場備註列 ────────────────────────────────────────────────────────
+const TransitionNoteItem = ({
+  text, onDelete, onMoveUp, onMoveDown,
+}: {
+  text: string;
+  onDelete: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+}) => (
+  <div style={{ display: 'flex', alignItems: 'stretch', margin: '-2px 0 0', paddingLeft: 12, minHeight: 28 }}>
+    <div style={{ width: 2, background: MORANDI_LINE, borderRadius: 1, flexShrink: 0, marginRight: 10 }} />
+    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, padding: '5px 0' }}>
+      <span style={{ fontSize: 12, color: '#9ca3af', flex: 1, lineHeight: 1.5 }}>{text}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+        {onMoveUp && (
+          <button onClick={onMoveUp} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 22, height: 22, borderRadius: 4, border: 'none', background: 'none', color: '#c0b8b0', cursor: 'pointer' }}>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="18 15 12 9 6 15"/></svg>
+          </button>
+        )}
+        {onMoveDown && (
+          <button onClick={onMoveDown} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 22, height: 22, borderRadius: 4, border: 'none', background: 'none', color: '#c0b8b0', cursor: 'pointer' }}>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        )}
+        <button onClick={onDelete} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 22, height: 22, borderRadius: 4, border: 'none', background: 'none', color: '#c0b8b0', cursor: 'pointer', fontSize: 14, lineHeight: 1 }}>×</button>
+      </div>
+    </div>
+  </div>
+);
+
 // ── DayPlanView ────────────────────────────────────────────────────────
 const DayPlanView = ({ plan }: { plan: DayPlan }) => {
-  const [overrides,   setOverrides]   = useState<Record<string, CardOverride>>({});
-  const [customCards, setCustomCards] = useState<CustomCard[]>([]);
-  const [fsections,   setFsections]   = useState<FirestoreSection[] | null>(null);
-  const [seeding,     setSeeding]     = useState(false);
-  const [addingCard,  setAddingCard]  = useState(false);
-  const [editCtx,     setEditCtx]     = useState<{
+  const [overrides,        setOverrides]        = useState<Record<string, CardOverride>>({});
+  const [customCards,      setCustomCards]      = useState<CustomCard[]>([]);
+  const [fsections,        setFsections]        = useState<FirestoreSection[] | null>(null);
+  const [transitionNotes,  setTransitionNotes]  = useState<TransitionNote[]>([]);
+  const [seeding,      setSeeding]      = useState(false);
+  const [addingCard,   setAddingCard]   = useState(false);
+  const [addingNote,   setAddingNote]   = useState(false);
+  const [noteText,     setNoteText]     = useState('');
+  const [editCtx,          setEditCtx]          = useState<{
     initFields: EditFields;
     onSave: (fields: EditFields) => Promise<void>;
   } | null>(null);
@@ -1123,6 +1160,20 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
         snap.docs
           .map(d => ({ id: d.id, ...d.data() } as FirestoreSection))
           .sort((a, b) => a.order - b.order)
+      );
+    }, err => console.error(err));
+  }, [plan.day]);
+
+  useEffect(() => {
+    const q = query(TRANSITION_NOTES_COL, where('dayNum', '==', plan.day));
+    return onSnapshot(q, snap => {
+      setTransitionNotes(
+        snap.docs.map(d => ({
+          id: d.id,
+          dayNum: d.data().dayNum,
+          text: d.data().text ?? '',
+          order: d.data().order ?? 0,
+        })).sort((a, b) => a.order - b.order)
       );
     }, err => console.error(err));
   }, [plan.day]);
@@ -1243,15 +1294,48 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
 
   allCards.sort((a, b) => a.order - b.order);
 
-  const moveCard = async (idx: number, dir: -1 | 1) => {
-    const swapIdx = idx + dir;
-    if (swapIdx < 0 || swapIdx >= allCards.length) return;
-    const a = allCards[idx], b = allCards[swapIdx];
-    const colA = a.source === 'section' ? 'sectionCards' : 'customCards';
-    const colB = b.source === 'section' ? 'sectionCards' : 'customCards';
+  // ── 合併 cards + transition notes ──
+  type ListItem =
+    | { kind: 'card'; entry: CardEntry; cardIdx: number }
+    | { kind: 'note'; note: TransitionNote };
+
+  const allItems: ListItem[] = [
+    ...allCards.map((entry, cardIdx) => ({ kind: 'card' as const, entry, cardIdx })),
+    ...transitionNotes.map(note => ({ kind: 'note' as const, note })),
+  ].sort((a, b) => {
+    const oa = a.kind === 'card' ? a.entry.order : a.note.order;
+    const ob = b.kind === 'card' ? b.entry.order : b.note.order;
+    return oa - ob;
+  });
+
+  const getItemOrder = (item: ListItem) =>
+    item.kind === 'card' ? item.entry.order : item.note.order;
+
+  const saveTransitionNote = async () => {
+    if (!noteText.trim()) return;
+    const maxOrder = allItems.length > 0 ? Math.max(...allItems.map(getItemOrder)) : 99;
+    await addDoc(TRANSITION_NOTES_COL, {
+      dayNum: plan.day, text: noteText.trim(), order: maxOrder + 1, createdAt: serverTimestamp(),
+    });
+    setAddingNote(false);
+    setNoteText('');
+  };
+
+  const moveItem = async (itemIdx: number, dir: -1 | 1) => {
+    const swapIdx = itemIdx + dir;
+    if (swapIdx < 0 || swapIdx >= allItems.length) return;
+    const a = allItems[itemIdx];
+    const b = allItems[swapIdx];
+    const orderA = getItemOrder(a);
+    const orderB = getItemOrder(b);
+    const colOf = (item: ListItem) =>
+      item.kind === 'note' ? 'transitionNotes'
+      : item.entry.source === 'section' ? 'sectionCards' : 'customCards';
+    const idOf = (item: ListItem) =>
+      item.kind === 'note' ? item.note.id : item.entry.id;
     await Promise.all([
-      updateDoc(doc(db, colA, a.id), { order: b.order }),
-      updateDoc(doc(db, colB, b.id), { order: a.order }),
+      updateDoc(doc(db, colOf(a), idOf(a)), { order: orderB }),
+      updateDoc(doc(db, colOf(b), idOf(b)), { order: orderA }),
     ]);
   };
 
@@ -1283,26 +1367,36 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
         </button>
       )}
 
-      {allCards.map(({ key, sectionId, title, category, location, timeRange, naverQuery, googleQuery, openHours, section, override, initFields, onSave, onDelete }, idx, arr) => (
-        <PlanCard
-          key={key}
-          sectionId={sectionId}
-          title={title}
-          category={category}
-          location={location}
-          timeRange={timeRange}
-          naverQuery={naverQuery}
-          googleQuery={googleQuery}
-          openHours={openHours}
-          section={section}
-          override={override}
-          initFields={initFields}
-          onSave={onSave}
-          onDelete={onDelete}
-          onEdit={setEditCtx}
-          onMoveUp={idx > 0 ? () => moveCard(idx, -1) : undefined}
-          onMoveDown={idx < arr.length - 1 ? () => moveCard(idx, 1) : undefined}
-        />
+      {allItems.map((item, i) => (
+        <React.Fragment key={item.kind === 'card' ? item.entry.key : item.note.id}>
+          {item.kind === 'note' ? (
+            <TransitionNoteItem
+              text={item.note.text}
+              onDelete={() => deleteDoc(doc(db, 'transitionNotes', item.note.id))}
+              onMoveUp={i > 0 ? () => moveItem(i, -1) : undefined}
+              onMoveDown={i < allItems.length - 1 ? () => moveItem(i, 1) : undefined}
+            />
+          ) : (
+            <PlanCard
+              sectionId={item.entry.sectionId}
+              title={item.entry.title}
+              category={item.entry.category}
+              location={item.entry.location}
+              timeRange={item.entry.timeRange}
+              naverQuery={item.entry.naverQuery}
+              googleQuery={item.entry.googleQuery}
+              openHours={item.entry.openHours}
+              section={item.entry.section}
+              override={item.entry.override}
+              initFields={item.entry.initFields}
+              onSave={item.entry.onSave}
+              onDelete={item.entry.onDelete}
+              onEdit={setEditCtx}
+              onMoveUp={i > 0 ? () => moveItem(i, -1) : undefined}
+              onMoveDown={i < allItems.length - 1 ? () => moveItem(i, 1) : undefined}
+            />
+          )}
+        </React.Fragment>
       ))}
 
       {editCtx && (
@@ -1323,6 +1417,50 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
         </div>
       )}
 
+      {addingNote && (
+        <div style={{ display: 'flex', alignItems: 'stretch', paddingLeft: 12, marginTop: 2, marginBottom: 4 }}>
+          <div style={{ width: 2, background: MORANDI_LINE, borderRadius: 1, flexShrink: 0, marginRight: 10 }} />
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, padding: '4px 0' }}>
+            <input
+              autoFocus
+              value={noteText}
+              onChange={e => setNoteText(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') saveTransitionNote();
+                if (e.key === 'Escape') { setAddingNote(false); setNoteText(''); }
+              }}
+              placeholder="搭計程車… 步行… 搭地鐵…"
+              style={{ flex: 1, border: '1px solid #ece8e3', borderRadius: 6, padding: '5px 10px', fontSize: 12, outline: 'none', background: '#fff', minWidth: 0 }}
+            />
+            <button
+              onClick={saveTransitionNote}
+              disabled={!noteText.trim()}
+              style={{ flexShrink: 0, padding: '4px 10px', borderRadius: 6, border: 'none', background: '#9eab96', color: '#fff', fontSize: 12, cursor: 'pointer', opacity: noteText.trim() ? 1 : 0.5 }}
+            >確認</button>
+            <button
+              onClick={() => { setAddingNote(false); setNoteText(''); }}
+              style={{ flexShrink: 0, padding: '4px 8px', borderRadius: 6, border: '1px solid #ece8e3', background: 'none', color: '#9ca3af', fontSize: 12, cursor: 'pointer' }}
+            >取消</button>
+          </div>
+        </div>
+      )}
+
+      <button
+        onClick={() => { setAddingNote(true); setNoteText(''); }}
+        style={{
+          width: '100%', padding: '10px 0',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          border: '1px dashed #9eab96', borderRadius: 'var(--radius-md)',
+          background: 'none', cursor: 'pointer',
+          fontSize: 13, color: '#9eab96', fontWeight: 500, marginTop: 4,
+        }}
+      >
+        <svg viewBox="0 0 24 24" style={{ width: 15, height: 15 }} fill="none" stroke="currentColor" strokeWidth={2}>
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+        新增備註說明
+      </button>
+
       <button
         onClick={() => setAddingCard(true)}
         style={{
@@ -1330,7 +1468,7 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
           border: '1px dashed #c4a882', borderRadius: 'var(--radius-md)',
           background: 'none', cursor: 'pointer',
-          fontSize: 13, color: '#c4a882', fontWeight: 500, marginTop: 4,
+          fontSize: 13, color: '#c4a882', fontWeight: 500, marginTop: 6,
         }}
       >
         <svg viewBox="0 0 24 24" style={{ width: 15, height: 15 }} fill="none" stroke="currentColor" strokeWidth={2}>
