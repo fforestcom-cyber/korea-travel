@@ -7,11 +7,7 @@ import { db } from '../lib/firebase';
 import WeatherCard from '../components/home/WeatherCard';
 import DayPlanView from '../components/layout/DayPlanView';
 import { TRIP_INFO } from '../data/mockData';
-import day1Plan from '../data/scheduleDay1';
-import day2Plan from '../data/scheduleDay2';
-import day3Plan from '../data/scheduleDay3';
-import day4Plan from '../data/scheduleDay4';
-import day5Plan from '../data/scheduleDay5';
+import type { DayPlan } from '../types/dayPlan';
 
 /* ── Types ───────────────────────────────────────────────── */
 interface ChecklistItem {
@@ -331,8 +327,10 @@ const ChecklistPanel = ({ dayNum }: { dayNum: number }) => {
   );
 };
 
-/* ── Day Plans 資料 ───────────────────────────────────────── */
-const DAY_PLANS = [day1Plan, day2Plan, day3Plan, day4Plan, day5Plan];
+/* ── Day Plans 資料（僅保留 day 編號，內容全由 Firebase 提供） ── */
+const DAY_PLANS: DayPlan[] = [1, 2, 3, 4, 5].map(day => ({
+  day, title: '', subtitle: '', tags: [], timeline: [], sections: [],
+}));
 
 /* ── 行程頁 ───────────────────────────────────────────────── */
 const SchedulePage = () => {

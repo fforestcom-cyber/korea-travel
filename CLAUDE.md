@@ -19,7 +19,6 @@ npm start                  # 啟動開發環境（等同 npm run dev）
 npm run dev                # 啟動開發環境
 npm run build              # 建置正式版本
 npm test                   # 執行測試（Jest + React Testing Library）
-npm run import-schedule    # 匯入行程資料至 Firebase
 npm run eject              # ⚠️ 不可逆操作，請勿執行
 ```
 
@@ -47,8 +46,7 @@ src/
 │   ├── ExpensePage.tsx      # 費用頁（旅遊預算追蹤）
 │   └── NotesPage.tsx        # 筆記頁（旅遊筆記）
 ├── data/
-│   ├── scheduleDay1~5.ts    # 各天靜態行程資料
-│   └── mockData.ts          # 開發用假資料
+│   └── mockData.ts          # 旅程基本資料（機票、日期、匯率、天氣）
 ├── lib/
 │   ├── firebase.ts          # Firebase 初始化設定
 │   └── storage.ts           # 資料存取封裝（Firebase CRUD）
@@ -99,16 +97,6 @@ REACT_APP_FIREBASE_APP_ID=
 | 清單 | `ChecklistPage.tsx` | 行前準備勾選清單 |
 | 費用 | `ExpensePage.tsx` | 費用記錄與統計 |
 | 筆記 | `NotesPage.tsx` | 計程車指南（`TaxiGuide`）＋自由格式旅遊筆記 |
-
----
-
-## 行程資料
-
-- 靜態行程資料分別存放於 `data/scheduleDay1.ts` ～ `scheduleDay5.ts`
-- 需要更新行程內容時，修改對應 `scheduleDay{N}.ts` 後執行匯入腳本：
-  ```bash
-  node scripts/import-schedule.mjs
-  ```
 
 ---
 
