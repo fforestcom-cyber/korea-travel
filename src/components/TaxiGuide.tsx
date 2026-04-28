@@ -29,7 +29,10 @@ interface DayData {
 const DAYS: DayData[] = [
   {
     key: 'd1', label: 'Day 1', theme: '抵達 · 西面落腳', color: D.d1,
-    rides: [],
+    rides: [
+      { num: '1-備', ko: '어반스테이 부산서면\n부산 부산진구 서면로 68',
+        route: '（備案）機場 → 西面飯店・地鐵受阻時使用', time: '', cost: '₩25,000–35,000', app: 'both' },
+    ],
     noRide: '✅ Day 1 全程地鐵＋步行，零計程車。機場→西面輕軌轉地鐵（₩1,800）。',
   },
   {
@@ -182,28 +185,28 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
 );
 
 /* ── App card (compare section) ──────────────────── */
-const AppCard = ({ headerBg, headerText, name, badge, badgeBg, badgeColor, pros, notes }: {
+const AppCard = ({ headerBg, headerText, name, badge, pros, notes }: {
   headerBg: string; headerText: string; name: string;
-  badge: string; badgeBg: string; badgeColor: string;
-  pros: string[]; notes: string[];
+  badge: string; pros: string[]; notes: string[];
 }) => (
-  <div style={{ border: '1px solid var(--color-border)', borderRadius: 10, overflow: 'hidden' }}>
-    <div style={{ background: headerBg, padding: '8px 11px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <span style={{ color: headerText, fontSize: 14, fontWeight: 700 }}>{name}</span>
-      <span style={{ background: badgeBg, color: badgeColor, fontSize: 9, padding: '1px 6px', borderRadius: 10 }}>{badge}</span>
+  <div style={{ padding: '12px 0' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 9 }}>
+      <span style={{ background: headerBg, color: headerText, fontSize: 13, fontWeight: 700, padding: '3px 10px', borderRadius: 6 }}>{name}</span>
+      <span style={{ fontSize: 11, color: 'var(--color-text-light)' }}>{badge}</span>
     </div>
-    <div style={{ padding: '8px 11px', fontSize: 11, color: 'var(--color-text-muted)', lineHeight: 1.75 }}>
-      <div style={{ fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '0.06em', color: 'var(--color-text-light)', marginBottom: 2 }}>優點</div>
-      {pros.map(p => <div key={p}>✓ {p}</div>)}
-      <div style={{ fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '0.06em', color: 'var(--color-text-light)', margin: '5px 0 2px' }}>注意</div>
-      {notes.map(n => <div key={n}>△ {n}</div>)}
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 12px' }}>
+      <div>
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.06em', color: 'var(--color-text-light)', marginBottom: 5 }}>優點</div>
+        {pros.map(p => <div key={p} style={{ fontSize: 12, color: 'var(--color-text-muted)', lineHeight: 1.7, marginBottom: 3 }}>✓ {p}</div>)}
+      </div>
+      <div>
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.06em', color: 'var(--color-text-light)', marginBottom: 5 }}>注意</div>
+        {notes.map(n => <div key={n} style={{ fontSize: 12, color: 'var(--color-text-muted)', lineHeight: 1.7, marginBottom: 3 }}>△ {n}</div>)}
+      </div>
     </div>
   </div>
 );
 
-const SectionLabel = ({ children }: { children: string }) => (
-  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-text-light)', letterSpacing: '0.08em', textTransform: 'uppercase' as const, marginBottom: 8 }}>{children}</div>
-);
 
 /* ── Main component ──────────────────────────────── */
 const TaxiGuide = () => {
@@ -242,38 +245,42 @@ const TaxiGuide = () => {
 
           {/* ── App compare ── */}
           <div style={{ paddingTop: 14, marginBottom: 14 }}>
-            <SectionLabel>叫車 App 比較</SectionLabel>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              <AppCard
-                headerBg="#1E2D35" headerText="white" name="Uber" badge="中文介面" badgeBg="rgba(255,255,255,0.2)" badgeColor="white"
-                pros={['可輸入中文目的地', '台灣帳號直接開用', '信用卡自動扣款']}
-                notes={['偏遠區叫車較慢', '偶有繞路回報']}
-              />
-              <AppCard
-                headerBg="#D4A84B" headerText="#6A4400" name="k.ride" badge="繁中介面" badgeBg="rgba(0,0,0,0.1)" badgeColor="#6A4400"
-                pros={['Kakao T 外國人版，合作車最多', '釜山叫車成功率更高', '台灣手機號＋信用卡可綁']}
-                notes={['台灣完成註冊再出發', '目的地需輸入英/韓文']}
-              />
-            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-main)', marginBottom: 10 }}>📱 叫車 App 比較</div>
+            <AppCard
+              headerBg="#1E2D35" headerText="white" name="Uber" badge="中文介面"
+              pros={['可輸入中文目的地', '台灣帳號直接開用', '信用卡自動扣款']}
+              notes={['偏遠區叫車較慢', '偶有繞路回報']}
+            />
+            <div style={{ height: 1, background: 'var(--color-border)' }} />
+            <AppCard
+              headerBg="#D4A84B" headerText="#6A4400" name="k.ride" badge="繁中介面"
+              pros={['Kakao T 外國人版，合作車最多', '釜山叫車成功率更高', '台灣手機號＋信用卡可綁']}
+              notes={['台灣完成註冊再出發', '目的地需輸入英/韓文']}
+            />
           </div>
 
           {/* ── Strategy ── */}
-          <div style={{ background: 'var(--color-text-main)', borderRadius: 10, padding: '12px 14px', marginBottom: 14 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'white', marginBottom: 9 }}>🎯 最佳叫車策略</div>
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ height: 1, background: 'var(--color-border)', marginBottom: 12 }} />
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-main)', marginBottom: 10 }}>🎯 最佳叫車策略</div>
             {[
-              { tag: 'Uber',   ts: { background: 'white', color: '#1E2D35' },               text: '先用 Uber 輸入中文確認目的地 + 看預估費用，合理就直接叫' },
-              { tag: 'k.ride', ts: { background: '#D4A84B', color: '#6A4400' },              text: '偏遠地區（水上樂園、Skyline Luge）同時開 k.ride，哪個先有司機就確認' },
-              { tag: '雙開',   ts: { background: 'rgba(255,255,255,0.15)', color: 'white' }, text: '超過 8 分鐘叫不到：切換另一個 App，或 k.ride 開 SMART 呼叫（+₩1,000）' },
-            ].map(s => (
-              <div key={s.tag} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 6 }}>
-                <span style={{ ...s.ts, fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 3, flexShrink: 0, marginTop: 1 }}>{s.tag}</span>
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.82)', lineHeight: 1.55 }}>{s.text}</span>
+              { tag: 'Uber',   ts: { background: '#1E2D35', color: 'white' },                                  text: '先用 Uber 輸入中文確認目的地 + 看預估費用，合理就直接叫' },
+              { tag: 'k.ride', ts: { background: '#D4A84B', color: '#6A4400' },                                text: '偏遠地區（水上樂園、Skyline Luge）同時開 k.ride，哪個先有司機就確認' },
+              { tag: '雙開',   ts: { background: 'var(--color-bg-input)', color: 'var(--color-text-muted)' },  text: '超過 8 分鐘叫不到：切換另一個 App，或 k.ride 開 SMART 呼叫（+₩1,000）' },
+            ].map((s, i, arr) => (
+              <div key={s.tag}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', padding: '8px 0' }}>
+                  <span style={{ ...s.ts, fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 4, flexShrink: 0, marginTop: 1 }}>{s.tag}</span>
+                  <span style={{ fontSize: 12, color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{s.text}</span>
+                </div>
+                {i < arr.length - 1 && <div style={{ height: 1, background: 'var(--color-border)' }} />}
               </div>
             ))}
           </div>
 
           {/* ── Day sections ── */}
-          <SectionLabel>各日目的地</SectionLabel>
+          <div style={{ height: 1, background: 'var(--color-border)', margin: '14px 0' }} />
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-main)', marginBottom: 10 }}>📍 各日目的地</div>
           {DAYS.map(day => (
             <div key={day.key} style={{ marginBottom: 10 }}>
               <button
@@ -315,18 +322,18 @@ const TaxiGuide = () => {
             </div>
           ))}
 
-          <div style={{ height: 1, background: 'var(--color-border)', margin: '14px 0' }} />
-
           {/* ── Tips ── */}
-          <SectionLabel>叫車實用技巧</SectionLabel>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            {TIPS.map((tip, i) => (
-              <div key={i} style={{ background: 'white', border: '1px solid var(--color-border)', borderRadius: 9, padding: '10px 11px' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' as const, color: 'var(--color-text-light)', marginBottom: 5 }}>{tip.title}</div>
-                <div style={{ fontSize: 11, color: 'var(--color-text-muted)', lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: tip.body }} />
+          <div style={{ height: 1, background: 'var(--color-border)', margin: '14px 0' }} />
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-main)', marginBottom: 10 }}>💡 叫車實用技巧</div>
+          {TIPS.map((tip, i) => (
+            <div key={i}>
+              <div style={{ padding: '8px 0' }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-main)', marginBottom: 4 }}>{tip.title}</div>
+                <div style={{ fontSize: 12, color: 'var(--color-text-muted)', lineHeight: 1.65 }} dangerouslySetInnerHTML={{ __html: tip.body }} />
               </div>
-            ))}
-          </div>
+              {i < TIPS.length - 1 && <div style={{ height: 1, background: 'var(--color-border)' }} />}
+            </div>
+          ))}
 
         </div>
       )}

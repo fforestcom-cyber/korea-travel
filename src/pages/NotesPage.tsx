@@ -7,6 +7,7 @@ import { db } from '../lib/firebase';
 import { uploadImage } from '../lib/storage';
 import { TRIP_INFO } from '../data/mockData';
 import TaxiGuide from '../components/TaxiGuide';
+import CatchTableGuide from '../components/CatchTableGuide';
 
 /* ── Types ─────────────────────────────────────────────── */
 type DotColor = 'yellow' | 'green' | 'blue';
@@ -207,6 +208,8 @@ const NotesPage = () => {
       <div className="section-px">
 
         <TaxiGuide />
+
+        <CatchTableGuide />
 
         <div className="note-compose mb-6">
           <textarea

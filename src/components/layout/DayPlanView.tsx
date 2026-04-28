@@ -444,9 +444,10 @@ const EditPanel = ({
   onSave: (fields: EditFields) => Promise<void>;
   onClose: () => void;
 }) => {
-  const [fields,  setFields]  = useState<EditFields>(initFields);
-  const [saving,  setSaving]  = useState(false);
-  const [newLink, setNewLink] = useState<RefLink>({ text: '', href: '' });
+  const [fields,       setFields]       = useState<EditFields>(initFields);
+  const [saving,       setSaving]       = useState(false);
+  const [newLink,      setNewLink]      = useState<RefLink>({ text: '', href: '' });
+  const [fetchingLink, setFetchingLink] = useState(false);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const set = <K extends keyof EditFields>(k: K, v: EditFields[K]) =>
@@ -466,9 +467,21 @@ const EditPanel = ({
     });
   };
 
-  const addLink = () => {
-    if (!newLink.text.trim() && !newLink.href.trim()) return;
-    setFields(f => ({ ...f, links: [...f.links, newLink] }));
+  const addLink = async () => {
+    const href = newLink.href.trim();
+    if (!href) return;
+    setFetchingLink(true);
+    let text = '';
+    try {
+      const res   = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(href)}`);
+      const json  = await res.json();
+      const title = (json?.data?.title ?? '') as string;
+      if (title && !title.toLowerCase().includes('cloudflare') && !title.includes('Attention Required')) {
+        text = title;
+      }
+    } catch {}
+    setFetchingLink(false);
+    setFields(f => ({ ...f, links: [...f.links, { text, href }] }));
     setNewLink({ text: '', href: '' });
   };
   const removeLink = (i: number) =>
@@ -613,7 +626,7 @@ const EditPanel = ({
           ref={contentRef}
           value={fields.content}
           onChange={e => set('content', e.target.value)}
-          rows={6}
+          rows={9}
           placeholder={'1. 第一項說明\n2. 第二項說明\n   （縮排為補充說明）\n\n若為 Checklist：每行一項目即可'}
           style={{ ...iStyle, resize: 'vertical' }}
         />
@@ -625,7 +638,7 @@ const EditPanel = ({
         <textarea
           value={fields.notes}
           onChange={e => set('notes', e.target.value)}
-          rows={3}
+          rows={5}
           placeholder="注意事項、小提醒…"
           style={{
             ...iStyle, resize: 'vertical',
@@ -642,7 +655,7 @@ const EditPanel = ({
         <textarea
           value={fields.remark}
           onChange={e => set('remark', e.target.value)}
-          rows={3}
+          rows={5}
           placeholder="個人備忘、待確認事項…"
           style={{
             ...iStyle, resize: 'vertical',
@@ -659,14 +672,9 @@ const EditPanel = ({
         {fields.links.map((lk, i) => (
           <div key={i} style={{ display: 'flex', gap: 6 }}>
             <input
-              value={lk.text} onChange={e => updateLink(i, 'text', e.target.value)}
-              placeholder="連結文字"
-              style={{ ...iStyle, flex: 1 }}
-            />
-            <input
               value={lk.href} onChange={e => updateLink(i, 'href', e.target.value)}
               placeholder="https://…"
-              style={{ ...iStyle, flex: 2 }}
+              style={{ ...iStyle, flex: 1 }}
             />
             <button
               onClick={() => removeLink(i)}
@@ -681,23 +689,20 @@ const EditPanel = ({
         {/* 新增一筆連結 */}
         <div style={{ display: 'flex', gap: 6 }}>
           <input
-            value={newLink.text} onChange={e => setNewLink(l => ({ ...l, text: e.target.value }))}
-            placeholder="連結文字"
-            style={{ ...iStyle, flex: 1 }}
-          />
-          <input
             value={newLink.href} onChange={e => setNewLink(l => ({ ...l, href: e.target.value }))}
             placeholder="https://…"
-            style={{ ...iStyle, flex: 2 }}
+            style={{ ...iStyle, flex: 1 }}
           />
           <button
             onClick={addLink}
+            disabled={fetchingLink}
             style={{
               flexShrink: 0, width: 28, height: 32, borderRadius: 6,
               border: '1px solid #9eab96', background: 'rgba(158,171,150,0.1)',
-              color: '#5a7a5a', cursor: 'pointer', fontSize: 16, fontWeight: 700,
+              color: '#5a7a5a', cursor: fetchingLink ? 'wait' : 'pointer',
+              fontSize: fetchingLink ? 10 : 16, fontWeight: 700, opacity: fetchingLink ? 0.6 : 1,
             }}
-          >+</button>
+          >{fetchingLink ? '…' : '+'}</button>
         </div>
       </div>
 
@@ -844,8 +849,16 @@ const OverrideDisplay = ({ ov, isChecklist = false }: { ov: CardOverride; isChec
             <li key={i} style={{ display: 'flex', gap: 6 }}>
               <span style={{ fontSize: 10, color: '#c0b8b0', flexShrink: 0, marginTop: 2 }}>{i + 1}.</span>
               <a href={lk.href} target="_blank" rel="noopener noreferrer"
-                style={{ fontSize: 12, color: '#7d9baa', textDecoration: 'underline', textUnderlineOffset: 2, lineHeight: 1.5 }}>
-                {lk.text}
+                style={{ fontSize: 12, color: '#7d9baa', textDecoration: 'underline', textUnderlineOffset: 2, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 3 }}>
+                {lk.text ? lk.text : (
+                  <>
+                    <svg viewBox="0 0 24 24" style={{ width: 11, height: 11, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                    </svg>
+                    其他參考網址
+                  </>
+                )}
               </a>
             </li>
           ))}
@@ -1038,18 +1051,21 @@ const PlanCard = ({
                     {linksOpen && (
                       <ul style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
                         {staticLinks.map((link, i) => {
-                          let site = '';
-                          try { site = new URL(link.href).hostname.replace('www.', ''); } catch {}
                           return (
                             <li key={i} style={{ display: 'flex', gap: 6 }}>
                               <span style={{ fontSize: 10, color: '#c0b8b0', flexShrink: 0, marginTop: 1, minWidth: 16 }}>{i + 1}.</span>
-                              <div>
-                                <a href={link.href} target="_blank" rel="noopener noreferrer"
-                                  style={{ fontSize: 12, color: '#7d9baa', textDecoration: 'underline', textUnderlineOffset: 2, lineHeight: 1.5 }}>
-                                  {link.text}
-                                </a>
-                                {site && <span style={{ marginLeft: 4, fontSize: 10, color: '#c0b8b0' }}>{site}</span>}
-                              </div>
+                              <a href={link.href} target="_blank" rel="noopener noreferrer"
+                                style={{ fontSize: 12, color: '#7d9baa', textDecoration: 'underline', textUnderlineOffset: 2, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 3 }}>
+                                {link.text ? link.text : (
+                                  <>
+                                    <svg viewBox="0 0 24 24" style={{ width: 11, height: 11, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={2}>
+                                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                    </svg>
+                                    其他參考網址
+                                  </>
+                                )}
+                              </a>
                             </li>
                           );
                         })}

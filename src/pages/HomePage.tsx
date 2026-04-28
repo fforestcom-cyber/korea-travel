@@ -76,10 +76,7 @@ const ExchangeCard = () => {
   return (
     <>
       <div className="flight-section-title">
-        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: 'var(--color-primary)' }}>
-          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
-        </svg>
-        匯率換算
+        💱 匯率換算
       </div>
       <div className="exchange-card" style={{ marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
@@ -213,7 +210,7 @@ const FlightCards = () => {
   return (
     <>
       <div className="flight-section-title" style={{ justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><AirplaneIcon />機票資訊</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>✈️ 機票資訊</div>
         <EditBtn onClick={() => setManaging(true)} />
       </div>
       {display.map((f, i) => (
@@ -358,10 +355,7 @@ const AccommodationCard = () => {
     <>
       <div className="flight-section-title" style={{ justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: 'var(--color-primary)', fill: 'none', stroke: 'currentColor', strokeWidth: 2 }}>
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-          </svg>
-          住宿資訊
+          🏨 住宿資訊
         </div>
         <EditBtn onClick={() => setManaging(true)} />
       </div>
@@ -556,15 +550,13 @@ const ChecklistCard = () => {
           className={`checklist-tab${tab === 'todo' ? ' is-active' : ''}`}
           onClick={() => setTab('todo')}
         >
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2}><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          待辦事項
+          ✅ 待辦事項
         </button>
         <button
           className={`checklist-tab${tab === 'prep' ? ' is-active' : ''}`}
           onClick={() => setTab('prep')}
         >
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-          事前準備
+          🧳 事前準備
         </button>
       </div>
       <div style={{ display: tab === 'todo' ? 'block' : 'none' }}>

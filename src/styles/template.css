@@ -501,7 +501,7 @@
     .exchange-quick__btn {
       flex: 1;
       padding: 6px 0;
-      border-radius: var(--radius-md);
+      border-radius: 9999px;
       font-size: 12px;
       font-weight: 700;
       font-family: var(--font-number);
@@ -966,7 +966,7 @@
       align-items: center;
       gap: 6px;
       padding: 10px 16px;
-      border-radius: var(--radius-md);
+      border-radius: 9999px;
       font-size: var(--text-sm);
       font-weight: 700;
       cursor: pointer;
@@ -978,7 +978,7 @@
     }
     .btn--primary-light svg { width: 18px; height: 18px; }
     .btn--dark {
-      background-color: var(--color-text-main);
+      background-color: #7d9baa;
       color: white;
     }
     .btn--dark svg { width: 16px; height: 16px; }
