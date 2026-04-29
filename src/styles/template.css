@@ -70,15 +70,21 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html {
+      overflow-x: hidden;
+    }
+
     body {
       font-family: var(--font-base);
       background-color: var(--color-bg-body);
       color: var(--color-text-main);
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
+      min-height: 100dvh;
       line-height: 1.5;
+      overflow-x: hidden;
     }
 
     button {
@@ -116,6 +122,7 @@
       width: 100%;
       max-width: 420px;
       height: 100vh;
+      height: 100dvh;
       max-height: 850px;
       background-color: var(--color-bg-app);
       overflow: hidden;
@@ -190,9 +197,7 @@
        5. 底部 Tab Bar
        ========================================================================== */
     .app-tab-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
+      flex-shrink: 0;
       width: 100%;
       background-color: var(--color-bg-card);
       border-top: 1px solid var(--color-border);
@@ -1840,5 +1845,6 @@
 .app-content {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 100px;
+  overflow-x: hidden;
+  padding-bottom: 24px;
 }

@@ -9,7 +9,7 @@ import ExpensePage from './pages/ExpensePage';
 import NotesPage from './pages/NotesPage';
 import ChecklistPage from './pages/ChecklistPage';
 
-const LoginScreen = ({ onLogin }: { onLogin: () => void }) => (
+const LoginScreen = ({ onLogin, loading }: { onLogin: () => void; loading: boolean }) => (
   <div style={{
     minHeight: '100vh', display: 'flex', flexDirection: 'column',
     alignItems: 'center', justifyContent: 'center',
@@ -19,7 +19,7 @@ const LoginScreen = ({ onLogin }: { onLogin: () => void }) => (
     <div style={{ fontSize: 48, marginBottom: 16 }}>🇰🇷</div>
     <div style={{ fontSize: 22, fontWeight: 700, color: '#374151', marginBottom: 6 }}>韓國釜山自由行</div>
     <div style={{ fontSize: 14, color: '#9ca3af', marginBottom: 40 }}>2026/06/10 – 2026/06/14</div>
-    <button onClick={onLogin} style={{
+    <button onClick={onLogin} disabled={loading} style={{
       display: 'flex', alignItems: 'center', gap: 10,
       padding: '12px 28px', borderRadius: 999,
       border: '1px solid #e5e7eb', background: '#fff',
@@ -39,12 +39,21 @@ const LoginScreen = ({ onLogin }: { onLogin: () => void }) => (
 
 function App() {
   const [user, setUser] = useState<User | null | 'loading'>('loading');
+  const [loggingIn, setLoggingIn] = useState(false);
 
   useEffect(() => {
     return onAuthStateChanged(auth, u => setUser(u));
   }, []);
 
-  const login = () => signInWithPopup(auth, googleProvider);
+  const login = async () => {
+    if (loggingIn) return;
+    setLoggingIn(true);
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } finally {
+      setLoggingIn(false);
+    }
+  };
 
   if (user === 'loading') return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af', fontSize: 14 }}>
@@ -52,7 +61,7 @@ function App() {
     </div>
   );
 
-  if (!user) return <LoginScreen onLogin={login} />;
+  if (!user) return <LoginScreen onLogin={login} loading={loggingIn} />;
 
   return (
     <BrowserRouter>
