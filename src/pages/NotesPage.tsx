@@ -8,6 +8,7 @@ import { uploadImage } from '../lib/storage';
 import { TRIP_INFO } from '../data/mockData';
 import TaxiGuide from '../components/TaxiGuide';
 import CatchTableGuide from '../components/CatchTableGuide';
+import ToiletGuide from '../components/ToiletGuide';
 
 /* ── Types ─────────────────────────────────────────────── */
 type DotColor = 'yellow' | 'green' | 'blue';
@@ -210,6 +211,8 @@ const NotesPage = () => {
         <TaxiGuide />
 
         <CatchTableGuide />
+
+        <ToiletGuide />
 
         <div className="note-compose mb-6">
           <textarea

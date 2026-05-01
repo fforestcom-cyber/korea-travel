@@ -971,14 +971,14 @@ const PlanCard = ({
             {(district || openHours || timeRange) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 {district && (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, color: '#9eab96', fontWeight: 600 }}>
-                    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12, color: '#9eab96', fontWeight: 400 }}>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     {district}
                   </span>
                 )}
                 {(openHours || timeRange) && (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12, color: '#9ca3af' }}>
-                    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 13, color: '#9ca3af' }}>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     {openHours || timeRange}
                   </span>
                 )}
