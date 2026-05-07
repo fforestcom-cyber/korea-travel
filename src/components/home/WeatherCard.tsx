@@ -1,4 +1,6 @@
-import { WEATHER_DAYS, WeatherType } from '../../data/mockData';
+import { useState, useEffect } from 'react';
+import { WEATHER_DAYS, WeatherType, DayWeather } from '../../data/mockData';
+import { fetchBusanWeather } from '../../lib/weather';
 
 /* ── iOS 線條風格 SVG 天氣圖示 ── */
 const WeatherIcon = ({ type }: { type: WeatherType }) => {
@@ -107,13 +109,52 @@ interface WeatherCardProps {
 }
 
 const WeatherCard = ({ activeIdx, onDayChange }: WeatherCardProps) => {
-  const d = WEATHER_DAYS[activeIdx];
+  const [days, setDays]                 = useState<DayWeather[]>(WEATHER_DAYS);
+  const [isReal, setIsReal]             = useState(false);
+  const [daysUntil, setDaysUntil]       = useState<number | null>(null);
+  const [loading, setLoading]           = useState(true);
+
+  useEffect(() => {
+    fetchBusanWeather().then(result => {
+      if (result?.isReal && result.days.length === 5) {
+        setDays(result.days);
+        setIsReal(true);
+        setDaysUntil(null);
+      } else if (result && !result.isReal) {
+        setDaysUntil(result.daysUntilForecast);
+      }
+      setLoading(false);
+    });
+  }, []);
+
+  const d = days[activeIdx];
 
   return (
     <>
+      {/* 狀態提示列 */}
+      {!loading && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 5,
+          marginBottom: 8, fontSize: 11,
+          color: isReal ? '#059669' : '#9ca3af',
+        }}>
+          <div style={{
+            width: 6, height: 6, borderRadius: '50%',
+            background: isReal ? '#34d399' : '#d1d5db',
+            flexShrink: 0,
+          }} />
+          {isReal
+            ? '即時預報・Open-Meteo'
+            : daysUntil !== null && daysUntil > 0
+              ? `預報約 ${daysUntil} 天後開放・目前顯示估計資料`
+              : '預估資料・僅供參考'
+          }
+        </div>
+      )}
+
       {/* 日期選擇列 */}
       <div className="date-scroller mb-4">
-        {WEATHER_DAYS.map((day, i) => (
+        {days.map((day, i) => (
           <div
             key={day.date}
             className={`date-item${i === activeIdx ? ' date-item--active' : ''}`}

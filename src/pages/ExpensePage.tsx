@@ -223,11 +223,6 @@ const ExpensePage = () => {
   const totalTwdPre = twdItems.reduce((s, i) => s + i.amount, 0);
   const grandTwd    = totalTwd + totalTwdPre;
 
-  const tripDays  = Math.round(
-    (new Date(TRIP_INFO.end).getTime() - new Date(TRIP_INFO.start).getTime()) / 86400000
-  ) + 1;
-  const perDayKrw = tripDays > 0 ? Math.round(totalKrw / tripDays) : 0;
-
   const totalTwdInKrw = Math.round(totalTwdPre * EXCHANGE.rate);
   const grandKrw      = totalKrw + totalTwdInKrw;
 

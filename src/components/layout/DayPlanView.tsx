@@ -784,7 +784,6 @@ const OverrideDisplay = ({ ov, isChecklist = false }: { ov: CardOverride; isChec
                 ? <p key={g.key} style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.7, marginLeft: 32, marginBottom: 3 }}>{markBold(g.text)}</p>
                 : <div key={g.key} style={{ height: 4 }} />;
             }
-            const hasNext = gi < lastNumIdx;
             return (
               <div key={g.key} style={{ display: 'flex', gap: 10 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
