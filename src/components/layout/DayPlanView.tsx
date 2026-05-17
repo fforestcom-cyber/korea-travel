@@ -4,6 +4,7 @@ import {
   onSnapshot, query, serverTimestamp, Timestamp, where,
 } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import { useIsOwner } from '../../lib/authContext';
 import { uploadImage } from '../../lib/storage';
 import type { DayPlan, ContentBlock, Step } from '../../types/dayPlan';
 
@@ -933,6 +934,7 @@ const PlanCard = ({
   onMoveDown?: () => void;
   onEdit: (ctx: { initFields: EditFields; onSave: (f: EditFields) => Promise<void> }) => void;
 }) => {
+  const isOwner = useIsOwner();
   const [open, setOpen]           = useState(false);
   const [linksOpen, setLinksOpen] = useState(false);
 
@@ -1001,28 +1003,30 @@ const PlanCard = ({
               Google
             </a>
           )}
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4 }}>
-            {onMoveUp && (
-              <button onClick={onMoveUp} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#9ca3af', cursor: 'pointer', flexShrink: 0 }}>
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="18 15 12 9 6 15"/></svg>
+          {isOwner && (
+            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4 }}>
+              {onMoveUp && (
+                <button onClick={onMoveUp} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#9ca3af', cursor: 'pointer', flexShrink: 0 }}>
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+              )}
+              {onMoveDown && (
+                <button onClick={onMoveDown} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#9ca3af', cursor: 'pointer', flexShrink: 0 }}>
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              )}
+              {onDelete && (
+                <button onClick={onDelete} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#c4a882', cursor: 'pointer', flexShrink: 0 }}>
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              )}
+              <button onClick={() => onEdit({ initFields, onSave })}
+                style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '3px 9px', borderRadius: 20, flexShrink: 0, background: 'none', border: '1px solid #ece8e3', color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                編輯
               </button>
-            )}
-            {onMoveDown && (
-              <button onClick={onMoveDown} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#9ca3af', cursor: 'pointer', flexShrink: 0 }}>
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="6 9 12 15 18 9"/></svg>
-              </button>
-            )}
-            {onDelete && (
-              <button onClick={onDelete} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: '#c4a882', cursor: 'pointer', flexShrink: 0 }}>
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-              </button>
-            )}
-            <button onClick={() => onEdit({ initFields, onSave })}
-              style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '3px 9px', borderRadius: 20, flexShrink: 0, background: 'none', border: '1px solid #ece8e3', color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
-              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth={2}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              編輯
-            </button>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1094,30 +1098,36 @@ const TransitionNoteItem = ({
   onDelete: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
-}) => (
+}) => {
+  const isOwner = useIsOwner();
+  return (
   <div style={{ display: 'flex', alignItems: 'stretch', margin: '-2px 0 0', paddingLeft: 12, minHeight: 28 }}>
     <div style={{ width: 2, background: MORANDI_LINE, borderRadius: 1, flexShrink: 0, marginRight: 10 }} />
     <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, padding: '5px 0' }}>
       <span style={{ fontSize: 12, color: '#9ca3af', flex: 1, lineHeight: 1.5 }}>{text}</span>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
-        {onMoveUp && (
-          <button onClick={onMoveUp} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 22, height: 22, borderRadius: 4, border: 'none', background: 'none', color: '#c0b8b0', cursor: 'pointer' }}>
-            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="18 15 12 9 6 15"/></svg>
-          </button>
-        )}
-        {onMoveDown && (
-          <button onClick={onMoveDown} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 22, height: 22, borderRadius: 4, border: 'none', background: 'none', color: '#c0b8b0', cursor: 'pointer' }}>
-            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-        )}
-        <button onClick={onDelete} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 22, height: 22, borderRadius: 4, border: 'none', background: 'none', color: '#c0b8b0', cursor: 'pointer', fontSize: 14, lineHeight: 1 }}>×</button>
-      </div>
+      {isOwner && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+          {onMoveUp && (
+            <button onClick={onMoveUp} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 22, height: 22, borderRadius: 4, border: 'none', background: 'none', color: '#c0b8b0', cursor: 'pointer' }}>
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+          )}
+          {onMoveDown && (
+            <button onClick={onMoveDown} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 22, height: 22, borderRadius: 4, border: 'none', background: 'none', color: '#c0b8b0', cursor: 'pointer' }}>
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          )}
+          <button onClick={onDelete} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 22, height: 22, borderRadius: 4, border: 'none', background: 'none', color: '#c0b8b0', cursor: 'pointer', fontSize: 14, lineHeight: 1 }}>×</button>
+        </div>
+      )}
     </div>
   </div>
-);
+  );
+};
 
 // ── DayPlanView ────────────────────────────────────────────────────────
 const DayPlanView = ({ plan }: { plan: DayPlan }) => {
+  const isOwner = useIsOwner();
   const [overrides,        setOverrides]        = useState<Record<string, CardOverride>>({});
   const [customCards,      setCustomCards]      = useState<CustomCard[]>([]);
   const [fsections,        setFsections]        = useState<FirestoreSection[] | null>(null);
@@ -1363,7 +1373,7 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
         <h3 style={{ fontSize: 15, fontWeight: 700, color: '#374151', margin: 0 }}>今日行程</h3>
       </div>
 
-      {fsections !== null && fsections.length === 0 && plan.sections.length > 0 && (
+      {isOwner && fsections !== null && fsections.length === 0 && plan.sections.length > 0 && (
         <button
           onClick={seedSections}
           disabled={seeding}
@@ -1388,8 +1398,8 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
             <TransitionNoteItem
               text={item.note.text}
               onDelete={() => deleteDoc(doc(db, 'transitionNotes', item.note.id))}
-              onMoveUp={i > 0 ? () => moveItem(i, -1) : undefined}
-              onMoveDown={i < allItems.length - 1 ? () => moveItem(i, 1) : undefined}
+              onMoveUp={isOwner && i > 0 ? () => moveItem(i, -1) : undefined}
+              onMoveDown={isOwner && i < allItems.length - 1 ? () => moveItem(i, 1) : undefined}
             />
           ) : (
             <PlanCard
@@ -1407,8 +1417,8 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
               onSave={item.entry.onSave}
               onDelete={item.entry.onDelete}
               onEdit={setEditCtx}
-              onMoveUp={i > 0 ? () => moveItem(i, -1) : undefined}
-              onMoveDown={i < allItems.length - 1 ? () => moveItem(i, 1) : undefined}
+              onMoveUp={isOwner && i > 0 ? () => moveItem(i, -1) : undefined}
+              onMoveDown={isOwner && i < allItems.length - 1 ? () => moveItem(i, 1) : undefined}
             />
           )}
         </React.Fragment>
@@ -1460,40 +1470,44 @@ const DayPlanView = ({ plan }: { plan: DayPlan }) => {
         </div>
       )}
 
-      <button
-        onClick={() => { setAddingNote(true); setNoteText(''); }}
-        style={{
-          width: '100%', padding: '10px 0',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          border: '1px dashed #9eab96', borderRadius: 'var(--radius-md)',
-          background: 'none', cursor: 'pointer',
-          fontSize: 13, color: '#9eab96', fontWeight: 500, marginTop: 4,
-        }}
-      >
-        <svg viewBox="0 0 24 24" style={{ width: 15, height: 15 }} fill="none" stroke="currentColor" strokeWidth={2}>
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
-        新增備註說明
-      </button>
+      {isOwner && (
+        <>
+          <button
+            onClick={() => { setAddingNote(true); setNoteText(''); }}
+            style={{
+              width: '100%', padding: '10px 0',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              border: '1px dashed #9eab96', borderRadius: 'var(--radius-md)',
+              background: 'none', cursor: 'pointer',
+              fontSize: 13, color: '#9eab96', fontWeight: 500, marginTop: 4,
+            }}
+          >
+            <svg viewBox="0 0 24 24" style={{ width: 15, height: 15 }} fill="none" stroke="currentColor" strokeWidth={2}>
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+            新增備註說明
+          </button>
 
-      <button
-        onClick={() => setAddingCard(true)}
-        style={{
-          width: '100%', padding: '10px 0',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          border: '1px dashed #c4a882', borderRadius: 'var(--radius-md)',
-          background: 'none', cursor: 'pointer',
-          fontSize: 13, color: '#c4a882', fontWeight: 500, marginTop: 6,
-        }}
-      >
-        <svg viewBox="0 0 24 24" style={{ width: 15, height: 15 }} fill="none" stroke="currentColor" strokeWidth={2}>
-          <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-        新增行程卡片
-      </button>
+          <button
+            onClick={() => setAddingCard(true)}
+            style={{
+              width: '100%', padding: '10px 0',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              border: '1px dashed #c4a882', borderRadius: 'var(--radius-md)',
+              background: 'none', cursor: 'pointer',
+              fontSize: 13, color: '#c4a882', fontWeight: 500, marginTop: 6,
+            }}
+          >
+            <svg viewBox="0 0 24 24" style={{ width: 15, height: 15 }} fill="none" stroke="currentColor" strokeWidth={2}>
+              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            新增行程卡片
+          </button>
 
-      {addingCard && (
-        <AddCardModal dayNum={plan.day} nextOrder={nextOrder} onClose={() => setAddingCard(false)} />
+          {addingCard && (
+            <AddCardModal dayNum={plan.day} nextOrder={nextOrder} onClose={() => setAddingCard(false)} />
+          )}
+        </>
       )}
     </div>
   );

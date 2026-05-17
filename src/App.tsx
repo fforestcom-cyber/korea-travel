@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { onAuthStateChanged, signInWithPopup, User } from 'firebase/auth';
 import { auth, googleProvider } from './lib/firebase';
+import { OwnerContext } from './lib/authContext';
 import AppWrapper from './components/layout/AppWrapper';
 import HomePage from './pages/HomePage';
 import SchedulePage from './pages/SchedulePage';
@@ -63,18 +64,23 @@ function App() {
 
   if (!user) return <LoginScreen onLogin={login} loading={loggingIn} />;
 
+  const email = (user as User).email ?? '';
+  const isOwner = email === 'abc022778@gmail.com';
+
   return (
-    <BrowserRouter>
-      <AppWrapper>
-        <Routes>
-          <Route path="/"          element={<HomePage />} />
-          <Route path="/schedule"  element={<SchedulePage />} />
-          <Route path="/expense"   element={<ExpensePage />} />
-          <Route path="/notes"     element={<NotesPage />} />
-          <Route path="/checklist" element={<ChecklistPage />} />
-        </Routes>
-      </AppWrapper>
-    </BrowserRouter>
+    <OwnerContext.Provider value={isOwner}>
+      <BrowserRouter>
+        <AppWrapper>
+          <Routes>
+            <Route path="/"          element={<HomePage />} />
+            <Route path="/schedule"  element={<SchedulePage />} />
+            <Route path="/expense"   element={<ExpensePage />} />
+            <Route path="/notes"     element={<NotesPage />} />
+            <Route path="/checklist" element={<ChecklistPage />} />
+          </Routes>
+        </AppWrapper>
+      </BrowserRouter>
+    </OwnerContext.Provider>
   );
 }
 

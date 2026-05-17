@@ -4,6 +4,7 @@ import {
   onSnapshot, query, where, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { useIsOwner } from '../lib/authContext';
 import WeatherCard from '../components/home/WeatherCard';
 import DayPlanView from '../components/layout/DayPlanView';
 import { TRIP_INFO } from '../data/mockData';
@@ -23,6 +24,7 @@ const CHECKLIST_COL = collection(db, 'checklistItems');
 
 /* ── ChecklistPanel（Firebase 驅動，含編輯） ─────────────── */
 const ChecklistPanel = ({ dayNum }: { dayNum: number }) => {
+  const isOwner = useIsOwner();
   const [items,   setItems]   = useState<ChecklistItem[]>([]);
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [open,    setOpen]    = useState(false);
@@ -143,21 +145,23 @@ const ChecklistPanel = ({ dayNum }: { dayNum: number }) => {
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </button>
-        <button
-          onClick={() => setEditing(true)}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 4,
-            padding: '4px 10px', marginRight: 12, borderRadius: 20,
-            background: 'none', border: '1px solid #ece8e3',
-            color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer', flexShrink: 0,
-          }}
-        >
-          <svg viewBox="0 0 24 24" style={{ width: 11, height: 11 }} fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-          </svg>
-          編輯
-        </button>
+        {isOwner && (
+          <button
+            onClick={() => setEditing(true)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 4,
+              padding: '4px 10px', marginRight: 12, borderRadius: 20,
+              background: 'none', border: '1px solid #ece8e3',
+              color: '#9ca3af', fontSize: 11, fontWeight: 600, cursor: 'pointer', flexShrink: 0,
+            }}
+          >
+            <svg viewBox="0 0 24 24" style={{ width: 11, height: 11 }} fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            編輯
+          </button>
+        )}
       </div>
 
       {/* ── 進度條 ── */}

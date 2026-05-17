@@ -4,6 +4,7 @@ import {
   onSnapshot, query, where, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { useIsOwner } from '../lib/authContext';
 import {
   TRIP_INFO, EXCHANGE,
   FLIGHTS as DEFAULT_FLIGHTS,
@@ -185,6 +186,7 @@ const FlightsCombinedModal = ({
 
 /* ── 機票卡片 ──────────────────────────────────────────── */
 const FlightCards = () => {
+  const isOwner = useIsOwner();
   const [flights, setFlights] = useState<Flight[]>([]);
   const [managing, setManaging] = useState(false);
   const seeded = useRef(false);
@@ -211,7 +213,7 @@ const FlightCards = () => {
     <>
       <div className="flight-section-title" style={{ justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>✈️ 機票資訊</div>
-        <EditBtn onClick={() => setManaging(true)} />
+        {isOwner && <EditBtn onClick={() => setManaging(true)} />}
       </div>
       {display.map((f, i) => (
         <div className="flight-card" key={f.id} style={i === display.length - 1 ? { marginBottom: '1.25rem' } : {}}>
@@ -342,6 +344,7 @@ const AccomManagerModal = ({ items, onClose }: { items: Accom[]; onClose: () => 
 };
 
 const AccommodationCard = () => {
+  const isOwner = useIsOwner();
   const [items, setItems] = useState<Accom[]>([]);
   const [managing, setManaging] = useState(false);
 
@@ -357,7 +360,7 @@ const AccommodationCard = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           🏨 住宿資訊
         </div>
-        <EditBtn onClick={() => setManaging(true)} />
+        {isOwner && <EditBtn onClick={() => setManaging(true)} />}
       </div>
       {items.length === 0 && (
         <div className="card" style={{ marginBottom: 8, color: '#9ca3af', fontSize: 13, textAlign: 'center', padding: '18px 0' }}>
@@ -485,6 +488,7 @@ const ChecklistBulkEditor = ({ type, items, onClose }: { type: 'todo' | 'prep'; 
 
 /* ── 清單 Section ─────────────────────────────────────── */
 const ChecklistSection = ({ type, naked }: { type: 'todo' | 'prep'; naked?: boolean }) => {
+  const isOwner = useIsOwner();
   const [items,   setItems]   = useState<CheckItem[]>([]);
   const [editing, setEditing] = useState(false);
   const seeded = useRef(false);
@@ -523,9 +527,11 @@ const ChecklistSection = ({ type, naked }: { type: 'todo' | 'prep'; naked?: bool
           </div>
         </div>
       ))}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 10 }}>
-        <EditBtn onClick={() => setEditing(true)} />
-      </div>
+      {isOwner && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 10 }}>
+          <EditBtn onClick={() => setEditing(true)} />
+        </div>
+      )}
     </>
   );
 
