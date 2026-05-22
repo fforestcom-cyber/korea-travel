@@ -9,6 +9,7 @@ import { TRIP_INFO } from '../data/mockData';
 import TaxiGuide from '../components/TaxiGuide';
 import CatchTableGuide from '../components/CatchTableGuide';
 import ToiletGuide from '../components/ToiletGuide';
+import WowpassGuide from '../components/WowpassGuide';
 
 /* ── Types ─────────────────────────────────────────────── */
 type DotColor = 'yellow' | 'green' | 'blue';
@@ -235,6 +236,8 @@ const NotesPage = () => {
       <div className="section-px">
 
         <TaxiGuide />
+
+        <WowpassGuide />
 
         <CatchTableGuide />
 

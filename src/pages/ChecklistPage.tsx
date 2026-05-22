@@ -106,9 +106,16 @@ const ChecklistPage = () => {
   const [activeStore, setActiveStore] = useState<string | null>(null);
   const [boughtFilter, setBoughtFilter] = useState<'all' | 'unbought' | 'bought'>('all');
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [showAddForm, setShowAddForm]     = useState(false);
+  const [newName, setNewName]             = useState('');
+  const [newStore, setNewStore]           = useState(STORES[0]);
+  const [newImgFile, setNewImgFile]       = useState<File | null>(null);
+  const [newImgPreview, setNewImgPreview] = useState('');
+  const [addingNew, setAddingNew]         = useState(false);
 
   const imgInputRef    = useRef<HTMLInputElement>(null);
   const pendingItemId  = useRef<string | null>(null);
+  const newImgInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const q = query(SHOPPING_COL, orderBy('createdAt', 'asc'));
@@ -200,6 +207,57 @@ const ChecklistPage = () => {
     } finally {
       setUploadingId(null);
       pendingItemId.current = null;
+    }
+  };
+
+  const handleContextPaste = async (e: React.MouseEvent, itemId: string) => {
+    e.preventDefault();
+    if (!navigator.clipboard?.read) return;
+    try {
+      const clipItems = await navigator.clipboard.read();
+      for (const ci of clipItems) {
+        const imgType = ci.types.find(t => t.startsWith('image/'));
+        if (imgType) {
+          const blob = await ci.getType(imgType);
+          const file = new File([blob], 'paste.png', { type: imgType });
+          setUploadingId(itemId);
+          const { url } = await uploadImage(file, 'korea-travel/shopping');
+          await updateDoc(doc(db, 'shoppingItems', itemId), { imageUrl: url });
+          return;
+        }
+      }
+    } catch (err) {
+      console.error('paste error:', err);
+    } finally {
+      setUploadingId(null);
+    }
+  };
+
+  const addNewItem = async () => {
+    if (!newName.trim() || addingNew) return;
+    setAddingNew(true);
+    try {
+      let imageUrl = '';
+      if (newImgFile) {
+        const { url } = await uploadImage(newImgFile, 'korea-travel/shopping');
+        imageUrl = url;
+      }
+      await addDoc(SHOPPING_COL, {
+        name: newName.trim(),
+        store: newStore,
+        imageUrl,
+        bought: false,
+        createdAt: serverTimestamp(),
+      });
+      setNewName('');
+      setNewStore(STORES[0]);
+      setNewImgFile(null);
+      setNewImgPreview('');
+      setShowAddForm(false);
+    } catch (err) {
+      console.error('addNewItem error:', err);
+    } finally {
+      setAddingNew(false);
     }
   };
 
@@ -318,7 +376,10 @@ const ChecklistPage = () => {
                     className={`sl-card${item.bought ? ' sl-card--bought' : ''}`}
                   >
                     {/* 圖片區 */}
-                    <div className="sl-img">
+                    <div
+                      className="sl-img"
+                      onContextMenu={e => handleContextPaste(e, item.id)}
+                    >
                       {item.imageUrl
                         ? <img src={item.imageUrl} alt={item.name} />
                         : (
@@ -334,7 +395,7 @@ const ChecklistPage = () => {
                                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                                   <circle cx="12" cy="13" r="4" />
                                 </svg>
-                                <span className="sl-img__hint">上傳圖片</span>
+                                <span className="sl-img__hint">上傳 / 右鍵貼上</span>
                               </>
                             )}
                           </div>
@@ -376,8 +437,101 @@ const ChecklistPage = () => {
                   </div>
                 );
               })}
+              {/* 新增商品格 */}
+              <div
+                className="sl-card sl-card--add"
+                onClick={() => setShowAddForm(true)}
+              >
+                <div className="sl-add-btn">
+                  <svg viewBox="0 0 24 24" style={{ width: 28, height: 28 }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span>新增商品</span>
+                </div>
+              </div>
             </div>
           </>
+        )}
+
+        {/* 新增商品 Modal */}
+        {showAddForm && (
+          <div
+            style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px' }}
+            onClick={() => setShowAddForm(false)}
+          >
+            <div
+              style={{ background: '#fff', borderRadius: 12, padding: '20px 18px', width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', gap: 10 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 15, fontWeight: 700, color: '#374151' }}>新增商品</span>
+                <button onClick={() => setShowAddForm(false)} style={{ background: 'none', border: 'none', fontSize: 20, color: '#9ca3af', cursor: 'pointer', lineHeight: 1 }}>×</button>
+              </div>
+
+              <input
+                placeholder="商品名稱（必填）"
+                value={newName}
+                onChange={e => setNewName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && addNewItem()}
+                style={{ border: '1px solid #ece8e3', borderRadius: 6, padding: '9px 12px', fontSize: 13, outline: 'none', background: '#fff', fontFamily: 'inherit' }}
+              />
+
+              <select
+                value={newStore}
+                onChange={e => setNewStore(e.target.value)}
+                style={{ border: '1px solid #ece8e3', borderRadius: 6, padding: '9px 12px', fontSize: 13, outline: 'none', background: '#fff', fontFamily: 'inherit', color: '#374151' }}
+              >
+                {STORES.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+
+              <input
+                ref={newImgInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={e => {
+                  const f = e.target.files?.[0];
+                  if (!f) return;
+                  setNewImgFile(f);
+                  setNewImgPreview(URL.createObjectURL(f));
+                }}
+              />
+
+              {newImgPreview && (
+                <div style={{ position: 'relative' }}>
+                  <img src={newImgPreview} alt="預覽" style={{ width: '100%', height: 100, objectFit: 'cover', borderRadius: 8 }} />
+                  <button
+                    onClick={() => { setNewImgFile(null); setNewImgPreview(''); }}
+                    style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,.5)', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >×</button>
+                </div>
+              )}
+
+              <button
+                onClick={() => newImgInputRef.current?.click()}
+                style={{ padding: '8px', border: '1px solid #ece8e3', borderRadius: 6, background: '#fafaf9', fontSize: 12, cursor: 'pointer', color: '#9ca3af', textAlign: 'center' as const }}
+              >
+                上傳圖片（選填）
+              </button>
+
+              <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
+                <button
+                  onClick={() => { setShowAddForm(false); setNewName(''); setNewImgFile(null); setNewImgPreview(''); }}
+                  style={{ flex: 1, padding: '9px', border: '1px solid #ece8e3', borderRadius: 6, background: '#fafaf9', fontSize: 13, cursor: 'pointer', color: '#9ca3af', fontFamily: 'inherit' }}
+                >
+                  取消
+                </button>
+                <button
+                  onClick={addNewItem}
+                  disabled={!newName.trim() || addingNew}
+                  style={{ flex: 2, padding: '9px', border: 'none', borderRadius: 6, background: '#9eab96', fontSize: 13, cursor: 'pointer', color: '#fff', fontFamily: 'inherit', opacity: (!newName.trim() || addingNew) ? 0.6 : 1 }}
+                >
+                  {addingNew ? '新增中…' : '新增'}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* 重新匯入按鈕（隱藏區，資料已存在時顯示） */}

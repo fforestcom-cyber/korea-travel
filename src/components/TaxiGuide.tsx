@@ -10,6 +10,7 @@ type AppType = 'uber' | 'kride' | 'both';
 interface Ride {
   num: string;
   ko: string;
+  naver: string;
   route: string;
   time: string;
   cost: string;
@@ -31,51 +32,62 @@ const DAYS: DayData[] = [
     key: 'd1', label: 'Day 1', theme: '抵達 · 西面落腳', color: D.d1,
     rides: [
       { num: '1-備', ko: '어반스테이 부산서면\n부산 부산진구 서면로 68',
+        naver: '어반스테이 부산서면 서면로 68',
         route: '（備案）機場 → 西面飯店・地鐵受阻時使用', time: '', cost: '₩25,000–35,000', app: 'both' },
     ],
     noRide: '✅ Day 1 全程地鐵＋步行，零計程車。機場→西面輕軌轉地鐵（₩1,800）。',
   },
   {
-    key: 'd2', label: 'Day 2', theme: '金海樂天水上樂園', color: D.d2,
+    key: 'd2', label: 'Day 2', theme: '釜田市場 · 甘川洞 · 南浦洞採買', color: D.d2,
     rides: [
-      { num: '2-①', ko: '롯데워터파크\n부산 기장군 기장읍\n동부산관광6로 59',
-        route: '西面飯店 → 金海樂天水上樂園', time: '09:00 出發', cost: '₩22,000–25,000', app: 'both' },
-      { num: '2-②', ko: '서면역 어반스테이 부산서면\n（或輸入飯店韓文名稱）',
-        route: '金海樂天水上樂園 → 西面飯店', time: '傍晚玩完後', cost: '₩22,000–25,000', app: 'both' },
+      { num: '2-①', ko: '감천문화마을\n부산 사하구 감내2로 203',
+        naver: '감천문화마을 사하구 감내2로 203',
+        route: '釜田市場 → 甘川洞文化村（遊客中心）', time: '', cost: '₩12,000–15,000', app: 'both' },
+      { num: '2-②', ko: '국제시장\n부산 중구 국제시장4길 23',
+        naver: '국제시장 부산 중구 국제시장4길 23',
+        route: '甘川洞文化村 → 國際市場', time: '', cost: '₩8,000–12,000', app: 'both' },
+      { num: '2-③', ko: '어반스테이 부산서면\n부산 부산진구 서면로 68',
+        naver: '어반스테이 부산서면 서면로 68',
+        route: '樂天超市光復店 → 西面飯店', time: '傍晚採買後', cost: '₩8,000–12,000', app: 'both' },
     ],
-    alert: { type: 'warn', text: '⚠ 水上樂園在機張，兩個 App 都可能等 5–10 分鐘。超過 10 分鐘，k.ride 開 SMART 呼叫（+₩1,000）。' },
   },
   {
-    key: 'd3', label: 'Day 3', theme: '影島串聯西區 → 入住海雲台', color: D.d3,
+    key: 'd3', label: 'Day 3', theme: 'ARTE MUSEUM → ClubD Oasis → 入住海雲台', color: D.d3,
     rides: [
       { num: '3-①', ko: '아르떼뮤지엄 부산\n부산 영도구 해양로247번길 29',
+        naver: '아르떼뮤지엄 부산 영도구 해양로247번길 29',
         route: '西面 → ARTE MUSEUM（影島）', time: '09:30', cost: '₩12,000–15,000', app: 'uber' },
-      { num: '3-②', ko: '감천문화마을 안내센터\n부산 사하구 감내2로 203',
-        route: 'ARTE MUSEUM → 甘川洞文化村', time: '12:00', cost: '₩5,000–7,000', app: 'kride' },
-      { num: '3-③', ko: '송도해상케이블카\n부산 서구 송도해변로 171',
-        route: '甘川洞文化村 → 松島海上纜車', time: '13:10', cost: '₩6,000–8,000', app: 'both' },
-      { num: '3-④', ko: '남포동 BIFF광장\n또는 롯데마트 광복점',
-        route: '松島 → 南浦洞（BIFF廣場 / 樂天超市光復店）', time: '14:20', cost: '₩4,000–6,000', app: 'both' },
-      { num: '3-⑤', ko: '해운대（飯店韓文名稱）\n（Uber 可直接輸入中文地址）',
-        route: '南浦洞樂天超市 → 海雲台飯店', time: '17:30（帶採買袋）', cost: '₩28,000–35,000', app: 'both' },
+      { num: '3-②', ko: '클럽디 오아시스\n부산 기장군 기장읍 기장해안로',
+        naver: '클럽디 오아시스',
+        route: 'ARTE MUSEUM → ClubD Oasis', time: '', cost: '₩20,000–28,000', app: 'both' },
+      { num: '3-③', ko: '라마다 앙코르 바이 윈덤 부산 해운대\n부산 해운대구 해운대해변로 368',
+        naver: '라마다 앙코르 바이 윈덤 부산 해운대',
+        route: 'ClubD Oasis → 海雲台溫德姆華美達安可飯店', time: '傍晚', cost: '₩15,000–22,000', app: 'both' },
     ],
   },
   {
-    key: 'd4', label: 'Day 4', theme: 'Skyline Luge × 膠囊列車 × Spa Land', color: D.d4,
+    key: 'd4', label: 'Day 4', theme: 'Skyline Luge × 膠囊列車 × Spa Land × 廣安里夜場', color: D.d4,
     rides: [
       { num: '4-①', ko: '스카이라인루지 부산\n부산 기장군 기장읍\n기장해안로 205',
+        naver: '스카이라인루지 부산 기장해안로 205',
         route: '海雲台飯店 → Skyline Luge（機張）', time: '09:00（08:45 叫車）', cost: '₩20,000–25,000', app: 'both' },
       { num: '4-②', ko: '해운대블루라인파크 미포역\n부산 해운대구\n달맞이길62번길 13',
+        naver: '해운대블루라인파크 미포역 달맞이길62번길 13',
         route: 'Skyline Luge → 尾浦站（膠囊列車起點）', time: '11:00（時間緊）', cost: '₩15,000–20,000', app: 'both' },
       { num: '4-③', ko: '신세계백화점 센텀시티점\n부산 해운대구 센텀남대로 35',
+        naver: '신세계백화점 센텀시티점 센텀남대로 35',
         route: '青沙浦（午餐後）→ 新世界百貨 Spa Land', time: '14:00', cost: '₩9,000–12,000', app: 'uber' },
+      { num: '4-④', ko: '광안리해수욕장\n부산 수영구 광안해변로 219',
+        naver: '광안리해수욕장 수영구 광안해변로 219',
+        route: '新世界百貨 → 廣安里（無人機秀）', time: '夜間', cost: '₩7,000–10,000', app: 'both' },
     ],
-    alert: { type: 'note', text: 'ℹ Day 4 廣安里晚餐：Spa Land 搭地鐵 2 號線 2–3 站，或計程車約 ₩7,000–10,000 直達廣安里。' },
+    alert: { type: 'note', text: 'ℹ 廣安里無人機秀於夜間舉行，Spa Land 結束後計程車直達廣安里海水浴場約 ₩7,000–10,000。' },
   },
   {
     key: 'd5a', label: 'Day 5A', theme: '海雲台放空收尾', color: D.d5a,
     rides: [
       { num: '5A-①', ko: '김해국제공항 국제선\n경남 김해시 공항로 108',
+        naver: '김해국제공항 국제선터미널 공항로 108',
         route: '海雲台飯店 → 金海機場（國際線）', time: '15:00 出發', cost: '₩20,000–25,000', app: 'both' },
     ],
   },
@@ -83,15 +95,17 @@ const DAYS: DayData[] = [
     key: 'd5b', label: 'Day 5B', theme: '田浦採買收尾', color: D.d5b,
     rides: [
       { num: '5B-①', ko: '전포 카페거리\n부산 부산진구 전포대로 209',
+        naver: '전포 카페거리 전포대로 209',
         route: '海雲台飯店 → 田浦商圈', time: '10:00 出發', cost: '₩12,000–16,000', app: 'uber' },
       { num: '5B-②', ko: '김해국제공항 국제선\n경남 김해시 공항로 108',
+        naver: '김해국제공항 국제선터미널 공항로 108',
         route: '田浦商圈 → 金海機場（國際線）', time: '13:45（最晚出發）', cost: '₩20,000–25,000', app: 'both' },
     ],
   },
 ];
 
 const TIPS = [
-  { title: '出發前設定', body: '<b>Uber</b>：確認信用卡已綁，把常用目的地預存。<br><b>k.ride</b>：App Store 搜「k.ride」，台灣手機號驗證，綁 Visa/Master，<b>出發前完成，韓國設定容易卡關</b>。' },
+  { title: '出發前設定', body: '<b>Uber</b>：確認信用卡已綁，把常用目的地預存。<br><b>k.ride / Kakao T</b>：App Store 搜「k.ride」，台灣手機號驗證，綁 Visa/Master，<b>出發前完成，韓國設定容易卡關</b>。' },
   { title: '定位不準時', body: 'Uber 點「在地圖上設定地點」手動調整，避免定位到對面馬路。<br>上車後用 Naver Map 確認行駛方向。' },
   { title: '夜間加成', body: '<b>22:00–04:00</b> 夜間加成 <b>20–40%</b>，₩5,000 短程可能變 ₩7,000，正常現象。<br>深夜建議提前 5–10 分鐘叫好。' },
   { title: '司機拒載怎辦', body: '司機有時以「太近」或「太遠」拒接。<br><b>對策</b>：換另一個 App；或 k.ride 開 <b>SMART 呼叫（+₩1,000）</b>提高接單意願。' },
@@ -99,27 +113,14 @@ const TIPS = [
   { title: '過橋費說明', body: '南浦洞往海雲台走<b>廣安大橋</b>加收 <b>₩1,000</b> 橋費（跳表加入，非私收），走橋比市區快約 10 分鐘。' },
 ];
 
-/* ── Copy helper ─────────────────────────────────── */
-const copyText = async (text: string) => {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch {
-    const el = document.createElement('textarea');
-    el.value = text;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-  }
-};
-
 /* ── Destination card ────────────────────────────── */
 const DestCard = ({
-  ride, color, isCopied, onCopy,
+  ride, color,
 }: {
-  ride: Ride; color: string; isCopied: boolean; onCopy: () => void;
+  ride: Ride; color: string;
 }) => {
   const appLabel: Record<AppType, string> = { uber: 'Uber', kride: 'k.ride', both: 'Uber / k.ride' };
+  const naverUrl = `https://map.naver.com/p/search/${encodeURIComponent(ride.naver)}`;
 
   return (
     <div style={{ marginBottom: 10 }}>
@@ -129,18 +130,21 @@ const DestCard = ({
         <span style={{ fontSize: 11, color: 'var(--color-text-muted)', lineHeight: 1.3 }}>{ride.route}</span>
       </div>
 
-      {/* ── Korean destination block (tap to copy) ── */}
-      <button
-        onClick={onCopy}
+      {/* ── Korean destination block (tap to open Naver Maps) ── */}
+      <a
+        href={naverUrl}
+        target="_blank"
+        rel="noopener noreferrer"
         style={{
           width: '100%', textAlign: 'left' as const, cursor: 'pointer',
-          background: isCopied ? color + '20' : 'white',
-          border: `1.5px solid ${isCopied ? color : color + '55'}`,
+          background: 'white',
+          border: `1.5px solid ${color}55`,
           borderRadius: 10,
           padding: '12px 14px 10px',
-          transition: 'all 0.15s',
           display: 'block',
           position: 'relative' as const,
+          textDecoration: 'none',
+          boxSizing: 'border-box' as const,
         }}
       >
         <div style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.6, color: 'var(--color-text-main)', wordBreak: 'keep-all' as const, letterSpacing: '0.01em', paddingRight: 52 }}>
@@ -149,33 +153,24 @@ const DestCard = ({
         <div style={{
           position: 'absolute' as const, bottom: 9, right: 11,
           fontSize: 10, fontWeight: 700,
-          color: isCopied ? color : 'var(--color-text-light)',
+          color: '#1a7340',
           display: 'flex', alignItems: 'center', gap: 3,
-          transition: 'color 0.15s',
         }}>
-          {isCopied
-            ? <><CheckIcon color={color} /> 已複製</>
-            : <><CopyIcon /> 複製</>
-          }
+          <MapPinIcon /> 地圖
         </div>
         <div style={{ marginTop: 6, fontSize: 10, color: 'var(--color-text-light)' }}>
           建議：{appLabel[ride.app]}
         </div>
-      </button>
+      </a>
     </div>
   );
 };
 
 /* ── Tiny icon components ────────────────────────── */
-const CopyIcon = () => (
+const MapPinIcon = () => (
   <svg viewBox="0 0 24 24" style={{ width: 11, height: 11 }} fill="none" stroke="currentColor" strokeWidth={2}>
-    <rect x="9" y="9" width="13" height="13" rx="2" />
-    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-  </svg>
-);
-const CheckIcon = ({ color }: { color: string }) => (
-  <svg viewBox="0 0 24 24" style={{ width: 11, height: 11 }} fill="none" stroke={color} strokeWidth={2.5}>
-    <polyline points="20 6 9 17 4 12" />
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+    <circle cx="12" cy="10" r="3" />
   </svg>
 );
 const ChevronIcon = ({ open }: { open: boolean }) => (
@@ -212,17 +207,9 @@ const AppCard = ({ headerBg, headerText, name, badge, pros, notes }: {
 const TaxiGuide = () => {
   const [open, setOpen]         = useState(false);
   const [openDays, setOpenDays] = useState<Record<string, boolean>>({});
-  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const toggleDay = (key: string) =>
     setOpenDays(prev => ({ ...prev, [key]: !prev[key] }));
-
-  const handleCopy = (id: string, ko: string) => {
-    copyText(ko).then(() => {
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
-  };
 
   return (
     <div style={{ border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', background: 'var(--color-bg-card)', overflow: 'hidden', marginBottom: '1.25rem' }}>
@@ -235,7 +222,7 @@ const TaxiGuide = () => {
         <span style={{ fontSize: 20, lineHeight: 1, flexShrink: 0 }}>🚖</span>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-text-main)' }}>計程車 × 叫車備查指南</div>
-          <div style={{ fontSize: 11, color: 'var(--color-text-light)', marginTop: 2 }}>Day 1–5 · 目的地韓文 · 點按複製至 Naver Map</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-light)', marginTop: 2 }}>Day 1–5 · 目的地韓文 · 點按開啟 Naver 地圖導航</div>
         </div>
         <ChevronIcon open={open} />
       </button>
@@ -256,6 +243,12 @@ const TaxiGuide = () => {
               headerBg="#D4A84B" headerText="#6A4400" name="k.ride" badge="繁中介面"
               pros={['Kakao T 外國人版，合作車最多', '釜山叫車成功率更高', '台灣手機號＋信用卡可綁']}
               notes={['台灣完成註冊再出發', '目的地需輸入英/韓文']}
+            />
+            <div style={{ height: 1, background: 'var(--color-border)' }} />
+            <AppCard
+              headerBg="#FFCD00" headerText="#3A2800" name="Kakao T" badge="韓文版（備選）"
+              pros={['韓國最大叫車平台', '司機最多、候車最短', '有韓國門號可直接使用']}
+              notes={['需韓國手機號驗證', '信用卡設定較複雜', 'k.ride 已是其外國人版本']}
             />
           </div>
 
@@ -304,8 +297,6 @@ const TaxiGuide = () => {
                       key={ride.num}
                       ride={ride}
                       color={day.color}
-                      isCopied={copiedId === `${day.key}-${ride.num}`}
-                      onCopy={() => handleCopy(`${day.key}-${ride.num}`, ride.ko)}
                     />
                   ))}
                   {day.alert && (

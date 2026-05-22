@@ -67,17 +67,29 @@ const ChecklistPanel = ({ dayNum }: { dayNum: number }) => {
   const addItem = async () => {
     if (!newDesc.trim() || adding) return;
     setAdding(true);
+    const order = Date.now();
+    const tempId = `temp-${order}`;
+    const tempItem: ChecklistItem = {
+      id: tempId, dayNum,
+      label: newLabel.trim(),
+      desc:  newDesc.trim(),
+      order,
+    };
+    setItems(prev => [...prev, tempItem]);
+    setNewLabel('');
+    setNewDesc('');
     try {
       await addDoc(CHECKLIST_COL, {
         dayNum,
-        label: newLabel.trim(),
-        desc:  newDesc.trim(),
-        order: Date.now(),
+        label: tempItem.label,
+        desc:  tempItem.desc,
+        order,
         createdAt: serverTimestamp(),
       });
-      setNewLabel('');
-      setNewDesc('');
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      setItems(prev => prev.filter(it => it.id !== tempId));
+    }
     finally { setAdding(false); }
   };
 
