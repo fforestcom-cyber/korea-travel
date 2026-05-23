@@ -104,6 +104,20 @@ const DAYS: DayData[] = [
   },
 ];
 
+/* ── Copy helper ─────────────────────────────────── */
+const copyText = async (text: string) => {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  }
+};
+
 const TIPS = [
   { title: '出發前設定', body: '<b>Uber</b>：確認信用卡已綁，把常用目的地預存。<br><b>k.ride / Kakao T</b>：App Store 搜「k.ride」，台灣手機號驗證，綁 Visa/Master，<b>出發前完成，韓國設定容易卡關</b>。' },
   { title: '定位不準時', body: 'Uber 點「在地圖上設定地點」手動調整，避免定位到對面馬路。<br>上車後用 Naver Map 確認行駛方向。' },
@@ -111,6 +125,9 @@ const TIPS = [
   { title: '司機拒載怎辦', body: '司機有時以「太近」或「太遠」拒接。<br><b>對策</b>：換另一個 App；或 k.ride 開 <b>SMART 呼叫（+₩1,000）</b>提高接單意願。' },
   { title: '行李多時', body: '<b>29 吋以上行李可能放不下</b>（後車廂部分有瓦斯桶）。<br>Day 5 去機場：k.ride 選「<b>대형（大型車）</b>」或叫廂型車。' },
   { title: '過橋費說明', body: '南浦洞往海雲台走<b>廣安大橋</b>加收 <b>₩1,000</b> 橋費（跳表加入，非私收），走橋比市區快約 10 分鐘。' },
+  { title: 'Uber 兩筆扣款', body: '叫車後刷卡紀錄會先出現一筆<b>預授權</b>，抵達後才完成實際扣款。看到兩筆不代表被多收，等第二筆確認後再對帳。' },
+  { title: 'Uber PIN 碼驗證', body: '建議在 App 設定裡<b>開啟 PIN 碼驗證</b>。每次叫車會產生一組密碼，司機須輸入才能開始行程，可防止人還沒上車行程就被啟動。' },
+  { title: '下車前要收據', body: '韓國 Uber 有時由司機手動輸入跳表金額，建議下車前開口：<b>영수증 주세요</b>（勇書證粗誰優）= 「請給我收據」。拿到收據當下確認金額，有問題還在車上可立即反應。' },
 ];
 
 /* ── Destination card ────────────────────────────── */
@@ -119,8 +136,16 @@ const DestCard = ({
 }: {
   ride: Ride; color: string;
 }) => {
+  const [copied, setCopied] = useState(false);
   const appLabel: Record<AppType, string> = { uber: 'Uber', kride: 'k.ride', both: 'Uber / k.ride' };
   const naverUrl = `https://map.naver.com/p/search/${encodeURIComponent(ride.naver)}`;
+
+  const handleCopy = () => {
+    copyText(ride.ko).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   return (
     <div style={{ marginBottom: 10 }}>
@@ -162,6 +187,24 @@ const DestCard = ({
           建議：{appLabel[ride.app]}
         </div>
       </a>
+
+      {/* ── Copy address button ── */}
+      <button
+        onClick={handleCopy}
+        style={{
+          marginTop: 5, width: '100%', cursor: 'pointer',
+          background: copied ? `${color}18` : 'var(--color-bg-input)',
+          border: `1px solid ${copied ? color : 'var(--color-border)'}`,
+          borderRadius: 8,
+          padding: '6px 0',
+          fontSize: 11, fontWeight: 600,
+          color: copied ? color : 'var(--color-text-muted)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+          transition: 'all 0.15s',
+        }}
+      >
+        {copied ? '✓ 已複製韓文地址' : '複製韓文地址'}
+      </button>
     </div>
   );
 };
@@ -242,7 +285,7 @@ const TaxiGuide = () => {
             <AppCard
               headerBg="#D4A84B" headerText="#6A4400" name="k.ride" badge="繁中介面"
               pros={['Kakao T 外國人版，合作車最多', '釜山叫車成功率更高', '台灣手機號＋信用卡可綁']}
-              notes={['台灣完成註冊再出發', '目的地需輸入英/韓文']}
+              notes={['台灣完成註冊再出發', '目的地需輸入英/韓文', '買的是方便，費用會比其他貴']}
             />
             <div style={{ height: 1, background: 'var(--color-border)' }} />
             <AppCard

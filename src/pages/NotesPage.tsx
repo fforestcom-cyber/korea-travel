@@ -10,6 +10,7 @@ import TaxiGuide from '../components/TaxiGuide';
 import CatchTableGuide from '../components/CatchTableGuide';
 import ToiletGuide from '../components/ToiletGuide';
 import WowpassGuide from '../components/WowpassGuide';
+import KoreanPhraseGuide from '../components/KoreanPhraseGuide';
 
 /* ── Types ─────────────────────────────────────────────── */
 type DotColor = 'yellow' | 'green' | 'blue';
@@ -242,6 +243,8 @@ const NotesPage = () => {
         <CatchTableGuide />
 
         <ToiletGuide />
+
+        <KoreanPhraseGuide />
 
         <div className="note-compose mb-6">
           <input
