@@ -14,23 +14,27 @@ interface ShoppingItem {
   store: string;
   imageUrl: string;
   bought: boolean;
+  starred: boolean;
   createdAt: Timestamp | null;
 }
 
 /* ── Constants ──────────────────────────────────────────── */
-const STORES = ['Olive Young', '藥局', '大創 Daiso', '超市', '便利商店', '釜山伴手禮', '其他'];
+const STORES = ['Olive Young', '藥局', '大創 Daiso', '樂天超市', '便利商店', '釜山伴手禮', '其他'];
 
 const STORE_COLOR: Record<string, { color: string; bg: string }> = {
   'Olive Young': { color: '#A87060', bg: '#F5EDEA' },
   '藥局':        { color: '#5E9977', bg: '#EBF5EF' },
   '大創 Daiso':  { color: '#4E7A9E', bg: '#EAF2F8' },
-  '超市':        { color: '#B87848', bg: '#FAF0E6' },
+  '樂天超市':    { color: '#B87848', bg: '#FAF0E6' },
   '便利商店':    { color: '#7D9BAA', bg: '#EAF1F5' },
   '釜山伴手禮':  { color: '#8B75A0', bg: '#EEE9F5' },
   '其他':        { color: '#96A8B4', bg: '#EFF3F5' },
 };
 
 const SHOPPING_COL = collection(db, 'shoppingItems');
+
+// 舊分類名稱對應（Firestore 既有資料免遷移）
+const STORE_RENAME: Record<string, string> = { '超市': '樂天超市' };
 
 /* ── 一次性匯入資料（圖片已上傳至 Cloudinary）──────────── */
 const IMPORT_SEED = [
@@ -78,14 +82,14 @@ const IMPORT_SEED = [
   { name: '多用途保濕棒 Multi Balm',                               store: '大創 Daiso', imageUrl: '' },
   { name: '싹스틱 Ssak Stick 衣物去污棒',                           store: '大創 Daiso', imageUrl: '' },
   // ── 超市 ──
-  { name: '양반 마늘 김부각 大蒜海苔片',                              store: '超市', imageUrl: '' },
-  { name: '冷凍乾燥藍莓優格方塊',                                    store: '超市', imageUrl: '' },
-  { name: '巧克力香蕉可麗餅',                                        store: '超市', imageUrl: '' },
-  { name: '馬達加斯加香草布丁',                                      store: '超市', imageUrl: '' },
-  { name: 'Zero 無糖水蜜桃奇異果果凍',                              store: '超市', imageUrl: '' },
-  { name: '예감 非油炸洋芋片',                                       store: '超市', imageUrl: '' },
-  { name: '포카칩 生薑洋芋片 생강자',                                 store: '超市', imageUrl: '' },
-  { name: '蜂蜜奶油洋芋片 허니버터칩',                               store: '超市', imageUrl: '' },
+  { name: '양반 마늘 김부각 大蒜海苔片',                              store: '樂天超市', imageUrl: '' },
+  { name: '冷凍乾燥藍莓優格方塊',                                    store: '樂天超市', imageUrl: '' },
+  { name: '巧克力香蕉可麗餅',                                        store: '樂天超市', imageUrl: '' },
+  { name: '馬達加斯加香草布丁',                                      store: '樂天超市', imageUrl: '' },
+  { name: 'Zero 無糖水蜜桃奇異果果凍',                              store: '樂天超市', imageUrl: '' },
+  { name: '예감 非油炸洋芋片',                                       store: '樂天超市', imageUrl: '' },
+  { name: '포카칩 生薑洋芋片 생강자',                                 store: '樂天超市', imageUrl: '' },
+  { name: '蜂蜜奶油洋芋片 허니버터칩',                               store: '樂天超市', imageUrl: '' },
   // ── 便利商店 ──
   { name: '鹽味奶油麵包脆 Salt Butter Rusk',                       store: '便利商店', imageUrl: '' },
   { name: '奶油麵包脆 Butter Rusk',                               store: '便利商店', imageUrl: '' },
@@ -106,12 +110,17 @@ const ChecklistPage = () => {
   const [activeStore, setActiveStore] = useState<string | null>(null);
   const [boughtFilter, setBoughtFilter] = useState<'all' | 'unbought' | 'bought'>('all');
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [showAddForm, setShowAddForm]     = useState(false);
   const [newName, setNewName]             = useState('');
   const [newStore, setNewStore]           = useState(STORES[0]);
   const [newImgFile, setNewImgFile]       = useState<File | null>(null);
   const [newImgPreview, setNewImgPreview] = useState('');
   const [addingNew, setAddingNew]         = useState(false);
+  const [newStarred, setNewStarred]       = useState(false);
+  const [addError, setAddError]           = useState('');
+  const [editingId, setEditingId]         = useState<string | null>(null);
+  const [editingName, setEditingName]     = useState('');
 
   const imgInputRef    = useRef<HTMLInputElement>(null);
   const pendingItemId  = useRef<string | null>(null);
@@ -128,9 +137,10 @@ const ChecklistPage = () => {
             return {
               id:        d.id,
               name:      data.name      ?? '',
-              store:     data.store     ?? '',
+              store:     STORE_RENAME[data.store] ?? data.store ?? '',
               imageUrl:  data.imageUrl  ?? '',
               bought:    data.bought    ?? false,
+              starred:   data.starred   ?? false,
               createdAt: data.createdAt ?? null,
             };
           })
@@ -150,6 +160,30 @@ const ChecklistPage = () => {
       await updateDoc(doc(db, 'shoppingItems', item.id), { bought: !item.bought });
     } catch (err) {
       console.error('toggleBought error:', err);
+    }
+  };
+
+  const toggleStarred = async (item: ShoppingItem) => {
+    try {
+      await updateDoc(doc(db, 'shoppingItems', item.id), { starred: !item.starred });
+    } catch (err) {
+      console.error('toggleStarred error:', err);
+    }
+  };
+
+  const startEditing = (item: ShoppingItem) => {
+    setEditingId(item.id);
+    setEditingName(item.name);
+  };
+
+  const commitEdit = async (id: string) => {
+    const trimmed = editingName.trim();
+    setEditingId(null);
+    if (!trimmed) return;
+    try {
+      await updateDoc(doc(db, 'shoppingItems', id), { name: trimmed });
+    } catch (err) {
+      console.error('renameItem error:', err);
     }
   };
 
@@ -236,6 +270,7 @@ const ChecklistPage = () => {
   const addNewItem = async () => {
     if (!newName.trim() || addingNew) return;
     setAddingNew(true);
+    setAddError('');
     try {
       let imageUrl = '';
       if (newImgFile) {
@@ -247,15 +282,21 @@ const ChecklistPage = () => {
         store: newStore,
         imageUrl,
         bought: false,
+        starred: newStarred,
         createdAt: serverTimestamp(),
       });
       setNewName('');
       setNewStore(STORES[0]);
       setNewImgFile(null);
       setNewImgPreview('');
+      setNewStarred(false);
       setShowAddForm(false);
+      // 新增成功後切到該商品的分類，確保新商品可見
+      setActiveStore(newStore);
+      setBoughtFilter('all');
     } catch (err) {
       console.error('addNewItem error:', err);
+      setAddError('新增失敗，請確認網路連線後再試');
     } finally {
       setAddingNew(false);
     }
@@ -381,7 +422,12 @@ const ChecklistPage = () => {
                       onContextMenu={e => handleContextPaste(e, item.id)}
                     >
                       {item.imageUrl
-                        ? <img src={item.imageUrl} alt={item.name} />
+                        ? <img
+                            src={item.imageUrl}
+                            alt={item.name}
+                            style={{ cursor: 'zoom-in' }}
+                            onClick={() => setLightboxUrl(item.imageUrl)}
+                          />
                         : (
                           <div
                             className={`sl-img__placeholder${uploadingId === item.id ? ' sl-img__placeholder--uploading' : ''}`}
@@ -424,7 +470,44 @@ const ChecklistPage = () => {
                             </svg>
                           )}
                         </button>
-                        <span className="sl-card__name">{item.name}</span>
+                        {editingId === item.id ? (
+                          <input
+                            autoFocus
+                            value={editingName}
+                            onChange={e => setEditingName(e.target.value)}
+                            onBlur={() => commitEdit(item.id)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') commitEdit(item.id);
+                              if (e.key === 'Escape') setEditingId(null);
+                            }}
+                            style={{
+                              flex: 1, minWidth: 0,
+                              fontSize: 'var(--text-xs)', fontWeight: 500,
+                              fontFamily: 'inherit',
+                              border: 'none', borderBottom: '1px solid #d1d5db',
+                              outline: 'none', background: 'transparent',
+                              padding: '0 2px', lineHeight: 1.4,
+                            }}
+                          />
+                        ) : (
+                          <span
+                            className="sl-card__name"
+                            style={{ flex: 1, cursor: 'text' }}
+                            onClick={() => startEditing(item)}
+                          >{item.name}</span>
+                        )}
+                        <button
+                          onClick={() => toggleStarred(item)}
+                          aria-label={item.starred ? '取消必買' : '標記必買'}
+                          style={{
+                            flexShrink: 0,
+                            appearance: 'none', border: 'none', background: 'none',
+                            cursor: 'pointer', padding: '0 1px',
+                            fontSize: 14, lineHeight: 1,
+                            color: item.starred ? '#f59e0b' : '#d1d5db',
+                            transition: 'color .15s',
+                          }}
+                        >★</button>
                       </div>
                       <div
                         className="sl-chip"
@@ -515,9 +598,30 @@ const ChecklistPage = () => {
                 上傳圖片（選填）
               </button>
 
+              <button
+                type="button"
+                onClick={() => setNewStarred(v => !v)}
+                style={{
+                  padding: '8px', borderRadius: 6, fontSize: 13, cursor: 'pointer',
+                  fontFamily: 'inherit', textAlign: 'center' as const,
+                  border: newStarred ? '1px solid #f59e0b' : '1px solid #ece8e3',
+                  background: newStarred ? '#fffbeb' : '#fafaf9',
+                  color: newStarred ? '#d97706' : '#9ca3af',
+                  fontWeight: newStarred ? 600 : 400,
+                  transition: 'all .15s',
+                }}
+              >
+                {newStarred ? '★ 必買' : '☆ 標記為必買（選填）'}
+              </button>
+
+              {addError && (
+                <div style={{ fontSize: 12, color: '#dc2626', textAlign: 'center', padding: '4px 0' }}>
+                  {addError}
+                </div>
+              )}
               <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
                 <button
-                  onClick={() => { setShowAddForm(false); setNewName(''); setNewImgFile(null); setNewImgPreview(''); }}
+                  onClick={() => { setShowAddForm(false); setNewName(''); setNewImgFile(null); setNewImgPreview(''); setAddError(''); }}
                   style={{ flex: 1, padding: '9px', border: '1px solid #ece8e3', borderRadius: 6, background: '#fafaf9', fontSize: 13, cursor: 'pointer', color: '#9ca3af', fontFamily: 'inherit' }}
                 >
                   取消
@@ -534,19 +638,6 @@ const ChecklistPage = () => {
           </div>
         )}
 
-        {/* 重新匯入按鈕（隱藏區，資料已存在時顯示） */}
-        {!loading && !importDone && items.length > 0 && (
-          <div style={{ textAlign: 'center', paddingBottom: '1rem' }}>
-            <button
-              className="btn btn--primary-light"
-              onClick={clearAndImport}
-              disabled={importing}
-              style={{ fontSize: 'var(--text-xs)', padding: '6px 14px', opacity: .6 }}
-            >
-              {importing ? '處理中…' : `清空並重新匯入 ${IMPORT_SEED.length} 件`}
-            </button>
-          </div>
-        )}
 
       </div>
 
@@ -558,6 +649,42 @@ const ChecklistPage = () => {
         style={{ display: 'none' }}
         onChange={handleImgInputChange}
       />
+
+      {/* 圖片放大 Lightbox */}
+      {lightboxUrl && (
+        <div
+          onClick={() => setLightboxUrl(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 2000,
+            background: 'rgba(0,0,0,.85)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '20px',
+            cursor: 'zoom-out',
+          }}
+        >
+          <img
+            src={lightboxUrl}
+            alt=""
+            style={{
+              maxWidth: '100%', maxHeight: '100%',
+              objectFit: 'contain',
+              borderRadius: 8,
+              boxShadow: '0 8px 32px rgba(0,0,0,.4)',
+            }}
+            onClick={e => e.stopPropagation()}
+          />
+          <button
+            onClick={() => setLightboxUrl(null)}
+            style={{
+              position: 'absolute', top: 16, right: 16,
+              background: 'rgba(255,255,255,.15)', border: 'none',
+              color: '#fff', fontSize: 22, width: 36, height: 36,
+              borderRadius: '50%', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >×</button>
+        </div>
+      )}
     </>
   );
 };
