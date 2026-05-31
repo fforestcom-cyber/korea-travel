@@ -66,7 +66,7 @@ const DAYS: DayData[] = [
     ],
   },
   {
-    key: 'd4', label: 'Day 4', theme: 'Skyline Luge × 膠囊列車 × Spa Land × 廣安里夜場', color: D.d4,
+    key: 'd4', label: 'Day 4', theme: 'Skyline Luge × 膠囊列車 × DAISO × 廣安里夜場', color: D.d4,
     rides: [
       { num: '4-①', ko: '스카이라인루지 부산\n부산 기장군 기장읍\n기장해안로 205',
         naver: '스카이라인루지 부산 기장해안로 205',
@@ -74,14 +74,14 @@ const DAYS: DayData[] = [
       { num: '4-②', ko: '해운대블루라인파크 미포역\n부산 해운대구\n달맞이길62번길 13',
         naver: '해운대블루라인파크 미포역 달맞이길62번길 13',
         route: 'Skyline Luge → 尾浦站（膠囊列車起點）', time: '11:00（時間緊）', cost: '₩15,000–20,000', app: 'both' },
-      { num: '4-③', ko: '신세계백화점 센텀시티점\n부산 해운대구 센텀남대로 35',
-        naver: '신세계백화점 센텀시티점 센텀남대로 35',
-        route: '青沙浦（午餐後）→ 新世界百貨 Spa Land', time: '14:00', cost: '₩9,000–12,000', app: 'uber' },
+      { num: '4-③', ko: '다이소 해운대마린시티점\n부산 해운대구 마린시티2로 38',
+        naver: '다이소 해운대마린시티점',
+        route: '青沙浦（午餐後）→ DAISO 釜山海雲台 Marine City 店', time: '14:00', cost: '₩5,000–8,000', app: 'uber' },
       { num: '4-④', ko: '광안리해수욕장\n부산 수영구 광안해변로 219',
         naver: '광안리해수욕장 수영구 광안해변로 219',
-        route: '新世界百貨 → 廣安里（無人機秀）', time: '夜間', cost: '₩7,000–10,000', app: 'both' },
+        route: 'DAISO Marine City 店 → 廣安里無人機秀', time: '夜間', cost: '₩7,000–10,000', app: 'both' },
     ],
-    alert: { type: 'note', text: 'ℹ 廣安里無人機秀於夜間舉行，Spa Land 結束後計程車直達廣安里海水浴場約 ₩7,000–10,000。' },
+    alert: { type: 'note', text: 'ℹ 廣安里無人機秀於夜間舉行，DAISO 逛完後計程車直達廣安里海水浴場約 ₩7,000–10,000。' },
   },
   {
     key: 'd5a', label: 'Day 5A', theme: '海雲台放空收尾', color: D.d5a,
