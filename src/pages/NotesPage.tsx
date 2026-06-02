@@ -9,7 +9,6 @@ import { TRIP_INFO } from '../data/mockData';
 import TaxiGuide from '../components/TaxiGuide';
 import CatchTableGuide from '../components/CatchTableGuide';
 import ToiletGuide from '../components/ToiletGuide';
-import WowpassGuide from '../components/WowpassGuide';
 import KoreanPhraseGuide from '../components/KoreanPhraseGuide';
 
 /* ── Types ─────────────────────────────────────────────── */
@@ -237,8 +236,6 @@ const NotesPage = () => {
       <div className="section-px">
 
         <TaxiGuide />
-
-        <WowpassGuide />
 
         <CatchTableGuide />
 
