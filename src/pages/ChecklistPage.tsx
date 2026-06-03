@@ -267,6 +267,26 @@ const ChecklistPage = () => {
     }
   };
 
+  const handleNewImgPaste = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!navigator.clipboard?.read) return;
+    try {
+      const clipItems = await navigator.clipboard.read();
+      for (const ci of clipItems) {
+        const imgType = ci.types.find(t => t.startsWith('image/'));
+        if (imgType) {
+          const blob = await ci.getType(imgType);
+          const file = new File([blob], 'paste.png', { type: imgType });
+          setNewImgFile(file);
+          setNewImgPreview(URL.createObjectURL(file));
+          return;
+        }
+      }
+    } catch (err) {
+      console.error('new item paste error:', err);
+    }
+  };
+
   const addNewItem = async () => {
     if (!newName.trim() || addingNew) return;
     setAddingNew(true);
@@ -409,6 +429,19 @@ const ChecklistPage = () => {
 
             {/* 購物卡片格 */}
             <div className="sl-grid">
+              {/* 新增商品格 */}
+              <div
+                className="sl-card sl-card--add"
+                onClick={() => setShowAddForm(true)}
+              >
+                <div className="sl-add-btn">
+                  <svg viewBox="0 0 24 24" style={{ width: 28, height: 28 }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span>新增商品</span>
+                </div>
+              </div>
               {filtered.map((item) => {
                 const c = STORE_COLOR[item.store] ?? { color: '#808080', bg: '#f0f0f0' };
                 return (
@@ -520,19 +553,6 @@ const ChecklistPage = () => {
                   </div>
                 );
               })}
-              {/* 新增商品格 */}
-              <div
-                className="sl-card sl-card--add"
-                onClick={() => setShowAddForm(true)}
-              >
-                <div className="sl-add-btn">
-                  <svg viewBox="0 0 24 24" style={{ width: 28, height: 28 }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                  <span>新增商品</span>
-                </div>
-              </div>
             </div>
           </>
         )}
@@ -582,7 +602,7 @@ const ChecklistPage = () => {
               />
 
               {newImgPreview && (
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }} onContextMenu={handleNewImgPaste}>
                   <img src={newImgPreview} alt="預覽" style={{ width: '100%', height: 100, objectFit: 'cover', borderRadius: 8 }} />
                   <button
                     onClick={() => { setNewImgFile(null); setNewImgPreview(''); }}
@@ -593,9 +613,10 @@ const ChecklistPage = () => {
 
               <button
                 onClick={() => newImgInputRef.current?.click()}
+                onContextMenu={handleNewImgPaste}
                 style={{ padding: '8px', border: '1px solid #ece8e3', borderRadius: 6, background: '#fafaf9', fontSize: 12, cursor: 'pointer', color: '#9ca3af', textAlign: 'center' as const }}
               >
-                上傳圖片（選填）
+                上傳圖片 / 右鍵貼上（選填）
               </button>
 
               <button
